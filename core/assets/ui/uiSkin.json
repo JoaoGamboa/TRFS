@@ -1,0 +1,55 @@
+{
+	"com.badlogic.gdx.graphics.Color": {
+		"white": { "r": 1, "g": 1, "b": 1, "a": 1 },
+		"black": { "r": 0, "g": 0, "b": 0, "a": 1 },
+		"red": 	 { "r": 1, "g": 0, "b": 0, "a": 1 },
+		"green": { "r": 0, "g": 1, "b": 0, "a": 1 },
+		"blue":  { "r": 0, "g": 0, "b": 1, "a": 1 },
+		"selectedText": { "r": 1, "g": 1, "b": 1, "a": 1 },
+	},
+	"com.badlogic.gdx.graphics.g2d.BitmapFont": {
+		"smallFont": {"file": "font/segoewhiteSmall.fnt"},
+		"mediumFont": {"file": "font/segoewhiteMedium.fnt"},
+		"largeFont": {"file": "font/segoewhiteLarge.fnt"},	
+		"boldFont":  {"file": "font/segoewhiteLarge.fnt"},	
+	},
+	"com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+		"smallLabel": { "font": smallFont, "fontColor": white },
+		"mediumLabel": { "font": mediumFont, "fontColor": white },
+		"largeLabel": { "font": largeFont, "fontColor": white },
+		"smallWarning": { "font": smallFont, "fontColor": selectedText },
+		"mediumWarning": { "font": mediumFont, "fontColor": selectedText },
+		"boldTitle": { "font": mediumFont, "fontColor": selectedText },
+	},
+	"com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
+		"mainButton": { "up": button_02, "down": button_01, "over": button_01_over, "checked": button_01, "disabled": button_01, "font": smallFont, "pressedOffsetX": 1, "pressedOffsetY": -1},
+	},
+	"com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle": {
+		"smallList": {"font": smallFont, "fontColorUnselected": white, "fontColorSelected": selectedText, "selection": selectTextBox},
+		"dropdownList": {"font": smallFont, "fontColorUnselected": white, "fontColorSelected": selectedText, "selection": selectTextBox, "background": selectbox_drop},
+		"mediumList": {"font": mediumFont, "fontColorUnselected": white, "fontColorSelected": selectedText, "selection": selectTextBox},
+	},
+	"com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle": {
+		"default": {"hScrollKnob": scroll_back_hor, "vScrollKnob": scroll_back_ver},
+	},
+	"com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle": {
+    	"default": {"font": smallFont, "fontColor": selectedText, "background": selectbox_01, "backgroundOver": selectbox_over, "scrollStyle": default, "listStyle": dropdownList},
+	},
+	"com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle": {
+	    "default": { "checkboxOn": checkbox_on, "checkboxOff": checkbox_off, "font": smallFont, "fontColor": white, "checkboxOver": checkboxOver, 
+	    			"checkboxOnDisabled": checkboxOnDisabled, "checkboxOffDisabled": checkboxOffDisabled},
+	},
+	"com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
+	    "default": { "selection": textbox_cursor_02, "background": textbox_01, "focusedBackground": textbox_02, "disabledBackground": textbox_01, 
+	    			 "font": smallFont, "fontColor": white, "cursor": textbox_cursor_02, "disabledFontColor": black, "focusedFontColor": selectedText,
+	      			 "messageFont": smallFont, "messageFontColor": selectedText},
+	},
+	"com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle": {
+	    "default-horizontal": { "background": slider_back_hor, "knob": knob_01},
+	    "default-vertical": { "background": slider_back_ver, "knob": knob_02 },
+	},
+	"com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle": {
+	    "default": { "titleFont": smallFont, "background": selectbox_drop, "titleFontColor": white },
+	    "dialog": { "titleFont": smallFont, "background": selectbox_drop, "titleFontColor": white, "stageBackground": mediumLogo},
+	},
+}
