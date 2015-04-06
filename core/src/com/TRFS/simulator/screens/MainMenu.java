@@ -54,6 +54,9 @@ public class MainMenu implements Screen {
 				
 		stage.addActor(table);
 		
+		// TODO add ISEL logo
+		// TODO add author name
+		
 	}
 
 	@Override

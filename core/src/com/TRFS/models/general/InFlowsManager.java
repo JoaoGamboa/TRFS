@@ -32,23 +32,24 @@ public class InFlowsManager {
 	}
 	
 	public void update(float dT, float simTime) {
-		if(!debugOneVeh){
+		if (!debugOneVeh) {
 			i = 0;
 			for (Link link : this.inflowLinks) {
-				float flowDT = link.getInFlowParam().getCurrentVal() / 3600 * dT;
+				float flowDT = link.getInFlowParam().getCurrentVal() / 3600
+						* dT;
 				counters[i] += flowDT;
-				
+
 				if (counters[i] >= 1) {
 					addVehicle(link);
 					counters[i] -= 1;
 				}
-				
+
 				i++;
 			}
-		} else if(vehicleCount == 0){
+		} else if (vehicleCount == 0) {
 			addVehicle(this.inflowLinks.get(0));
 		}
-		
+
 	}
 	
 	Vehicle veh = null;	
@@ -63,24 +64,16 @@ public class InFlowsManager {
 			int lane = 0;
 			//Decide weather to add a car or a truck			
 			if (MathUtils.random(100) > SimulationParameters.truckPercent.getCurrentVal()) {
-				vehicle = new Car(link, link.getLanes().get(lane));
+				vehicle = new Car();
 			} else {
-				vehicle = new Truck(link, link.getLanes().get(lane));
+				vehicle = new Truck();
 			}
 			
-			
-			
-			/*if (vehicleCount == 0) {
-				veh = vehicle;
-			}
-			System.out.println(veh.getPosition().x +"  "+veh.getPosition().y);*/
-			
-			
-			//link.addVehicle(vehicle, lane);
+			vehicle.getBehavior().setInitialLocation(link, link.getLanes().get(lane));
 			
 			this.scenario.getStages().get(link.getZ()).addActor(vehicle);
-			
 			vehicleCount += 1;
+						
 		}
 	}
 		

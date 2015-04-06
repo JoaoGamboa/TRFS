@@ -132,6 +132,7 @@ public class WorldScreen implements Screen {
 				
 		MiscTools.fadeIn(stage);
 		
+		// TODO Make windows instanceable instead of static
 		String [] modelParamButtons = {"Car-Foll", "Lane Chang."};
 		ModelParamWindow.create(modelParametersWindow);
 		modelParametersWindow = new TabbedWindow("MODEL PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true, modelParamButtons, ModelParamWindow.getTables());

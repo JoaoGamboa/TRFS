@@ -19,6 +19,9 @@ public class SimulationStatsWindow {
 	public static void create (SlidingWindow window, Scenario currentScenario) {
 		scenario = currentScenario;
 		
+		//TODO decide if tabbed window is necessary;
+		//TODO graphs;
+		
 		Table table = new Table(skin);
 		
 		table.add(new Label("Elapsed time:", skin, "smallLabel"));
