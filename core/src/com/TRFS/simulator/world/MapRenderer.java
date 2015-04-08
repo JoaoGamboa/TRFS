@@ -14,7 +14,21 @@ import com.badlogic.gdx.utils.Array;
 
 public class MapRenderer {
 
-	public void render(Map map) {
+	public static void render(Map map, int zLevel) {
+		
+		// Start required graphic utils for rendering links
+		for (Link link : map.getLinks()) {
+			if (link.getZ() == zLevel) {
+				/* link.render() */
+			}
+			;
+		}
+		// Render the nodes
+		for (Node node : map.getNodes()) {
+			if (node.getzLevel() == zLevel) {
+				/* node.render(); */
+			}
+		}
 
 	}
 

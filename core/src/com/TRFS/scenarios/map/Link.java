@@ -9,29 +9,17 @@ public class Link {
 
 	// Coordinates
 	private Array<Coordinate> coordinates;
-	//private Array<Array<Vector2>> wayPoints;
-	//private Array<Vector2> triStrip;
 
 	// Properties
-	private int internalID;
-	private int hierarchy;
-	private int inFlow;
-	private int maxspeed;
-	private int nrOfLanes;
-	private int oneway;
-	private int z;
+	private int internalID, hierarchy, inFlow, maxspeed, nrOfLanes, oneway, z;
 
 	private DynamicSimParam inFlowParam;
 
-	// private Boolean isEntrance;
 	private float laneWidth;
-	private float linkWidth;
 	private int laneCapacity;
-	private float lenght;
 
 	// Neighbourhood
-	private Node fromNode;
-	private Node toNode;
+	private Node fromNode, toNode;
 
 	// Lanes
 	private Array<Lane> lanes;
@@ -58,10 +46,9 @@ public class Link {
 		for (int i = 0; i < this.nrOfLanes; i++) {
 			this.lanes.add(new Lane());
 		}
-
 	}
 
-	public void calculateLegnth() {
+	/*public void calculateLegnth() {
 		this.lenght = 0;
 		for (int i = 0; i < coordinates.size - 1; i++) {
 			Coordinate c0 = coordinates.get(i);
@@ -70,7 +57,7 @@ public class Link {
 					+ Math.pow(c1.getY() - c0.getY(), 2));
 			this.lenght += dist;
 		}
-	}
+	}*/
 
 	public Array<Lane> getLanes() {
 		return lanes;
@@ -78,10 +65,6 @@ public class Link {
 
 	public Array<Coordinate> getCoordinates() {
 		return coordinates;
-	}
-
-	public float getLenght() {
-		return lenght;
 	}
 
 	public int getNrOfLanes() {
@@ -94,20 +77,12 @@ public class Link {
 
 	public void setCoordinates(Array<Coordinate> coordinates) {
 		this.coordinates = coordinates;
-		calculateLegnth();
+		//calculateLegnth();
 		LaneGeometryUtils.makeLaneGeometry(this);
 	}
 
 	public int getInternalID() {
 		return internalID;
-	}
-
-	public float getLinkWidth() {
-		return linkWidth;
-	}
-
-	public void setLinkWidth(float linkWidth) {
-		this.linkWidth = linkWidth;
 	}
 
 	public int getHierarchy() {
@@ -192,8 +167,7 @@ public class Link {
 				+ internalID + ", hierarchy=" + hierarchy + ", inFlow="
 				+ inFlow + ", lanes=" + lanes + ", maxspeed=" + maxspeed
 				+ ", oneway=" + oneway + ", fromNode=" + fromNode + ", toNode="
-				+ toNode + ", isEntrance="
-				+ /* isEntrance + */"]";
+				+ toNode + ", isEntrance=" + "]";
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.TRFS.scenarios.map;
 
+import com.TRFS.scenarios.editor.PathBuilder;
 import com.badlogic.gdx.utils.Array;
 
 public class Lane {
@@ -10,7 +11,6 @@ public class Lane {
 	public Lane() {
 		//path = new Path(wayPoints);
 
-
 	}
 
 	public Array<Coordinate> getCenterLine() {
@@ -19,6 +19,7 @@ public class Lane {
 
 	public void setCenterLine(Array<Coordinate> centerLine) {
 		this.centerLine = centerLine;
+		this.path = PathBuilder.buildPath(centerLine);
 	}
 
 	public Path getPath() {

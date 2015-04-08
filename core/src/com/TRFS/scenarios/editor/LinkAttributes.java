@@ -51,7 +51,6 @@ public class LinkAttributes {
 		if (link.getMaxspeed() == 0) link.setMaxspeed(maxSpeed);
 		
 		link.setLaneWidth(laneWidth);
-		link.setLinkWidth(link.getNrOfLanes() * laneWidth);
 		link.setLaneCapacity(laneCapacity);
 
 	}

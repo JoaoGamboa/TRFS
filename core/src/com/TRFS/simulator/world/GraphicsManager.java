@@ -1,9 +1,7 @@
 package com.TRFS.simulator.world;
 
 import com.TRFS.scenarios.Scenario;
-import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Map;
-import com.TRFS.scenarios.map.Node;
 import com.TRFS.simulator.SimulationParameters;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -42,19 +40,7 @@ public class GraphicsManager {
 		batch.setProjectionMatrix(camera.combined);
 
 		for (Integer zLevel : map.getzLevels()) {
-			// Start required graphic utils for rendering links
-			for (Link link : map.getLinks()) {
-				if (link.getZ() == zLevel) {
-					/* link.render() */
-				}
-				;
-			}
-			// Render the nodes
-			for (Node node : map.getNodes()) {
-				if (node.getzLevel() == zLevel) {
-					/* node.render(); */
-				}
-			}
+			MapRenderer.render(map, zLevel);
 
 			stages.get(zLevel).draw();
 		}
