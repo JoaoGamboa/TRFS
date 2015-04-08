@@ -8,6 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+/**Wraps the code to deploy on the creation of the Simulation Statistics window.
+ * @author jgamboa
+ */
 public class SimulationStatsWindow {
 
 

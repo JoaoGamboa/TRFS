@@ -18,6 +18,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
+/**Wraps the procedure for creating the Model Parameters sliders.
+ * @author jgamboa
+ *
+ */
 public class ModelParameterSliders {
 
 	private static Skin skin = AssetsMan.uiSkin;
@@ -26,6 +30,9 @@ public class ModelParameterSliders {
 	private static Table outterTable;
 	private static Array<DynamicSimParam[]> calParams;
 	
+	/**Creates the table inside of which the sliders live.
+	 * @return
+	 */
 	public static Table create() {
 
 		sliderList= new ArrayList<DynamicParamSlider>();
@@ -84,6 +91,8 @@ public class ModelParameterSliders {
 		return outterTable;
 	}
 	
+	/** Resets the sliders to the default value.	
+	 */
 	public static void resetParameters() {
 		for (int i = 0; i < calParams.get(0).length; i++) {
 			calParams.get(0)[i].setCurrentVal(calParams.get(0)[i].getDefaultVal());

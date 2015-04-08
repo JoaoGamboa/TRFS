@@ -4,6 +4,10 @@ import com.TRFS.simulator.screens.Settings;
 import com.TRFS.simulator.screens.SplashScreen;
 import com.badlogic.gdx.Game;
 
+/**
+ * @author jgamboa
+ *
+ */
 public class Main extends Game {
 	
 	//Name & Version

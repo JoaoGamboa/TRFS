@@ -8,6 +8,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+
+/**
+ * @author jgamboa
+ *
+ */
 public class AboutScreen implements Screen {
 	//UI 
 	private Stage stage = new Stage(new ScreenViewport());

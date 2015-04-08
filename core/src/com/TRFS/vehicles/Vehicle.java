@@ -1,8 +1,6 @@
 package com.TRFS.vehicles;
 
 import com.TRFS.models.Behavior;
-import com.TRFS.scenarios.map.Lane;
-import com.TRFS.scenarios.map.Link;
 import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.SimulationParameters;
 import com.badlogic.gdx.graphics.Color;
@@ -13,11 +11,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
- * This class represents the physical characteristics of a vehicle. Decisions
- * are made by Behavior class.
+ * Class holding the physical characteristics and mechanics of a vehicle. Decisions
+ * are made by the Behavior class.
  * 
  * @author jgamboa
  */
+
 public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 
 	// Properties
@@ -26,15 +25,19 @@ public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 	// Shape & Aspect
 	protected TextureRegion region;
 
-	// Behaviour
 	private Behavior behavior;
 
-	// Movement
 	private Vector2 position, velocity, acceleration;
 	/*private float , angularVelocity, boundingRadius*/;
 	private float maxLinearSpeed = 160/3.6f, maxLinearAcceleration = 5/*, maxAngularSpeed = 5, maxAngularAcceleration = 10*/;
-	//boolean tagged;
 
+	/**
+	 * Creates a new vehicle.
+	 * @param width The width of the vehicle
+	 * @param length The length of the vehicle
+	 * @param color The color of the vehicle
+	 * @param textureName The name of the texture to use
+	 */
 	public Vehicle(float width, float length, Color color, String textureName) {
 		this.region = new TextureRegion(AssetsMan.uiSkin.getRegion(textureName));
 		this.setSize(width, length);
@@ -50,6 +53,10 @@ public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 				SimulationParameters.currentLaneChangeModel);
 	}
 
+	/**
+	 * Updates the vehicle behaviour, acceleration, velocity and position. Called every frame.
+	 * @param delta time 
+	 */
 	public void update(float delta) {
 
 		// AI Behaviour
@@ -65,6 +72,9 @@ public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.badlogic.gdx.scenes.scene2d.Actor#act(float)
+	 */
 	@Override
 	public void act(float delta) {
 		update(delta);
@@ -77,12 +87,6 @@ public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 		
 		batch.setColor(getColor().r, getColor().g, getColor().b, parentAlpha);
 		batch.draw(region, getX(), getY(), getWidth(), getHeight());
-	}
-
-	public void positionVehicleAtLinkStart(Link link, Lane lane) {
-		this.behavior.setChangedLink(true);
-
-
 	}
 
 	/*
@@ -143,38 +147,51 @@ public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 	 * (float)Math.cos(angle); return outVector; }
 	 */
 
-	public Vector2 getVelocity() {
-		return velocity;
-	}
-
-	public void setVelocity(Vector2 velocity) {
-		this.velocity = velocity;
-	}
-	
+	/**Updates the velocity vector with the current value of the acceleration vector.
+	 * Limits the velocity to the maximum linear speed defined.
+	 * @param delta time
+	 */
 	public void updateVelocity(float delta) {
 		//TODO apply rotation. save here then rotate after
 		velocity.mulAdd(acceleration, delta).limit(maxLinearSpeed);
 	}
 	
+	/**Updates the rotation of the actor according to the direction of the velocity vector.
+	 */
 	public void updateRotation() {
 		float orientation = (float) Math.atan2(-velocity.x, velocity.y);
 		setRotation(orientation*MathUtils.radiansToDegrees);
 	}
-
-	public Vector2 getPosition() {
-		return position;
-	}
 	
-	public void setPosition(Vector2 position) {
-		this.position.set(position);
-		super.setPosition(position.x, position.y);
-	}
-	
+	/**Updates the vehicle's position according to the velocity vector for the delta time provided.
+	 * Also sets the position of the actor to the new coordinates.
+	 * @param delta time
+	 */
 	public void updatePosition(float delta) {
 		position.mulAdd(velocity, delta);
 		this.setPosition(this.position.x, this.position.y);
 	}
+	
+	/** Sets the position of the vehicle to a given vector. Also updates the actor position for drawing.
+	 * @param position The {@link Vector2} holding the position.
+	 */
+	public void setPosition(Vector2 position) {
+		this.position.set(position);
+		super.setPosition(position.x, position.y);
+	}
 
+	public Vector2 getVelocity() {
+		return velocity;
+	}
+	
+	public void setVelocity(Vector2 velocity) {
+		this.velocity = velocity;
+	}
+	
+	public Vector2 getPosition() {
+		return position;
+	}
+	
 	public Vector2 getAcceleration() {
 		return acceleration;
 	}

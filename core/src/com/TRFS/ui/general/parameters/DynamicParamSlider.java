@@ -25,6 +25,9 @@ public class DynamicParamSlider extends Slider{
 	
 	private DecimalFormat df;
 	
+	/**Takes a {@link DynamicSimParam} and creates a {@link Slider} with its values.
+	 * @param parameter
+	 */
 	public DynamicParamSlider(DynamicSimParam parameter) {
 		super(parameter.getMinimumVal(), parameter.getMaximumVal(), parameter.getIncrementVal(), false, skin);
 		

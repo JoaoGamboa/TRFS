@@ -27,6 +27,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+/**
+ * @author jgamboa
+ *
+ */
 public class WorldScreen implements Screen {
 	
 	//UI

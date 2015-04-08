@@ -3,25 +3,37 @@ package com.TRFS.ui.general.parameters;
 /**
  * @author jgamboa
  *
- * A {@link DynamicSimParam} prepares a given variable to be manipulated by the user during simulation run. 
- * One can provide boundaries, a default value and the intended increment to be used by the slider.
+ *         A {@link DynamicSimParam} prepares a given variable to be manipulated
+ *         by the user during simulation run. One can provide boundaries, a
+ *         default value and the intended increment to be used by the slider.
  *
  */
 public class DynamicSimParam {
-	
+
 	private String name;
-	
-	private float minimumVal,
-				  maximumVal,
-			   	  defaultVal,
-			   	  incrementVal,
-				  currentVal;
-	
+
+	private float minimumVal, maximumVal, defaultVal, incrementVal, currentVal;
+
 	private String decimalFormat;
-	
+
 	private String units;
-	
-	public DynamicSimParam (String name, float minimumVal,	float maximumVal, float defaultVal, float incrementVal, String decimalFormat, String units) {
+
+	/**
+	 * * A {@link DynamicSimParam} prepares a given variable to be manipulated
+	 * by the user during simulation run. One can provide boundaries, a default
+	 * value and the intended increment to be used by the slider.
+	 *
+	 * @param name
+	 * @param minimumVal
+	 * @param maximumVal
+	 * @param defaultVal
+	 * @param incrementVal
+	 * @param decimalFormat
+	 * @param units
+	 */
+	public DynamicSimParam(String name, float minimumVal, float maximumVal,
+			float defaultVal, float incrementVal, String decimalFormat,
+			String units) {
 		super();
 		this.name = name;
 		this.minimumVal = minimumVal;
@@ -32,7 +44,7 @@ public class DynamicSimParam {
 		this.decimalFormat = decimalFormat;
 		this.units = units;
 	}
-	
+
 	public void resetCurrent() {
 		this.currentVal = defaultVal;
 	}
@@ -153,5 +165,5 @@ public class DynamicSimParam {
 	public void setUnits(String units) {
 		this.units = units;
 	}
-	
+
 }

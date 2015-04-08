@@ -26,6 +26,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+/**
+ * @author jgamboa
+ *
+ */
 public class StartMenu implements Screen {
 		
 	//UI

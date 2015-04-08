@@ -7,6 +7,9 @@ import com.TRFS.ui.general.windows.TabbedWindow;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+/**Wraps the code to deploy on the creation of the Model Parameters window.
+ * @author jgamboa
+ */
 public class ModelParamWindow {
 	
 	private static Skin skin = AssetsMan.uiSkin;

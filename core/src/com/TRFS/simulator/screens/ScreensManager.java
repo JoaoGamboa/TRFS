@@ -6,6 +6,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
+/**
+ * @author jgamboa
+ *
+ */
 public class ScreensManager {
 	
 	private static boolean worldRunning = false;

@@ -19,6 +19,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+/**
+ * @author jgamboa
+ *
+ */
 public class Settings implements Screen {
 	//UI
 	private Skin menuSkin = AssetsMan.uiSkin;

@@ -8,6 +8,7 @@ import com.TRFS.models.carFollowing.W74CarFollowing;
 import com.TRFS.models.path.PathFollowing;
 import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
+import com.TRFS.scenarios.map.Path;
 import com.TRFS.ui.general.parameters.DynamicSimParam;
 import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.math.MathUtils;
@@ -37,7 +38,7 @@ public class Behavior {
 	private Link currentLink;
 	private Lane currentLane;
 
-	/**
+	/**The {@link Behavior} of a vehicle aggregates all behaviour models affecting the {@link Vehicle}.
 	 * @param vehicle
 	 *            This vehicle.
 	 * @param carFollowingBehaviour
@@ -57,6 +58,10 @@ public class Behavior {
 		
 	}
 
+	/**Updates the behaviour of this HVE.
+	 * @param dT delta time
+	 * @return accelVector, the resulting acceleration vector
+	 */
 	@SuppressWarnings("unused")
 	public Vector2 update(float dT) {
 
@@ -80,6 +85,10 @@ public class Behavior {
 		return accelVector;
 	}
 	
+	/**Updates the {@link Vehicle}'s {@link CarFollowingModel} regarding it's leader.
+	 * @param leader
+	 * @return Updated acceleration float.
+	 */
 	private float updateCarFollowing(Vehicle leader) {
 		//Update car-following behaviour
 		if (leader != null) {
@@ -95,6 +104,9 @@ public class Behavior {
 		}
 	}
 	
+	/**Sets this {@link Vehicle}'s {@link CarFollowingModel}.
+	 * @param carFollowingBehavior
+	 */
 	private void setCarFollowingModel(String carFollowingBehavior) {
 		int model = 0;
 		for (int i = 0; i < carFolModels.length; i++) {
@@ -112,6 +124,9 @@ public class Behavior {
 		}
 	}
 
+	/**Sets this {@link Vehicle}'s desired speed randomly with {@link Random#nextGaussian()}.
+	 * @param maxSpeed
+	 */
 	public void setDesiredSpeed(float maxSpeed) {
 		this.desiredSpeed = (float) (new Random().nextGaussian() * 20 + maxSpeed);
 	}
@@ -128,6 +143,11 @@ public class Behavior {
 		return currentLink;
 	}
 
+	/** Sets the initial location ({@link Link} and {@link Lane}) of the vehicle.
+	 * Updates the vehicle {@link PathFollowing}'s {@link Path} and sets the {@link Vehicle}'s position.
+	 * @param startLink
+	 * @param startLane
+	 */
 	public void setInitialLocation(Link startLink, Lane startLane) {
 		setCurrentLink(startLink);
 		setCurrentLane(startLane);
