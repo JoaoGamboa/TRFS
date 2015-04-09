@@ -37,14 +37,13 @@ public class Behavior {
 	private boolean changedLink;
 	private Link currentLink;
 	private Lane currentLane;
+	
+	private Vector2 acceleration;
 
 	/**The {@link Behavior} of a vehicle aggregates all behaviour models affecting the {@link Vehicle}.
-	 * @param vehicle
-	 *            This vehicle.
-	 * @param carFollowingBehaviour
-	 *            Car-following behavior for this vehicle.
-	 * @param laneChangingBehaviour
-	 *            Lane changing behavior for this vehicle.
+	 * @param vehicle This vehicle.
+	 * @param carFollowingBehaviour Car-following behavior for this vehicle.
+	 * @param laneChangingBehaviour Lane changing behavior for this vehicle.
 	 */
 
 	public Behavior(Vehicle vehicle, String carFollowingBehavior,
@@ -71,9 +70,8 @@ public class Behavior {
 		
 		Vehicle leader = null; // TODO
 		float linearAccelMagnitude = updateCarFollowing(leader);
-
 		
-		Vector2 accelVector = new Vector2();
+		pathFollowing.update(vehicle.getPosition());
 		
 		//Build vector
 		// TODO make linearVelocity point to next waypoint. Use the resulting
@@ -82,7 +80,7 @@ public class Behavior {
 		// to the target lane
 		//vehicle.getAcceleration().
 		
-		return accelVector;
+		return acceleration;
 	}
 	
 	/**Updates the {@link Vehicle}'s {@link CarFollowingModel} regarding it's leader.
@@ -130,6 +128,10 @@ public class Behavior {
 	public void setDesiredSpeed(float maxSpeed) {
 		this.desiredSpeed = (float) (new Random().nextGaussian() * 20 + maxSpeed);
 	}
+	
+	public Vector2 getAcceleration() {
+		return acceleration;
+	}
 
 	public boolean isChangedLink() {
 		return changedLink;
@@ -151,8 +153,7 @@ public class Behavior {
 	public void setInitialLocation(Link startLink, Lane startLane) {
 		setCurrentLink(startLink);
 		setCurrentLane(startLane);
-		pathFollowing.setWaypoints(startLane.getWayPoints());
-		vehicle.setPosition(currentLane.getWayPoints().first());
+		vehicle.setPosition(startLane.getPath().getStartPoint());
 	}
 	
 	public void setCurrentLink(Link currentLink) {

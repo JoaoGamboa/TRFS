@@ -25,6 +25,7 @@ public class Main extends Game {
 		AssetsMan.loadSplashQueue();
 		AssetsMan.manager.finishLoading();
 		setScreen(new SplashScreen());
+				
 	}
 	
 	@Override
