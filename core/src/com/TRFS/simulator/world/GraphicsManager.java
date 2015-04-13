@@ -3,8 +3,11 @@ package com.TRFS.simulator.world;
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.scenarios.map.Map;
 import com.TRFS.simulator.SimulationParameters;
+import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 
@@ -22,7 +25,7 @@ public class GraphicsManager {
 
 	// private Scenario scenario;
 	private Map map;
-
+	
 	public GraphicsManager(Scenario scenario, WorldCamera camera,
 			SpriteBatch batch) {
 		this.map = scenario.getMap();
@@ -30,6 +33,7 @@ public class GraphicsManager {
 		this.batch = batch;
 		this.stages = scenario.getStages();
 		this.shapeRenderer = new ShapeRenderer();
+
 	}
 
 	public void resize(int width, int height) {
@@ -45,9 +49,18 @@ public class GraphicsManager {
 			stages.get(zLevel).draw();
 		}
 
-		if (SimulationParameters.drawDebug)
-			MapRenderer.renderDebug(map, shapeRenderer, camera);
-
+		if (SimulationParameters.drawDebug){
+			shapeRenderer.setProjectionMatrix(camera.combined);
+			MapRenderer.renderDebug(map, shapeRenderer);
+			for (Integer zLevel : map.getzLevels()) {
+				for (Actor actor : stages.get(zLevel).getActors()) {
+					if (actor instanceof Vehicle)
+						shapeRenderer.begin(ShapeType.Line);
+						((Vehicle) actor).drawVehicleDebug(shapeRenderer);
+						shapeRenderer.end();
+				}
+			}
+		}
 	}
 
 	public void dispose() {

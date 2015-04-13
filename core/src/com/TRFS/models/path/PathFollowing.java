@@ -15,17 +15,21 @@ public class PathFollowing {
 	private PathFollowingState state;
 
 	private Vector2 targetPosition;
-	private float targetOffset, predictionTime;
+	private float targetOffset=5f, predictionTime;
 
 	public PathFollowing() {
 		this.state = new PathFollowingState();
 		this.targetPosition = new Vector2();
 	}
 
-	public void update(Vector2 agentPosition) {
+	public void update(Vector2 agentAcceleration, Vector2 agentPosition) {
 		
 		path.updateTargetPosition(agentPosition, targetPosition, state, targetOffset);
+
+		
 		// TODO set aim to the target
+		agentAcceleration.set(targetPosition).sub(agentPosition).nor();
+		
 	}
 
 	public void setPath(Path path) {

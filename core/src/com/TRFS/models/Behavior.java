@@ -38,8 +38,6 @@ public class Behavior {
 	private Link currentLink;
 	private Lane currentLane;
 	
-	private Vector2 acceleration;
-
 	/**The {@link Behavior} of a vehicle aggregates all behaviour models affecting the {@link Vehicle}.
 	 * @param vehicle This vehicle.
 	 * @param carFollowingBehaviour Car-following behavior for this vehicle.
@@ -61,17 +59,26 @@ public class Behavior {
 	 * @param dT delta time
 	 * @return accelVector, the resulting acceleration vector
 	 */
-	@SuppressWarnings("unused")
-	public Vector2 update(float dT) {
+	//@SuppressWarnings("unused")
+	public void update(float dT, Vector2 acceleration) {
 
 		if (changedLink) {
 			setDesiredSpeed(currentLink.getMaxspeed() * desiredSpeedFactor);
 		}
 		
+		//Update CarFollowing (gives the initial vector magnitude)
 		Vehicle leader = null; // TODO
 		float linearAccelMagnitude = updateCarFollowing(leader);
 		
-		pathFollowing.update(vehicle.getPosition());
+		
+		//Update PathFollowing (sets the vector direction)
+		pathFollowing.update(acceleration, vehicle.getCenterPosition());
+		
+		//TODO other constraints that might affect the acceleration magnitude.
+		
+		//Scale the vector with the required magnitude
+		acceleration.scl(linearAccelMagnitude);
+		
 		
 		//Build vector
 		// TODO make linearVelocity point to next waypoint. Use the resulting
@@ -80,7 +87,6 @@ public class Behavior {
 		// to the target lane
 		//vehicle.getAcceleration().
 		
-		return acceleration;
 	}
 	
 	/**Updates the {@link Vehicle}'s {@link CarFollowingModel} regarding it's leader.
@@ -129,10 +135,6 @@ public class Behavior {
 		this.desiredSpeed = (float) (new Random().nextGaussian() * 20 + maxSpeed);
 	}
 	
-	public Vector2 getAcceleration() {
-		return acceleration;
-	}
-
 	public boolean isChangedLink() {
 		return changedLink;
 	}
@@ -153,6 +155,8 @@ public class Behavior {
 	public void setInitialLocation(Link startLink, Lane startLane) {
 		setCurrentLink(startLink);
 		setCurrentLane(startLane);
+		pathFollowing.setPath(startLane.getPath());
+		
 		vehicle.setPosition(startLane.getPath().getStartPoint());
 	}
 	

@@ -13,6 +13,7 @@ import com.TRFS.ui.general.windows.TabbedWindow;
 import com.TRFS.ui.windows.models.ModelParamWindow;
 import com.TRFS.ui.windows.simulation.SimulationParamWindow;
 import com.TRFS.ui.windows.stats.SimulationStatsWindow;
+import com.TRFS.vehicles.VehicleInputProcessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -44,6 +45,7 @@ public class WorldScreen implements Screen {
 	private TopBarTable topBarTable;
 	private InputMultiplexer inputMultiplexer;
 	private WorldInputProcessor worldInputHandler;
+	private VehicleInputProcessor vehicleInputProcessor;
 	
 	//Simulation
 	private Scenario scenario;
@@ -55,6 +57,7 @@ public class WorldScreen implements Screen {
 		
 		//Update and render Scenario
 		scenario.render(delta);
+		vehicleInputProcessor.listenToInput();
 				
 		//Render UI on top
 		renderUI();
@@ -127,6 +130,10 @@ public class WorldScreen implements Screen {
 		});
 		
 		inputMultiplexer.addProcessor(stage);
+		for (Stage stage : scenario.getStages()) {
+			inputMultiplexer.addProcessor(stage);
+		}
+		vehicleInputProcessor = new VehicleInputProcessor();
 		inputMultiplexer.addProcessor(worldInputHandler);
 		Gdx.input.setInputProcessor(inputMultiplexer); 
 	}

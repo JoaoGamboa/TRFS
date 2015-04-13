@@ -58,7 +58,7 @@ public class Path {
 		temp3.set(point);
 
 		Vector2 distStartFinish = temp2.sub(pathSegment.start);
-		float t = (point.sub(pathSegment.finish)).dot(distStartFinish)
+		float t = (temp3.sub(pathSegment.finish)).dot(distStartFinish)
 				/ distStartFinish.len2();
 		t = MathUtils.clamp(t, 0, 1);
 		outNearestPoint.set(temp1.add(distStartFinish.scl(t)));
@@ -132,7 +132,9 @@ public class Path {
 	 * @return the distance from path start.
 	 */
 	public float distanceFromPathStart(PathFollowingState state, Vector2 point) {
+
 		PathSegment nearestSegment = findNearestSegment(state, point);
+		
 		float distanceFromPathStart = nearestSegment.cumulativeLength
 				- state.getNearestPointOnPath().dst(nearestSegment.finish);
 		state.setDistanceOnPath(distanceFromPathStart);
@@ -156,7 +158,7 @@ public class Path {
 
 		float targetDistance = distanceFromPathStart(state, agentPosition)
 				+ targetOffset;
-
+	
 		if (targetDistance > length)
 			targetDistance = length;
 		if (targetDistance < 0)
@@ -164,7 +166,7 @@ public class Path {
 
 		PathSegment desiredSegment = getSegmentFromDistanceFromStart(state,
 				targetDistance);
-
+		
 		float targetDistanceOnSegment = desiredSegment.cumulativeLength
 				- targetDistance;
 

@@ -51,7 +51,7 @@ public class Scenario {
 		// TODO correct simulation delta time for world update
 		delta = delta * SimulationParameters.simSpeed.getCurrentVal();
 		for (int i = 0; i < SimulationParameters.iterations.getCurrentVal(); i++) {
-			//trafficManager.update(delta/SimulationParameters.iterations.getCurrentVal());
+			trafficManager.update(delta/SimulationParameters.iterations.getCurrentVal());
 		}
 		
 		simulationTime += delta;

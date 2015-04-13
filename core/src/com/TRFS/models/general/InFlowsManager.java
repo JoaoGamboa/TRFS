@@ -16,7 +16,7 @@ public class InFlowsManager {
 	
 	private float[] counters;
 	private int vehicleCount;
-	private boolean debugOneVeh = false;
+	private boolean debugOneVeh = true;
 	
 	int i;
 	Vehicle vehicle;

@@ -32,10 +32,8 @@ public class MapRenderer {
 
 	}
 
-	public static void renderDebug(Map map, ShapeRenderer shapeRenderer,
-			Camera camera) {
+	public static void renderDebug(Map map, ShapeRenderer shapeRenderer) {
 
-		shapeRenderer.setProjectionMatrix(camera.combined);
 		// Render Lines
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.BLACK);
