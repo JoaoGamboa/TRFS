@@ -38,6 +38,8 @@ public class Behavior {
 	private Link currentLink;
 	private Lane currentLane;
 	
+	private float maxDesiredAcceleration = 5; //TODO should be variable for each driver
+	
 	/**The {@link Behavior} of a vehicle aggregates all behaviour models affecting the {@link Vehicle}.
 	 * @param vehicle This vehicle.
 	 * @param carFollowingBehaviour Car-following behavior for this vehicle.
@@ -72,7 +74,7 @@ public class Behavior {
 		
 		
 		//Update PathFollowing (sets the vector direction)
-		pathFollowing.update(acceleration, vehicle.getCenterPosition());
+		pathFollowing.update(acceleration, vehicle.centerPosition);
 		
 		//TODO other constraints that might affect the acceleration magnitude.
 		
@@ -96,16 +98,14 @@ public class Behavior {
 	private float updateCarFollowing(Vehicle leader) {
 		//Update car-following behaviour
 		if (leader != null) {
-			return MathUtils.clamp(carFollowingModel.update(leader
-					.getPosition().dst(vehicle.getPosition()),
-					leader.getSpeed() - vehicle.getSpeed(), leader.getHeight(),
-					vehicle.getSpeed(), leader.getSpeed(), leader
-							.getAccelMagnitude(), currentLink.getMaxspeed(), desiredSpeed),
-					-vehicle.getMaxLinearAcceleration(), vehicle
-							.getMaxLinearAcceleration());
-		} else {
-			return vehicle.getMaxLinearAcceleration();
-		}
+			float carFollowingAcceleration = carFollowingModel.update(leader.position.dst(vehicle.position),
+					leader.getSpeed() - vehicle.getSpeed(), leader.getHeight(),	vehicle.getSpeed(), leader.getSpeed(), 
+					leader.getAccelMagnitude(), currentLink.getMaxspeed(), desiredSpeed);
+			
+			return carFollowingAcceleration;
+			
+		} else 	return maxDesiredAcceleration;
+		
 	}
 	
 	/**Sets this {@link Vehicle}'s {@link CarFollowingModel}.
@@ -156,8 +156,9 @@ public class Behavior {
 		setCurrentLink(startLink);
 		setCurrentLane(startLane);
 		pathFollowing.setPath(startLane.getPath());
-		
-		vehicle.setPosition(startLane.getPath().getStartPoint());
+		float rotation = new Vector2().set(startLane.getPath().getSecondPoint()).sub(startLane.getPath().getStartPoint()).angle();
+		vehicle.setLocation(startLane.getPath().getStartPoint(), rotation);
+
 	}
 	
 	public void setCurrentLink(Link currentLink) {

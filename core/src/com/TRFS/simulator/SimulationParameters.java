@@ -25,10 +25,10 @@ public class SimulationParameters {
 	public static boolean simplifyGeometry;
 	public static boolean smoothGeometry;
 	public static boolean drawDebug;
+	public static boolean paused;
 	
 	//Dynamic															NAME				MIN			MAX		DEFAULT	INCREMENT	DecimalFormat
-	public static DynamicSimParam simSpeed 		= new DynamicSimParam("Simulation Speed"	, 0, 		5, 		1, 		0.01f,	 	"0.00", "Times");
-	public static DynamicSimParam iterations 	= new DynamicSimParam("Resolution"			, 1, 		5, 		1, 	    1, 			"0", 	"Iter/frame");
+	public static DynamicSimParam simSpeed 		= new DynamicSimParam("Simulation Speed"	, 0, 		2, 		1, 		0.1f,	 	"0.0", "Times");
 	public static DynamicSimParam desVelocity 	= new DynamicSimParam("Desired Velocity"	, 0, 		200, 	90, 	1,  		"###", "Km/h"		);
 	public static DynamicSimParam maxVelocity 	= new DynamicSimParam("Max. Velocity"		, 0, 		200, 	120, 	1, 			"###", "Km/h"		);
 	
@@ -36,7 +36,7 @@ public class SimulationParameters {
 	public static DynamicSimParam desFlow 		= new DynamicSimParam("Desired Flow"		, 0, 		4000, 	2000, 	1, 			"####", "Veic/h");
 	
 	//Array for window
-	public static DynamicSimParam[] simParamsListBase = {simSpeed, iterations, desVelocity, maxVelocity, truckPercent};
+	public static DynamicSimParam[] simParamsListBase = {simSpeed, desVelocity, maxVelocity, truckPercent};
 	public static ArrayList<DynamicSimParam> simParamsListFlows = new ArrayList<DynamicSimParam>();
 	
 	

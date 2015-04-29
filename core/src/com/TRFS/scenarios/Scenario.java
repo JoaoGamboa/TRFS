@@ -26,7 +26,8 @@ public class Scenario {
 	private Map map;
 	
 	private long startTime = TimeUtils.millis(), elapsedTime = 0;
-	private float simulationTime = 0;
+	private float simulationTime = 0, accumulator = 0;
+	
 	private WorldCamera camera;
 	private SpriteBatch batch;
 						
@@ -46,17 +47,22 @@ public class Scenario {
 	}
 	
 	public void render(float delta) {
+		
+		if (delta > 0.25f) delta = 0.25f;
+		
+		float speedFactor = SimulationParameters.simSpeed.getCurrentVal();
+		float trafficDelta = speedFactor > 0 ? delta * speedFactor : 0;
+
+		if (!SimulationParameters.paused && speedFactor > 0) {
+			trafficManager.update(trafficDelta, simulationTime);
+			simulationTime += trafficDelta;
+		
+		}
+				
 		elapsedTime = TimeUtils.timeSinceMillis(startTime); //Milliseconds	
 		
-		// TODO correct simulation delta time for world update
-		delta = delta * SimulationParameters.simSpeed.getCurrentVal();
-		for (int i = 0; i < SimulationParameters.iterations.getCurrentVal(); i++) {
-			trafficManager.update(delta/SimulationParameters.iterations.getCurrentVal());
-		}
+		graphicsManager.render(delta);		
 		
-		simulationTime += delta;
-		
-		graphicsManager.render(delta);
 	}
 	
 	public void resize(int width, int height) {

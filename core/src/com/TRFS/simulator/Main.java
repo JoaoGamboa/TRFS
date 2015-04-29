@@ -12,7 +12,7 @@ public class Main extends Game {
 	
 	//Name & Version
 	public static final String TITLE = "TRFS", VERSION = "0.1.2";
-	
+		
 	@Override
 	public void create () {
 		
@@ -25,7 +25,7 @@ public class Main extends Game {
 		AssetsMan.loadSplashQueue();
 		AssetsMan.manager.finishLoading();
 		setScreen(new SplashScreen());
-						
+								
 	}
 	
 	@Override

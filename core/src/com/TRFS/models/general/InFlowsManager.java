@@ -18,8 +18,7 @@ public class InFlowsManager {
 	private int vehicleCount;
 	private boolean debugOneVeh = true;
 	
-	int i;
-	Vehicle vehicle;
+	private Vehicle vehicle;
 	
 	public InFlowsManager (Scenario scenario) {
 		this.scenario = scenario;
@@ -33,10 +32,9 @@ public class InFlowsManager {
 	
 	public void update(float dT, float simTime) {
 		if (!debugOneVeh) {
-			i = 0;
+			int i = 0;
 			for (Link link : this.inflowLinks) {
-				float flowDT = link.getInFlowParam().getCurrentVal() / 3600
-						* dT;
+				float flowDT = link.getInFlowParam().getCurrentVal() / 3600 * dT;
 				counters[i] += flowDT;
 
 				if (counters[i] >= 1) {
@@ -52,7 +50,6 @@ public class InFlowsManager {
 
 	}
 	
-	Vehicle veh = null;	
 	public void addVehicle(Link link){
 		boolean enoughSpace = true;
 		//link.getvehicle at 0 ?

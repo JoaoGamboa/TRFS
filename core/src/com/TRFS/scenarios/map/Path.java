@@ -193,6 +193,10 @@ public class Path {
 	public Vector2 getStartPoint() {
 		return segments.first().start;
 	}
+	
+	public Vector2 getSecondPoint() {
+		return segments.first().finish;
+	}
 
 	public Vector2 getFinishPoint() {
 		return segments.peek().finish;

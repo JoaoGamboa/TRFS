@@ -25,31 +25,24 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * @author jgamboa
  */
 
-public class Vehicle extends Actor /* implements Steerable<Vector2> */{
+public class Vehicle extends Actor {
 
 	// Properties
-	boolean userControlled;
+	public VehiclePhysics physics;
+	public VehicleConfig config;
+	public Behavior behavior;
 	
-	//DEBUG TODO delete
+	// Shape & Aspect
+	protected TextureRegion region;
+	
+	/*//DEBUG TODO delete
 	private static int counter;
 	private int id, iterCounter;
 	private float distanceTraveled;
 	private Vector2 laspos,  tmp1, tmp2, tmp3;
-	//endDEBUG
+	//endDEBUG*/
 	
-	// Shape & Aspect
-	protected TextureRegion region;
-	public Color defaultColor;
-	private float width, length;
-	private Vector2 vA, vB, vC, vD;
-	private Coordinate cA, cB, cC, cD;
 
-	private Behavior behavior;
-
-	private Vector2 position, centerPosition, velocity, acceleration, fwdDirection;
-	//private float angularVelocity;/*, boundingRadius*/;
-	private float rotation, maxLinearSpeed = 160/3.6f, maxLinearAcceleration = 5, drag = 0.99f/*, maxAngularSpeed = 5, maxAngularAcceleration = 10*/;
-	
 	/**
 	 * Creates a new vehicle.
 	 * @param width The width of the vehicle
@@ -57,30 +50,22 @@ public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 	 * @param color The color of the vehicle
 	 * @param textureName The name of the texture to use
 	 */
-	public Vehicle(float width, float length, Color color, String textureName) {
-		this.width = width; this.length = length;
-		this.region = new TextureRegion(AssetsMan.uiSkin.getRegion(textureName));
-		this.defaultColor = color;
+	public Vehicle(float width, float length, float weight, Color color, String textureName) {
 		
+		this.config = new VehicleConfig(this, width, length, weight, color);
+		this.physics = new VehiclePhysics(this);
+		
+		
+		this.region = new TextureRegion(AssetsMan.uiSkin.getRegion(textureName));//TODO make draw method
+		
+		//Actor properties
 		this.setSize(width, length);
 		this.setOrigin(Align.center);
 		this.setColor(color);
 		
-		this.position = new Vector2();
-		this.centerPosition = new Vector2();
-		this.velocity = new Vector2(); // TODO depends on initial speed
-		this.acceleration = new Vector2();
-		this.fwdDirection = new Vector2(0,1);
+
 		
-		//Shape
-		this.vA = new Vector2();
-		this.vB = new Vector2();
-		this.vC = new Vector2();
-		this.vD = new Vector2();
-		this.cA = new Coordinate(-width/2, length/2);
-		this.cB = new Coordinate(width/2, length/2);
-		this.cC = new Coordinate(width/2, -length/2);
-		this.cD = new Coordinate(-width/2, -length/2);
+
 		
 		updateShape();
 		
@@ -105,14 +90,12 @@ public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 	public void update(float delta) {
 
 		// AI Behaviour
-		if (!userControlled)
+		if (!config.userControlled)
 			behavior.update(delta, acceleration);
 			//acceleration.set(behavior.update(delta));
 		
-		updateVelocity(delta);
-		updatePosition(delta);
-		updateRotation(delta);
-		updateShape();
+		physics.update(delta);
+		config.update();
 
 	}
 
@@ -171,23 +154,7 @@ public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 		renderer.circle(centerPosition.x, centerPosition.y, 0.3f);
 	}
 	
-	public void updateShape() {		
-		float angle = rotation;
-		vA.set(cA.getX(), cA.getY()).rotate(angle).add(centerPosition);
-		vB.set(cB.getX(), cB.getY()).rotate(angle).add(centerPosition);
-		vC.set(cC.getX(), cC.getY()).rotate(angle).add(centerPosition);
-		vD.set(cD.getX(), cD.getY()).rotate(angle).add(centerPosition);
-	}
-	
-	public float vectorToAngle(Vector2 vector) {
-		return (float) Math.atan2(-vector.x, vector.y);
-	}
-	
-	public Vector2 angleToVector(Vector2 outVector, float angle) {
-		outVector.x = -(float) Math.sin(angle);
-		outVector.y = (float) Math.cos(angle);
-		return outVector;
-	}
+
 
 	/**Updates the velocity vector with the current value of the acceleration vector.
 	 * Limits the velocity to the maximum linear speed defined.
@@ -200,25 +167,38 @@ public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 	/**Updates the rotation of the actor according to the direction of the velocity vector.
 	 */
 	public void updateRotation(float delta) {
-		if (!velocity.isZero(0.02f)) {
-			float targetRotation = vectorToAngle(velocity)*MathUtils.radiansToDegrees;
-			float a = targetRotation;
-			targetRotation = fwdDirection.dot(velocity) > 0 ? targetRotation : targetRotation+180;
-			float b = targetRotation;
-			float e = getRotation();
-			float rotation = (targetRotation - getRotation()) % MathUtils.PI2;
-			float c = rotation;
-			if (rotation > MathUtils.PI) rotation -= MathUtils.PI2;				
-			float d = rotation;
-			this.rotation = rotation * delta;
-	
-			System.out.println(a + "  "+ b + "  " + c  + "  " + d  + "  " + this.rotation);
+		//The vehicle can't turn if it isn't moving.
+		if (!velocity.isZero(0.001f)) {
+			//The vehicle will want to face the same direction as the velocity vector
+			float targetRotation = vectorToAngle(velocity);
+			
+			//If the velocity vector points more than 90 degrees away from the forward direction, then the vehicle is moving backwards.
+			targetRotation = fwdDirection.dot(velocity) > 0 ? targetRotation : targetRotation + MathUtils.PI;
+			velocity.
+			
+			//float rotation = targetRotation - this.rotation > MathUtils.PI/2f ? 
+					
+			//if ((targetRotation - getRotation()) > MathUtils.PI/2f) float targetRotation -= MathUtils.PI2;
+			
+			//float rotation = (targetRotation - getRotation()) % MathUtils.PI2;
+			
+			//if (rotation > MathUtils.PI) rotation -= MathUtils.PI2;	
+			
+			//this.rotation += rotation* MathUtils.radiansToDegrees * delta;	
+			//super.setRotation(this.rotation);
+			angularAcceleration = MathUtils.clamp(angularAcceleration, -maxAngularAcceleration, maxAngularAcceleration);
+			
+			angularVelocity = MathUtils.clamp(angularAcceleration * delta, -maxAngularSpeed, maxAngularSpeed);
+			
+			float deltaRotation = angularVelocity * delta;
 						
+			this.rotation += deltaRotation * MathUtils.radiansToDegrees; //TODO to degrees
 			super.setRotation(this.rotation);
 		}
+		
+		//Update the forward direction vector to point to the front of the vehicle.
 		this.fwdDirection.set(0,1).rotate(rotation);
 		
-		//float rotation = (float) Math.atan2(fwdDirection.x, fwdDirection.y);//TODO
 	}
 	
 	/**Updates the vehicle's position according to the velocity vector for the delta time provided.
@@ -234,10 +214,12 @@ public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 	/** Sets the position of the vehicle to a given vector. Also updates the actor position for drawing.
 	 * @param position The {@link Vector2} holding the position.
 	 */
-	public void setPosition(Vector2 centerPosition) {
+	public void setLocation(Vector2 centerPosition, float rotation) {
 		this.centerPosition.set(centerPosition);
 		this.position.set(centerPosition.x - width/2, centerPosition.y - length/2);
 		super.setPosition(this.position.x, this.position.y);
+		this.rotation = rotation;
+		super.setRotation(rotation);
 	}
 	
 	public void setupInputListener() {
@@ -245,66 +227,150 @@ public class Vehicle extends Actor /* implements Steerable<Vector2> */{
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
-				if (!userControlled) {
+				if (!config.userControlled) {
 					VehicleInputProcessor.setVehicle(Vehicle.this);
-					userControlled = true;
+					config.userControlled = true;
 				} else {
 					VehicleInputProcessor.setVehicle(null);
-					userControlled = false;
+					config.userControlled = false;
 				}
 			}
 		});
 	}
-	
-	public Vector2 getFwdDirection() {
-		return fwdDirection;
-	}
-	
-	public void setUserControlled(boolean userControlled) {
-		this.userControlled = userControlled;
-	}
-	
-	public void setAcceleration(Vector2 acceleration) {
-		this.acceleration = acceleration;
-	}
+		
 
-	public Vector2 getVelocity() {
-		return velocity;
+
+	
+	private class VehiclePhysics {
+		
+		//Linear
+		public Vector2  position = new Vector2(), 
+						velocity = new Vector2(),
+						localVelocity = new Vector2(), 
+						acceleration = new Vector2(),
+						localAcceleration = new Vector2(), 
+						traction = new Vector2(),
+						drag = new Vector2(),
+						totalForces = new Vector2();
+		
+		//Angular
+		public float 	heading = 0, 
+						steerAngle = 0, 
+						angularVelocity = 0, 
+						angularAcceleration = 0,
+						throttle = 0,
+						brake = 0;
+		
+		public VehicleConfig config;
+		
+		public VehiclePhysics(Vehicle vehicle) {
+			this.config = vehicle.config;
+			
+		}
+		
+		public void update(float delta) {
+			
+			
+			localVelocity.set(velocity).rotateRad(heading);
+			boolean movingFwd = localVelocity.y > 0 ? true : false;
+			
+			//float brakeAccel = 
+			//localVelocity.scl(-config.drag);
+			
+			float brakeAcceleration = Math.min(a, config.maxBrakeAcceleration);
+			float linearAcceleration = MathUtils.clamp(value, -config.maxLinearAcceleration, config.maxLinearAcceleration)
+			
+			localAcceleration.x = 0;
+			localAcceleration.y = throttle - (movingFwd ? brake : -brake);
+						
+			//localAcceleration.set(totalForces).scl(1/config.weight);
+			
+			acceleration.set(localAcceleration).rotateRad(-heading);
+			
+			velocity.mulAdd(acceleration, delta).clamp(-20, config.maxLinearSpeed);
+			
+			angularVelocity += angularAcceleration * delta;
+			
+			heading += angularVelocity * delta;
+			
+			position.mulAdd(velocity, delta);
+			
+		}
+		
+		public float getSpeed() {
+			return velocity.len();
+		}
+
+		public float getAccelMagnitude() {
+			return acceleration.len();
+		}
+		
+		public float vectorToAngle(Vector2 vector) {
+			return (float) Math.atan2(-vector.x, vector.y);
+		}
+		
+		public Vector2 angleToVector(Vector2 outVector, float angle) {
+			outVector.x = -(float) Math.sin(angle);
+			outVector.y = (float) Math.cos(angle);
+			return outVector;
+		}
 	}
 	
-	public void setVelocity(Vector2 velocity) {
-		this.velocity = velocity;
-	}
+	private class VehicleConfig {
+		
+		public boolean userControlled;
+		
+		public float width, length, weight, cgToFront, cgToRear, cgToFrontAxle, cgToRearAxle; //(m)
+		
+		/*public Vector2 vA, vB, vC, vD;
+		public Coordinate cA, cB, cC, cD, turningCenter;*/
+		
+		public Color defaultColor;
+		
+		public static final float maxEngineForce = 8000, brakeForce = 12000, airDrag = 2.5f, rollDrag = 8;//(N)
+		public static final float maxLinearSpeed = 55; //(m/s)
+		
+		public float maxLinearAcceleration, maxBrakeAcceleration, drag;
 	
-	public Vector2 getPosition() {
-		return position;
-	}
-	
-	public Vector2 getCenterPosition() {
-		return centerPosition;
-	}
-	
-	public Vector2 getAcceleration() {
-		return acceleration;
-	}
+		public float maxTurningAngle = 60, maxAngularSpeed = 5, maxAngularAcceleration = 60;
+		
+		public VehicleConfig(Vehicle vehicle, float width, float length, float weigth, Color color) {
+			
+			this.width = width;
+			this.length = length;
+			this.weight = weigth;
+			
+			this.cgToFront = length/2;
+			this.cgToRear = length/2;
+			this.cgToFrontAxle = length/2 - 0.2f*length;
+			this.cgToRearAxle =  length/2 - 0.2f*length;
+			
+			this.maxLinearAcceleration = maxEngineForce/weigth;
+			this.maxBrakeAcceleration = brakeForce/weigth;
+			//this.drag = (airDrag + rollDrag) * weigth;
+			
+			
+			//Shape
+			/*this.vA = new Vector2();
+			this.vB = new Vector2();
+			this.vC = new Vector2();
+			this.vD = new Vector2();
+			this.cA = new Coordinate(-width/2, length/2);
+			this.cB = new Coordinate(width/2, length/2);
+			this.cC = new Coordinate(width/2, -length/2);
+			this.cD = new Coordinate(-width/2, -length/2);
+			this.turningCenter = new Coordinate(width/2, 0.2f*length);*/
+			
+		}
+		
+		public void update() {		
+			/*float angle = rotation;
+			vA.set(cA.getX(), cA.getY()).rotate(angle).add(centerPosition);
+			vB.set(cB.getX(), cB.getY()).rotate(angle).add(centerPosition);
+			vC.set(cC.getX(), cC.getY()).rotate(angle).add(centerPosition);
+			vD.set(cD.getX(), cD.getY()).rotate(angle).add(centerPosition);*/
 
-	public float getSpeed() {
-		return velocity.len();
-	}
-
-	public float getAccelMagnitude() {
-		return acceleration.len();
-	}
-
-	public float getMaxLinearSpeed() {
-		return maxLinearSpeed;
-	}
-
-	public float getMaxLinearAcceleration() {
-		return maxLinearAcceleration;
-	}
-
-	public Behavior getBehavior() {
-		return behavior;
+		}
+		
 	}
 }
