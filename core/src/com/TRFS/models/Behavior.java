@@ -11,7 +11,6 @@ import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Path;
 import com.TRFS.ui.general.parameters.DynamicSimParam;
 import com.TRFS.vehicles.Vehicle;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -72,16 +71,14 @@ public class Behavior {
 		Vehicle leader = null; // TODO
 		float linearAccelMagnitude = updateCarFollowing(leader);
 		
-		
 		//Update PathFollowing (sets the vector direction)
-		pathFollowing.update(acceleration, vehicle.centerPosition);
+		pathFollowing.update(acceleration, vehicle.physics.position);
 		
 		//TODO other constraints that might affect the acceleration magnitude.
 		
 		//Scale the vector with the required magnitude
 		acceleration.scl(linearAccelMagnitude);
-		
-		
+				
 		//Build vector
 		// TODO make linearVelocity point to next waypoint. Use the resulting
 		// vector to update position.
@@ -98,9 +95,9 @@ public class Behavior {
 	private float updateCarFollowing(Vehicle leader) {
 		//Update car-following behaviour
 		if (leader != null) {
-			float carFollowingAcceleration = carFollowingModel.update(leader.position.dst(vehicle.position),
-					leader.getSpeed() - vehicle.getSpeed(), leader.getHeight(),	vehicle.getSpeed(), leader.getSpeed(), 
-					leader.getAccelMagnitude(), currentLink.getMaxspeed(), desiredSpeed);
+			float carFollowingAcceleration = carFollowingModel.update(leader.physics.position.dst(vehicle.physics.position),
+					leader.physics.getSpeed() - vehicle.physics.getSpeed(), leader.config.length,	vehicle.physics.getSpeed(), leader.physics.getSpeed(), 
+					leader.physics.getAccelMagnitude(), currentLink.getMaxspeed(), desiredSpeed);
 			
 			return carFollowingAcceleration;
 			

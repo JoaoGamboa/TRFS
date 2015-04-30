@@ -6,11 +6,10 @@ import com.TRFS.scenarios.map.MapPreview;
 import com.TRFS.simulator.SimulationParameters;
 import com.TRFS.simulator.world.GraphicsManager;
 import com.TRFS.simulator.world.WorldCamera;
+import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
  * @author jgamboa
@@ -21,12 +20,14 @@ public class Scenario {
 	
 	private GraphicsManager graphicsManager;
 	private TrafficManager trafficManager;
-	private Array<Stage> stages;
+	
+	private Array<Array<Vehicle>> vehicleLayers;
+	//private Array<Stage> stages;
 	
 	private Map map;
 	
 	private long startTime = TimeUtils.millis(), elapsedTime = 0;
-	private float simulationTime = 0, accumulator = 0;
+	private float simulationTime = 0;
 	
 	private WorldCamera camera;
 	private SpriteBatch batch;
@@ -36,10 +37,15 @@ public class Scenario {
 		this.camera = new WorldCamera(this);
 		this.batch = new SpriteBatch();
 		
-		this.stages = new Array<Stage>();
+		vehicleLayers = new Array<Array<Vehicle>>();
+		for (@SuppressWarnings("unused") Integer zLevel : map.getzLevels()) {
+			this.vehicleLayers.add(new Array<Vehicle>());			
+		}
+		
+		/*this.stages = new Array<Stage>();
 		for (@SuppressWarnings("unused") Integer zLevel : map.getzLevels()) {
 			this.stages.add(new Stage(new ScreenViewport(this.camera),this.batch));			
-		}
+		}*/
 		
 		this.graphicsManager = new GraphicsManager(this, this.camera, this.batch);
 		this.trafficManager = new TrafficManager(this);
@@ -60,7 +66,6 @@ public class Scenario {
 		}
 				
 		elapsedTime = TimeUtils.timeSinceMillis(startTime); //Milliseconds	
-		
 		graphicsManager.render(delta);		
 		
 	}
@@ -75,7 +80,6 @@ public class Scenario {
 	
 	public void dispose() {
 		graphicsManager.dispose();
-
 	}
 
 	public GraphicsManager getGraphicsManager() {
@@ -90,9 +94,14 @@ public class Scenario {
 		return simulationTime;
 	}
 
-	public Array<Stage> getStages() {
+	/*public Array<Stage> getStages() {
 		return stages;
+	}*/
+	
+	public Array<Array<Vehicle>> getVehicleLayers() {
+		return vehicleLayers;
 	}
+	
 
 	public TrafficManager getTrafficManager() {
 		return trafficManager;

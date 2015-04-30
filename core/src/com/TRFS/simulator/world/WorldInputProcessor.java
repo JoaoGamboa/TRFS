@@ -1,5 +1,6 @@
 package com.TRFS.simulator.world;
 
+import com.TRFS.vehicles.VehicleInputProcessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -11,10 +12,18 @@ public class WorldInputProcessor implements InputProcessor {
 	private float startX, startY;
 	public Vector3 mouseCoordinates = new Vector3();	
 	
+	private VehicleInputProcessor vehicleInputProcessor;
+	
 	private WorldCamera camera;
 	
 	public WorldInputProcessor(WorldCamera camera) {
 		this.camera = camera;
+		
+		this.vehicleInputProcessor = new VehicleInputProcessor();
+	}
+	
+	public void listen() {
+		vehicleInputProcessor.listenToInput();
 	}
 
 	@Override
@@ -67,7 +76,6 @@ public class WorldInputProcessor implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		/*if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))*/ 
-		
 		if (Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT)) {
 			camera.rotateScroll(amount);
 		} else/*if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT))*/  {

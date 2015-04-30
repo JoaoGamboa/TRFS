@@ -13,11 +13,11 @@ import com.TRFS.ui.general.windows.TabbedWindow;
 import com.TRFS.ui.windows.models.ModelParamWindow;
 import com.TRFS.ui.windows.simulation.SimulationParamWindow;
 import com.TRFS.ui.windows.stats.SimulationStatsWindow;
-import com.TRFS.vehicles.VehicleInputProcessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -40,24 +40,23 @@ public class WorldScreen implements Screen {
 	private SlidingWindow simParamWindow, statsWindow;
 	private SlidingWindowManager slidingWindowManager;
 	private Label mouseCoordinatesLabel;
-	private Vector2 mouseC, unprojectedMouseCoordinates;
+	private Vector2 unprojectedMouseCoordinates = new Vector2();
+	private Vector3 tmp = new Vector3(), tmp2 = new Vector3();
 	private UIButton 	buttonBack,	modelParamButton, simParamButton, statsButton;
 	private TopBarTable topBarTable;
 	private InputMultiplexer inputMultiplexer;
 	private WorldInputProcessor worldInputHandler;
-	private VehicleInputProcessor vehicleInputProcessor;
 	
 	//Simulation
 	private Scenario scenario;
 
-	
 	@Override
 	public void render(float delta) {
 		MiscTools.clearScreen();
 		
 		//Update and render Scenario
 		scenario.render(delta);
-		vehicleInputProcessor.listenToInput();
+		worldInputHandler.listen();
 				
 		//Render UI on top
 		renderUI();
@@ -130,10 +129,6 @@ public class WorldScreen implements Screen {
 		});
 		
 		inputMultiplexer.addProcessor(stage);
-		for (Stage stage : scenario.getStages()) {
-			inputMultiplexer.addProcessor(stage);
-		}
-		vehicleInputProcessor = new VehicleInputProcessor();
 		inputMultiplexer.addProcessor(worldInputHandler);
 		Gdx.input.setInputProcessor(inputMultiplexer); 
 	}
@@ -168,17 +163,17 @@ public class WorldScreen implements Screen {
 		mouseCoordinatesLabel.setPosition(20, 20);
 		stage.addActor(mouseCoordinatesLabel);
 		unprojectedMouseCoordinates = new Vector2();
-		mouseC = new Vector2();
-
 	}
 	
 	private void renderUI() {	
-		mouseC.set(Gdx.input.getX(), Gdx.input.getY());
-		unprojectedMouseCoordinates.set(scenario.getStages().get(0).getViewport().unproject(mouseC));
+		//mouseC.set(Gdx.input.getX(), Gdx.input.getY());
+		tmp.set(Gdx.input.getX(), Gdx.input.getY(),1);
+		tmp2.set(scenario.getGraphicsManager().getCamera().unproject(tmp));
+		unprojectedMouseCoordinates.set(tmp2.x, tmp2.y);
+				
+		//getStages().get(0).getViewport().unproject(mouseC));
 		mouseCoordinatesLabel.setText(String.format("%.1f, %.1f",unprojectedMouseCoordinates.x, unprojectedMouseCoordinates.y));
 		SimulationStatsWindow.render();
-		
-
 	}
 
 	private void saveChanges() {

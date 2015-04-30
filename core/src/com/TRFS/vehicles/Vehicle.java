@@ -25,7 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * @author jgamboa
  */
 
-public class Vehicle extends Actor {
+public class Vehicle /*extends Actor*/ {
 
 	// Properties
 	public VehiclePhysics physics;
@@ -35,14 +35,6 @@ public class Vehicle extends Actor {
 	// Shape & Aspect
 	protected TextureRegion region;
 	
-	/*//DEBUG TODO delete
-	private static int counter;
-	private int id, iterCounter;
-	private float distanceTraveled;
-	private Vector2 laspos,  tmp1, tmp2, tmp3;
-	//endDEBUG*/
-	
-
 	/**
 	 * Creates a new vehicle.
 	 * @param width The width of the vehicle
@@ -55,32 +47,20 @@ public class Vehicle extends Actor {
 		this.config = new VehicleConfig(this, width, length, weight, color);
 		this.physics = new VehiclePhysics(this);
 		
-		
 		this.region = new TextureRegion(AssetsMan.uiSkin.getRegion(textureName));//TODO make draw method
 		
 		//Actor properties
-		this.setSize(width, length);
+		/*this.setSize(width, length);
 		this.setOrigin(Align.center);
-		this.setColor(color);
+		this.setColor(color);*/
 		
-
-		
-
-		
-		updateShape();
+		this.config.update(); //TODO might not be necessary here
 		
 		this.behavior = new Behavior(this,
 				SimulationParameters.currentCarFolModel,
 				SimulationParameters.currentLaneChangeModel);
 		
 		setupInputListener();
-		
-		//DEBUG TODO delete
-		this.tmp1 = new Vector2();
-		this.tmp2 = new Vector2();
-		this.tmp3 = new Vector2();
-		//endDEBUG
-
 	}
 
 	/**
@@ -91,7 +71,7 @@ public class Vehicle extends Actor {
 
 		// AI Behaviour
 		if (!config.userControlled)
-			behavior.update(delta, acceleration);
+			behavior.update(delta, physics.acceleration);
 			//acceleration.set(behavior.update(delta));
 		
 		physics.update(delta);
@@ -99,18 +79,16 @@ public class Vehicle extends Actor {
 
 	}
 
-	@Override
+	/*@Override
 	public void act(float delta) {
 		update(delta);
 		super.act(delta);
-	}
+	}*/
 
-	@Override
-	public void draw(Batch batch, float parentAlpha) {
+	//@Override
+	public void draw(Batch batch) {
 		// TODO Auto-generated method stub
-		
 		//batch.setColor(getColor().r, getColor().g, getColor().b, parentAlpha);
-		
 		//batch.draw(region, getX(), getY(),0,0, getWidth(), getHeight(), 1,1,super.getRotation());
 	}
 	
@@ -128,7 +106,6 @@ public class Vehicle extends Actor {
 		renderer.setColor(Color.GREEN);
 		
 		//renderer.rect(getX(), getY(), centerPosition.x, centerPosition.y, getWidth(), getHeight(), 1f, 1f, getRotation());
-
 
 		tmp1.set(acceleration).nor().scl(2).add(centerPosition);
 		renderer.setColor(Color.BLUE);
@@ -154,8 +131,22 @@ public class Vehicle extends Actor {
 		renderer.circle(centerPosition.x, centerPosition.y, 0.3f);
 	}
 	
-
-
+	public void setupInputListener() {
+		this.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				super.clicked(event, x, y);
+				if (!config.userControlled) {
+					VehicleInputProcessor.setVehicle(Vehicle.this);
+					config.userControlled = true;
+				} else {
+					VehicleInputProcessor.setVehicle(null);
+					config.userControlled = false;
+				}
+			}
+		});
+	}
+	
 	/**Updates the velocity vector with the current value of the acceleration vector.
 	 * Limits the velocity to the maximum linear speed defined.
 	 * @param delta time
@@ -163,6 +154,7 @@ public class Vehicle extends Actor {
 	public void updateVelocity(float delta) {
 		velocity.mulAdd(acceleration, delta).limit(maxLinearSpeed).scl(drag);
 	}
+	
 	
 	/**Updates the rotation of the actor according to the direction of the velocity vector.
 	 */
@@ -222,26 +214,8 @@ public class Vehicle extends Actor {
 		super.setRotation(rotation);
 	}
 	
-	public void setupInputListener() {
-		this.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				super.clicked(event, x, y);
-				if (!config.userControlled) {
-					VehicleInputProcessor.setVehicle(Vehicle.this);
-					config.userControlled = true;
-				} else {
-					VehicleInputProcessor.setVehicle(null);
-					config.userControlled = false;
-				}
-			}
-		});
-	}
 		
-
-
-	
-	private class VehiclePhysics {
+	public class VehiclePhysics {
 		
 		//Linear
 		public Vector2  position = new Vector2(), 
@@ -251,7 +225,8 @@ public class Vehicle extends Actor {
 						localAcceleration = new Vector2(), 
 						traction = new Vector2(),
 						drag = new Vector2(),
-						totalForces = new Vector2();
+						totalForces = new Vector2(),
+						forward = new Vector2();
 		
 		//Angular
 		public float 	heading = 0, 
@@ -278,7 +253,7 @@ public class Vehicle extends Actor {
 			//localVelocity.scl(-config.drag);
 			
 			float brakeAcceleration = Math.min(a, config.maxBrakeAcceleration);
-			float linearAcceleration = MathUtils.clamp(value, -config.maxLinearAcceleration, config.maxLinearAcceleration)
+			float linearAcceleration = MathUtils.clamp(value, -config.maxLinearAcceleration, config.maxLinearAcceleration);
 			
 			localAcceleration.x = 0;
 			localAcceleration.y = throttle - (movingFwd ? brake : -brake);
@@ -292,7 +267,7 @@ public class Vehicle extends Actor {
 			angularVelocity += angularAcceleration * delta;
 			
 			heading += angularVelocity * delta;
-			
+			forward.set(1,1).rotateRad(heading);
 			position.mulAdd(velocity, delta);
 			
 		}
@@ -316,16 +291,16 @@ public class Vehicle extends Actor {
 		}
 	}
 	
-	private class VehicleConfig {
+	public class VehicleConfig {
 		
-		public boolean userControlled;
+		public boolean selected, userControlled;
 		
 		public float width, length, weight, cgToFront, cgToRear, cgToFrontAxle, cgToRearAxle; //(m)
 		
 		/*public Vector2 vA, vB, vC, vD;
 		public Coordinate cA, cB, cC, cD, turningCenter;*/
 		
-		public Color defaultColor;
+		public Color defaultColor, color;
 		
 		public static final float maxEngineForce = 8000, brakeForce = 12000, airDrag = 2.5f, rollDrag = 8;//(N)
 		public static final float maxLinearSpeed = 55; //(m/s)
@@ -347,6 +322,7 @@ public class Vehicle extends Actor {
 			
 			this.maxLinearAcceleration = maxEngineForce/weigth;
 			this.maxBrakeAcceleration = brakeForce/weigth;
+			
 			//this.drag = (airDrag + rollDrag) * weigth;
 			
 			

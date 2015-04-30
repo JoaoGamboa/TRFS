@@ -52,8 +52,8 @@ public class InFlowsManager {
 	
 	public void addVehicle(Link link){
 		boolean enoughSpace = true;
+		
 		//link.getvehicle at 0 ?
-				
 		//Check if there is space, then create new vehicle and then add
 		
 		if(enoughSpace) {
@@ -66,9 +66,10 @@ public class InFlowsManager {
 				vehicle = new Truck();
 			}
 			
-			vehicle.getBehavior().setInitialLocation(link, link.getLanes().get(lane));
+			vehicle.behavior.setInitialLocation(link, link.getLanes().get(lane));
+			scenario.getVehicleLayers().get(link.getZ()).add(vehicle);
 			
-			this.scenario.getStages().get(link.getZ()).addActor(vehicle);
+			//this.scenario.getStages().get(link.getZ()).addActor(vehicle);
 			vehicleCount += 1;
 						
 		}
