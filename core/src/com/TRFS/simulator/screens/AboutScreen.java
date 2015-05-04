@@ -1,6 +1,6 @@
 package com.TRFS.simulator.screens;
 
-import com.TRFS.simulator.MiscTools;
+import com.TRFS.simulator.MiscUtils;
 import com.TRFS.ui.general.TopBarTable;
 import com.TRFS.ui.general.UIButton;
 import com.badlogic.gdx.Gdx;
@@ -22,19 +22,19 @@ public class AboutScreen implements Screen {
 	
 	@Override
 	public void render(float delta) {
-		MiscTools.clearScreen();
+		MiscUtils.clearScreen();
 		stage.act(delta);stage.draw();//Draw stage
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		MiscTools.checkResize(width, height, stage);
+		MiscUtils.checkResize(width, height, stage);
 		topBarTable.resize(width, height);
 	}
 
 	@Override
 	public void show() {
-		MiscTools.fadeIn(stage);
+		MiscUtils.fadeIn(stage);
 		Gdx.input.setInputProcessor(stage); //Allows the stage to look for input
 				
 		topBarTable = new TopBarTable("ABOUT TRFS", stage, buttonBack);

@@ -2,7 +2,7 @@ package com.TRFS.models;
 
 import com.TRFS.models.general.InFlowsManager;
 import com.TRFS.scenarios.Scenario;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -13,20 +13,20 @@ import com.badlogic.gdx.utils.Array;
 public class TrafficManager {
 	
 	private InFlowsManager inFlowsManager;
-
-	private Array<Stage> stages;
+	private Array<Array<Vehicle>> vehicleLayers;
 
 	public TrafficManager(Scenario scenario) {
-		//this.scenario = scenario;
 		inFlowsManager = new InFlowsManager(scenario);
-		this.stages = scenario.getStages();
+		this.vehicleLayers = scenario.getVehicleLayers();
 	}
 	
 	public void update(float delta, float simulationTime) {
 		
 		//Update all actors
-		for (Stage stage : stages) {
-			stage.act(delta);
+		for (Array<Vehicle> layer : vehicleLayers) {
+			for (Vehicle vehicle : layer) {
+				vehicle.update(delta);
+			}
 		}
 		
 		inFlowsManager.update(delta, simulationTime);

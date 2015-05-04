@@ -1,5 +1,6 @@
 package com.TRFS.simulator.world;
 
+import com.TRFS.scenarios.Scenario;
 import com.TRFS.vehicles.VehicleInputProcessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,20 +11,21 @@ public class WorldInputProcessor implements InputProcessor {
 	
 	private int pressedButton;
 	private float startX, startY;
-	public Vector3 mouseCoordinates = new Vector3();	
+	private Vector3 mouseCoord = new Vector3(), unprojectedCoord = new Vector3();	
 	
 	private VehicleInputProcessor vehicleInputProcessor;
 	
 	private WorldCamera camera;
+	private Scenario scenario;
 	
-	public WorldInputProcessor(WorldCamera camera) {
-		this.camera = camera;
-		
+	public WorldInputProcessor(Scenario scenario) {
+		this.scenario = scenario;
+		this.camera = scenario.getGraphicsManager().getCamera();
 		this.vehicleInputProcessor = new VehicleInputProcessor();
 	}
 	
 	public void listen() {
-		vehicleInputProcessor.listenToInput();
+			vehicleInputProcessor.listenToInput();
 	}
 
 	@Override
@@ -42,17 +44,21 @@ public class WorldInputProcessor implements InputProcessor {
 	}
 
 	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer,
-			int button) {		
+	public boolean touchDown(int screenX, int screenY, int pointer,	int button) {		
 		this.pressedButton = button;
 		this.startX = screenX;
 		this.startY = screenY;
+		
+		updateUnprojected(screenX, screenY);
+		vehicleInputProcessor.findClicked(scenario.getVehicleLayers(), unprojectedCoord.x, unprojectedCoord.y);
 		
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		updateUnprojected(screenX, screenY);
+		vehicleInputProcessor.confirmClicked(unprojectedCoord.x, unprojectedCoord.y);
 		return false;
 	}
 
@@ -69,7 +75,7 @@ public class WorldInputProcessor implements InputProcessor {
 	
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		mouseCoordinates.set(screenX, screenY, 0);
+		//mouseCoordinates.set(screenX, screenY, 0);
 		return false;
 	}
 
@@ -84,6 +90,10 @@ public class WorldInputProcessor implements InputProcessor {
 
 		return true;
 	}
-
+	
+	public void updateUnprojected(int screenX, int screenY){
+		mouseCoord.set(screenX, screenY, 1);
+		unprojectedCoord.set(camera.unproject(mouseCoord));
+	}
 
 }

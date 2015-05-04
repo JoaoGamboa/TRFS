@@ -2,10 +2,20 @@ package com.TRFS.scenarios.map;
 
 public class Coordinate {
 	
-	private float x;
-	private float y;
-
+	public float x;
+	public float y;
+	
+	public Coordinate () {
+		this.x = 0;
+		this.y = 0;
+	}
+	
 	public Coordinate (float x, float y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	public void set(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}

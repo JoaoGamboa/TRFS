@@ -9,8 +9,9 @@ import com.TRFS.models.path.PathFollowing;
 import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Path;
-import com.TRFS.ui.general.parameters.DynamicSimParam;
 import com.TRFS.vehicles.Vehicle;
+import com.TRFS.vehicles.Vehicle.VehicleConfig;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -25,7 +26,7 @@ public class Behavior {
 
 	public static final String[] carFolModels = new String[] { "Wiedemann '74", "Fritzsche" };
 
-	public static DynamicSimParam[] calibrationParameters;
+	//public static DynamicSimParam[] calibrationParameters;
 	private CarFollowingModel carFollowingModel;
 	private PathFollowing pathFollowing;
 
@@ -60,32 +61,39 @@ public class Behavior {
 	 * @param dT delta time
 	 * @return accelVector, the resulting acceleration vector
 	 */
-	//@SuppressWarnings("unused")
-	public void update(float dT, Vector2 acceleration) {
+	public void update(float dT) {
 
 		if (changedLink) {
 			setDesiredSpeed(currentLink.getMaxspeed() * desiredSpeedFactor);
 		}
 		
+		float linearAccelMagnitude = 0;
+		float steerAngle = 0;
+		
 		//Update CarFollowing (gives the initial vector magnitude)
 		Vehicle leader = null; // TODO
-		float linearAccelMagnitude = updateCarFollowing(leader);
 		
-		//Update PathFollowing (sets the vector direction)
-		pathFollowing.update(acceleration, vehicle.physics.position);
-		
+		linearAccelMagnitude = updateCarFollowing(leader);
+		if (linearAccelMagnitude >= 0) {
+			MathUtils.clamp(linearAccelMagnitude, -vehicle.config.maxLinearAcceleration, vehicle.config.maxLinearAcceleration);
+		} else {
+			MathUtils.clamp(linearAccelMagnitude, -vehicle.config.maxBrakeAcceleration, vehicle.config.maxBrakeAcceleration);
+		}
+
 		//TODO other constraints that might affect the acceleration magnitude.
 		
-		//Scale the vector with the required magnitude
-		acceleration.scl(linearAccelMagnitude);
+		//Update PathFollowing (sets the vector direction)
+		pathFollowing.update(vehicle, linearAccelMagnitude, steerAngle);
+		MathUtils.clamp(steerAngle, -VehicleConfig.maxSteeringAngle, VehicleConfig.maxSteeringAngle);
 				
 		//Build vector
-		// TODO make linearVelocity point to next waypoint. Use the resulting
-		// vector to update position.
+
 		// TODO when changing lanes, must find a way to make the velocity point
 		// to the target lane
-		//vehicle.getAcceleration().
 		
+		//Update Vehicle
+		//vehicle.physics.accelerationInput = linearAccelMagnitude; TODO throttle
+		vehicle.physics.steerAngle = steerAngle;
 	}
 	
 	/**Updates the {@link Vehicle}'s {@link CarFollowingModel} regarding it's leader.
@@ -119,7 +127,7 @@ public class Behavior {
 		switch (model) {
 		case 0:
 			carFollowingModel = new W74CarFollowing();
-			calibrationParameters = W74CarFollowing.calibrationParameters;
+			//calibrationParameters = W74CarFollowing.calibrationParameters;
 		case 1:
 			carFollowingModel = new FritzscheCarFollowing();
 		}
@@ -153,9 +161,8 @@ public class Behavior {
 		setCurrentLink(startLink);
 		setCurrentLane(startLane);
 		pathFollowing.setPath(startLane.getPath());
-		float rotation = new Vector2().set(startLane.getPath().getSecondPoint()).sub(startLane.getPath().getStartPoint()).angle();
-		vehicle.setLocation(startLane.getPath().getStartPoint(), rotation);
-
+		float rotation = (float) (new Vector2().set(startLane.getPath().getSecondPoint()).sub(startLane.getPath().getStartPoint()).angleRad()-(Math.PI/2f));
+		vehicle.physics.setLocation(startLane.getPath().getStartPoint(), rotation);
 	}
 	
 	public void setCurrentLink(Link currentLink) {

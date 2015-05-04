@@ -218,7 +218,7 @@ public class Path {
 			previous = current;
 			current = wayPoints.get(i);
 
-			PathSegment segment = new PathSegment(current, previous);
+			PathSegment segment = new PathSegment(previous, current);
 			length += segment.length;
 			segment.cumulativeLength = length;
 			segments.add(segment);

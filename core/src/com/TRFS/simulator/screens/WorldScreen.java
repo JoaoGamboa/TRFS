@@ -2,7 +2,7 @@ package com.TRFS.simulator.screens;
 
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.simulator.AssetsMan;
-import com.TRFS.simulator.MiscTools;
+import com.TRFS.simulator.MiscUtils;
 import com.TRFS.simulator.SimulationParameters;
 import com.TRFS.simulator.world.WorldInputProcessor;
 import com.TRFS.ui.general.TopBarTable;
@@ -40,7 +40,6 @@ public class WorldScreen implements Screen {
 	private SlidingWindow simParamWindow, statsWindow;
 	private SlidingWindowManager slidingWindowManager;
 	private Label mouseCoordinatesLabel;
-	private Vector2 unprojectedMouseCoordinates = new Vector2();
 	private Vector3 tmp = new Vector3(), tmp2 = new Vector3();
 	private UIButton 	buttonBack,	modelParamButton, simParamButton, statsButton;
 	private TopBarTable topBarTable;
@@ -52,7 +51,7 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		MiscTools.clearScreen();
+		MiscUtils.clearScreen();
 		
 		//Update and render Scenario
 		scenario.render(delta);
@@ -66,7 +65,7 @@ public class WorldScreen implements Screen {
 	
 	@Override
 	public void resize(int width, int height) {
-		MiscTools.checkResize(width, height, stage);
+		MiscUtils.checkResize(width, height, stage);
 		topBarTable.resize(width, height);
 		slidingWindowManager.resize(width, height);
 		scenario.resize(width, height);
@@ -107,24 +106,23 @@ public class WorldScreen implements Screen {
 	
 	public void implementInput() {
 		inputMultiplexer = new InputMultiplexer();
-		worldInputHandler = new WorldInputProcessor(scenario.getGraphicsManager().getCamera());
+		worldInputHandler = new WorldInputProcessor(scenario);
+		
 		stage.addCaptureListener(new EventListener() {
-			@Override
-			public boolean handle(Event event) {
-				if (event instanceof InputEvent){
-						Actor actor =  event.getTarget();
-						if ( ((InputEvent) event).getType() == Type.enter) {
-							stage.setScrollFocus(actor);
+			@Override public boolean handle(Event event) {
+				if (event instanceof InputEvent) {
+					Actor actor = event.getTarget();
+					if (((InputEvent) event).getType() == Type.enter) {
+						stage.setScrollFocus(actor);
+						return true;
+					} else if (((InputEvent) event).getType() == Type.exit
+							&& actor.equals(stage.getScrollFocus())) {
+						if (actor instanceof ScrollPane) {
+							stage.setScrollFocus(null);
 							return true;
-					   } else if (((InputEvent) event).getType() == Type.exit && actor.equals(stage.getScrollFocus())) {
-					         if (actor instanceof ScrollPane) {
-					            stage.setScrollFocus(null);
-					            return true;
-					         }
-					   }
-						return false;
-				}
-				return false;
+						}
+					} return false;
+				} return false;
 			}
 		});
 		
@@ -136,7 +134,7 @@ public class WorldScreen implements Screen {
 	public void implementUI() {
 		stage = new Stage(new ScreenViewport(), scenario.getGraphicsManager().getBatch());
 				
-		MiscTools.fadeIn(stage);
+		MiscUtils.fadeIn(stage);
 		
 		// TODO Make windows instanceable instead of static
 		String [] modelParamButtons = {"Car-Foll", "Lane Chang."};
@@ -162,17 +160,12 @@ public class WorldScreen implements Screen {
 		mouseCoordinatesLabel = new Label("", AssetsMan.uiSkin, "smallLabel");
 		mouseCoordinatesLabel.setPosition(20, 20);
 		stage.addActor(mouseCoordinatesLabel);
-		unprojectedMouseCoordinates = new Vector2();
 	}
 	
 	private void renderUI() {	
-		//mouseC.set(Gdx.input.getX(), Gdx.input.getY());
 		tmp.set(Gdx.input.getX(), Gdx.input.getY(),1);
 		tmp2.set(scenario.getGraphicsManager().getCamera().unproject(tmp));
-		unprojectedMouseCoordinates.set(tmp2.x, tmp2.y);
-				
-		//getStages().get(0).getViewport().unproject(mouseC));
-		mouseCoordinatesLabel.setText(String.format("%.1f, %.1f",unprojectedMouseCoordinates.x, unprojectedMouseCoordinates.y));
+		mouseCoordinatesLabel.setText(String.format("%.1f, %.1f",tmp2.x, tmp2.y));
 		SimulationStatsWindow.render();
 	}
 

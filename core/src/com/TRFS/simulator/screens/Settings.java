@@ -2,7 +2,7 @@ package com.TRFS.simulator.screens;
 
 import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.Main;
-import com.TRFS.simulator.MiscTools;
+import com.TRFS.simulator.MiscUtils;
 import com.TRFS.simulator.PreferencesManager;
 import com.TRFS.simulator.SimulationParameters;
 import com.TRFS.ui.general.TopBarTable;
@@ -44,14 +44,14 @@ public class Settings implements Screen {
 	
 	@Override
 	public void render(float delta) {
-		MiscTools.clearScreen();
+		MiscUtils.clearScreen();
 		stage.act(delta);stage.draw();//Draw stage
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		
-		MiscTools.checkResize(width, height, stage);
+		MiscUtils.checkResize(width, height, stage);
 		topBarTable.resize(width, height);
 		
 		handleTable(width, height, false);
@@ -60,7 +60,7 @@ public class Settings implements Screen {
 	@Override
 	public void show() {
 		
-		MiscTools.fadeIn(stage);
+		MiscUtils.fadeIn(stage);
 		Gdx.input.setInputProcessor(stage); //Allows the stage to look for input
 		
 		topBarTable = new TopBarTable("SETTINGS", stage, buttonBack);

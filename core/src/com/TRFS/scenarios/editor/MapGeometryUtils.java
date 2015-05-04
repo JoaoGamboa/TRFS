@@ -6,7 +6,7 @@ import java.util.Collections;
 import com.TRFS.scenarios.map.Coordinate;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Map;
-import com.TRFS.simulator.MiscTools;
+import com.TRFS.simulator.MiscUtils;
 
 public class MapGeometryUtils {
 
@@ -33,7 +33,7 @@ public class MapGeometryUtils {
 		map.setCenter(new Coordinate((float) (minX + (map.getDimensions()
 				.getX()) / 2),(float) (minY + (map.getDimensions().getY()) / 2)));
 
-		map.setCentroid(new Coordinate(MiscTools.average(xValues), MiscTools.average(yValues)));
+		map.setCentroid(new Coordinate(MiscUtils.average(xValues), MiscUtils.average(yValues)));
 		
 	}
 	

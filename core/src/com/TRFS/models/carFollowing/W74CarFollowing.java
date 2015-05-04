@@ -109,8 +109,8 @@ public class W74CarFollowing extends CarFollowingModel {
 					* (RND3 + NRND);
 
 		case 4:
-			FaktorV = maxSpeed / (desiredSpeed) + FAKTORVmult.getCurrentVal()
-					* (maxSpeed - desiredSpeed);
+			FaktorV = maxSpeed / ((desiredSpeed) + FAKTORVmult.getCurrentVal()
+					* (maxSpeed - desiredSpeed));
 
 			return BMAXmult.getCurrentVal() * (maxSpeed - Vn * FaktorV);
 		}

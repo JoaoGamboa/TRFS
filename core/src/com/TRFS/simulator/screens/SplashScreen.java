@@ -1,7 +1,7 @@
 package com.TRFS.simulator.screens;
 
 import com.TRFS.simulator.AssetsMan;
-import com.TRFS.simulator.MiscTools;
+import com.TRFS.simulator.MiscUtils;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -26,7 +26,7 @@ public class SplashScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		MiscTools.clearScreen();
+		MiscUtils.clearScreen();
 		stage.act(delta);
 		stage.draw();// Draw stage
 		if (AssetsMan.update()) { // If all files are loaded
@@ -41,7 +41,7 @@ public class SplashScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 
-		MiscTools.checkResize(width, height, stage);
+		MiscUtils.checkResize(width, height, stage);
 
 		logo.setSize(388, 116);
 		logo.setPosition(width / 2f, height / 2f, 1);

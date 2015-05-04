@@ -102,7 +102,6 @@ public class Scenario {
 		return vehicleLayers;
 	}
 	
-
 	public TrafficManager getTrafficManager() {
 		return trafficManager;
 	}

@@ -1,74 +1,88 @@
 package com.TRFS.vehicles;
 
+import com.TRFS.scenarios.map.Coordinate;
+import com.TRFS.simulator.MiscUtils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class VehicleInputProcessor {
 	
-	private static Vehicle cVehicle;
-	private Vector2 tmp1;
-
-	private static float accelMagnitude = 0;
-	
+	private Vehicle tVehicle, sVehicle;
+	private Coordinate localMouseClick;
+		
 	public VehicleInputProcessor() {
-		tmp1 = new Vector2();
+		localMouseClick = new Coordinate();
 	}
 	
 	public void listenToInput(){
 		
-		if (cVehicle != null) {
-			boolean travelingFWD = cVehicle.fwdDirection.dot(cVehicle.physics.velocity) > 0 ? true : false;
-			
-			if(Gdx.input.isKeyPressed(Input.Keys.W)){
-				if (travelingFWD) accelMagnitude = 5;
-				if (!travelingFWD) accelMagnitude = 10;
-			}
-			
-			if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-				if (travelingFWD) accelMagnitude = 10;
-				if (!travelingFWD) accelMagnitude = -4;
-			}
-			
-			if(Gdx.input.isKeyPressed(Input.Keys.A)) cVehicle.physics.angularAcceleration += 1;
-			if(Gdx.input.isKeyPressed(Input.Keys.D)) cVehicle.physics.angularAcceleration -= 1;
-			
-			if(!Gdx.input.isKeyPressed(Input.Keys.W) && !Gdx.input.isKeyPressed(Input.Keys.S)) MathUtils.lerp(accelMagnitude, 0, 1f);
-			if(!Gdx.input.isKeyPressed(Input.Keys.A) && !Gdx.input.isKeyPressed(Input.Keys.D)) MathUtils.lerp(cVehicle.physics.angularAcceleration, 0, 1f);
+		if (sVehicle != null) {
+
+			sVehicle.physics.throttleInputFwd = Gdx.input.isKeyPressed(Input.Keys.W) ? 1 : 0;
+			sVehicle.physics.throttleInputBck = Gdx.input.isKeyPressed(Input.Keys.S) ? 1 : 0;
+			sVehicle.physics.steerInputLeft = Gdx.input.isKeyPressed(Input.Keys.A) ? 1 : 0;
+			sVehicle.physics.steerInputRight = Gdx.input.isKeyPressed(Input.Keys.D) ? 1 : 0;
 						
-			
-			tmp1.set(cVehicle.fwdDirection).nor();
-			tmp1.scl(accelMagnitude);
-			cVehicle.physics.acceleration.set(tmp1);
-			
 			if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) setVehicle(null);
 		}
-			
 	}
 	
-	public static void setVehicle(Vehicle vehicle) {
+	public void setVehicle(Vehicle vehicle) {
 		if (vehicle != null) {
-			cVehicle = vehicle;
-			cVehicle.config.color = Color.ORANGE;
-			accelMagnitude = cVehicle.physics.getAccelMagnitude();
+			sVehicle = vehicle;
+			sVehicle.config.color = Color.ORANGE;
+			sVehicle.config.userControlled = true;
 		} else {
-			cVehicle.config.color = cVehicle.config.defaultColor;
-			cVehicle.config.userControlled = false;
-			cVehicle.config.selected = false;
-			cVehicle = null;
+			sVehicle.config.color = sVehicle.config.defaultColor;
+			sVehicle.config.userControlled = false;
+			sVehicle.config.selected = false;
+			sVehicle = null;
+		}
+	}
+	
+	public void findClicked(Array<Array<Vehicle>> vehicleLayers, float worldX, float worldY) {
+		
+		//Loop through layers starting from the topmost one
+		for (int i = vehicleLayers.size - 1; i >=0; i--) {
+			if (vehicleLayers.get(i).size == 0) continue;
+			for (Vehicle vehicle : vehicleLayers.get(i)) {
+				if (isTouched(vehicle, worldX, worldY)) {
+					tVehicle = vehicle;
+					break;
+				}
+			}
+		}
+	}
+	
+	public void confirmClicked(float worldX, float worldY) {
+		//Is the mouse pointer is still inside the vehicle, confirm the selection
+		if (tVehicle != null) {
+			if (isTouched(tVehicle, worldX, worldY)) {
+				setVehicle(tVehicle);
+			}
+			tVehicle = null;
 		}
 	}
 	
 	public boolean isTouched(Vehicle vehicle, float worldX, float worldY){
-		//nao é preciso o fwd vector. ver este link 
-		//http://www.emanueleferonato.com/2012/03/09/algorithm-to-determine-if-a-point-is-inside-a-square-with-mathematics-no-hit-test-involved/
-		tmp1.set(vehicle.physics.forward).rotateRad(vehicle.physics.heading);
 		
-		float v0 = vehicle.physics.position
+		//Quick test
+		if (Math.abs(worldX - vehicle.physics.position.x) > 10 ) return false;
+		if (Math.abs(worldY - vehicle.physics.position.y) > 10 ) return false;
 		
+		//Precision test
+		localMouseClick.set(worldX, worldY);
+		MiscUtils.globalToLocalOut(localMouseClick, vehicle.physics.heading, vehicle.physics.position);
+		
+		if (localMouseClick.x > vehicle.config.localVertices.get(0).x
+				&& localMouseClick.x < vehicle.config.localVertices.get(1).x) {
+			if (localMouseClick.y > vehicle.config.localVertices.get(0).y
+					&& localMouseClick.y < vehicle.config.localVertices.get(2).y) {
+				return true;
+			}
+		}
 		return false;
 	}
-
 }

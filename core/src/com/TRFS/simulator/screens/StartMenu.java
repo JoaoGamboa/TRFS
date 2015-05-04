@@ -5,7 +5,7 @@ import com.TRFS.models.laneChanging.LaneChanging;
 import com.TRFS.scenarios.ScenariosManager;
 import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.Main;
-import com.TRFS.simulator.MiscTools;
+import com.TRFS.simulator.MiscUtils;
 import com.TRFS.simulator.PreferencesManager;
 import com.TRFS.simulator.SimulationParameters;
 import com.TRFS.ui.general.TopBarTable;
@@ -49,14 +49,14 @@ public class StartMenu implements Screen {
 	@Override
 	public void render(float delta) {
 		
-		MiscTools.clearScreen();
+		MiscUtils.clearScreen();
 		stage.act(delta);
 		stage.draw();
 	}
  
 	@Override
 	public void resize(int width, int height) {
-		MiscTools.checkResize(width, height, stage);
+		MiscUtils.checkResize(width, height, stage);
 		
 		topBarTable.resize(width, height);
 		handleMapTable(stage.getWidth(), stage.getHeight(), false);
@@ -66,7 +66,7 @@ public class StartMenu implements Screen {
 	@Override
 	public void show() {			
 		initUIActors();
-		MiscTools.fadeIn(stage);
+		MiscUtils.fadeIn(stage);
 		Gdx.input.setInputProcessor(stage); //Allows the stage to look for input
 		
 		topBarTable = new TopBarTable("SIMULATION SETUP", stage, new UIButton("BACK", "MainMenu", true, stage));

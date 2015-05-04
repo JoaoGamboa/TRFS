@@ -2,8 +2,8 @@ package com.TRFS.models.path;
 
 import com.TRFS.scenarios.map.Path;
 import com.TRFS.vehicles.Vehicle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 
 /**
  * @author J.P.Gamboa jpgamboa@outlook.com
@@ -14,22 +14,23 @@ public class PathFollowing {
 	private Path path;
 	private PathFollowingState state;
 
-	private Vector2 targetPosition;
-	private float targetOffset=5f, predictionTime;
+	private Vector2 targetPosition, frontAxisToTarget;
+	private float targetOffset=5f;
 
 	public PathFollowing() {
 		this.state = new PathFollowingState();
 		this.targetPosition = new Vector2();
+		this.frontAxisToTarget = new Vector2();
 	}
+	
+	//linearAcceleration is here if needed to update in the future, but not yet used
+	public float update(Vehicle vehicle, float linearAcceleration, float steerAngle) {
+		path.updateTargetPosition(vehicle.physics.cgPosition, targetPosition, state, targetOffset);
 
-	public void update(Vector2 agentAcceleration, Vector2 agentPosition) {
+		//Set aim to the target
+		steerAngle = frontAxisToTarget.set(targetPosition).sub(vehicle.physics.faPosition).angleRad();
 		
-		path.updateTargetPosition(agentPosition, targetPosition, state, targetOffset);
-
-		
-		// TODO set aim to the target
-		agentAcceleration.set(targetPosition).sub(agentPosition).nor();
-		
+		return steerAngle * MathUtils.degRad;
 	}
 
 	public void setPath(Path path) {

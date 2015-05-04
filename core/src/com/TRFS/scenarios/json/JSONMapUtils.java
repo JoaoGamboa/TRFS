@@ -8,7 +8,7 @@ import com.TRFS.scenarios.map.Coordinate;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Map;
 import com.TRFS.scenarios.map.Node;
-import com.TRFS.simulator.MiscTools;
+import com.TRFS.simulator.MiscUtils;
 import com.TRFS.simulator.SimulationParameters;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
@@ -133,8 +133,8 @@ public class JSONMapUtils {
 				coordinatesY.add((double) jsonCoordinate.getXYPoint().getY());
 			}
 		}
-		return new Coordinate(-MiscTools.average(coordinatesX),
-				-MiscTools.average(coordinatesY));
+		return new Coordinate(-MiscUtils.average(coordinatesX),
+				-MiscUtils.average(coordinatesY));
 	}
 
 }
