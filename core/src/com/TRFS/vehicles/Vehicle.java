@@ -1,28 +1,17 @@
 package com.TRFS.vehicles;
 
-import java.util.Iterator;
-
 import com.TRFS.models.Behavior;
 import com.TRFS.scenarios.map.Coordinate;
 import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.MiscUtils;
 import com.TRFS.simulator.SimulationParameters;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 
@@ -80,12 +69,7 @@ public class Vehicle /*extends Actor*/ {
 	public void draw(Batch batch) {
 		// TODO Auto-generated method stub
 		batch.setColor(config.color);
-		
-		float x = config.globalVertices.get(0).x;
-		float y = config.globalVertices.get(0).y;
-		float originX = config.width/2;
-		float originY = config.length * 0.2f;
-		
+				
 		batch.draw(region, config.globalVertices.get(0).x,
 				config.globalVertices.get(0).y, 0, 0, config.width,
 				config.length, 1, 1, physics.heading * MathUtils.radDeg);
@@ -134,62 +118,7 @@ public class Vehicle /*extends Actor*/ {
 		renderer.circle(config.globalVertices.get(3).x, config.globalVertices.get(3).y, 0.3f);
 		renderer.end();
 	}
-	
-	/**Updates the velocity vector with the current value of the acceleration vector.
-	 * Limits the velocity to the maximum linear speed defined.
-	 * @param delta time
-	 */
-	public void updateVelocityTODELETE(float delta) {
-		//velocity.mulAdd(acceleration, delta).limit(maxLinearSpeed).scl(drag);
-	}
-	
-	/**Updates the rotation of the actor according to the direction of the velocity vector.
-	 */
-	public void updateRotationTODELETE(float delta) {
-		/*
-		//The vehicle can't turn if it isn't moving.
-		if (!velocity.isZero(0.001f)) {
-			//The vehicle will want to face the same direction as the velocity vector
-			float targetRotation = vectorToAngle(velocity);
-			
-			//If the velocity vector points more than 90 degrees away from the forward direction, then the vehicle is moving backwards.
-			targetRotation = fwdDirection.dot(velocity) > 0 ? targetRotation : targetRotation + MathUtils.PI;
-			velocity.
-			
-			//float rotation = targetRotation - this.rotation > MathUtils.PI/2f ? 
 					
-			//if ((targetRotation - getRotation()) > MathUtils.PI/2f) float targetRotation -= MathUtils.PI2;
-			
-			//float rotation = (targetRotation - getRotation()) % MathUtils.PI2;
-			
-			//if (rotation > MathUtils.PI) rotation -= MathUtils.PI2;	
-			
-			//this.rotation += rotation* MathUtils.radiansToDegrees * delta;	
-			//super.setRotation(this.rotation);
-			angularAcceleration = MathUtils.clamp(angularAcceleration, -maxAngularAcceleration, maxAngularAcceleration);
-			
-			angularVelocity = MathUtils.clamp(angularAcceleration * delta, -maxAngularSpeed, maxAngularSpeed);
-			
-			float deltaRotation = angularVelocity * delta;
-						
-			this.rotation += deltaRotation * MathUtils.radiansToDegrees; //TODO to degrees
-			super.setRotation(this.rotation);
-			
-		}
-		
-		//Update the forward direction vector to point to the front of the vehicle.
-		this.fwdDirection.set(0,1).rotate(rotation);
-		*/
-	}
-	
-	/**Updates the vehicle's position according to the velocity vector for the delta time provided.
-	 * Also sets the position of the actor to the new coordinates.
-	 * @param delta time
-	 */
-	public void updatePositionTODELETE(float delta) {
-
-	}
-			
 	public class VehiclePhysics {
 		//Control
 		public int throttleInputFwd, throttleInputBck, steerInputLeft, steerInputRight, movingFwd; // 0, 1 (for user input)
@@ -215,8 +144,7 @@ public class Vehicle /*extends Actor*/ {
 		}
 		
 		public void updatePhysics(float delta, float engineForce, float brakeForce, float steerAngle) {
-			
-			//localAcceleration.set(acceleration).rotateRad(heading);
+						
 			localVelocity.set(velocity).rotateRad(heading);
 			
 			//float yawSpeedFront = angularVelocity * config.cRToFrontAxle;
@@ -233,7 +161,6 @@ public class Vehicle /*extends Actor*/ {
 			
 			totalForces.x = drag.x + MathUtils.cos(steerAngle) * frictionForce * 2;
 			totalForces.y = traction.y + drag.y;
-			
 			
 			//Update linear components
 			acceleration.set(totalForces.x/config.mass, totalForces.y/config.mass).rotateRad(-heading);
@@ -263,7 +190,7 @@ public class Vehicle /*extends Actor*/ {
 		}
 		
 		public void updateAI(float delta) {
-			 float throttle, steerAngle;
+			 //float throttle, steerAngle; 
 			 this.engineForce = 0;
 			 this.brakeForce =0;
 			 this.steerAngle = 0;
@@ -281,11 +208,9 @@ public class Vehicle /*extends Actor*/ {
 				steer = MathUtils.lerp(steer, 0, delta * steerMultiplier);
 				if (Math.abs(steer) < 0.001) steer = 0;
 			}
-			System.out.println(steer);
 			steer = steer * (1 - getSpeed()*3.6f/600);
 			
 			steerAngle = steer * VehicleConfig.maxSteeringAngle;
-			System.out.println(steerAngle*MathUtils.radDeg);
 			
 			//Throttle
 			float throttleMultiplier = 3f, brakeMultiplier = 10f;
@@ -346,9 +271,7 @@ public class Vehicle /*extends Actor*/ {
 		public static final float maxSteeringAngle = 60 * MathUtils.degRad; //Radians
 		
 		public float maxLinearAcceleration, maxBrakeAcceleration, drag;
-	
-		//public float maxAngularSpeed = 5, maxAngularAcceleration = 60;
-		
+			
 		public VehicleConfig(Vehicle vehicle, float width, float length, float mass, Color color) {
 			
 			this.width = width;

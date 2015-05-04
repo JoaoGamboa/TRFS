@@ -45,32 +45,32 @@ public class MiscUtils {
 	}
 	
 	public static Vector2 angleToVector(Vector2 outVector, float angle) {
-		outVector.x = -(float) MathUtils.sin(angle);
-		outVector.y = (float) MathUtils.cos(angle);
+		outVector.x = - MathUtils.sin(angle);
+		outVector.y = MathUtils.cos(angle);
 		return outVector;
 	}
 		
 	public static void localToGlobal (float localX, float localY, Coordinate point, float rotation, Vector2 origin) {
-		float x = (float) (MathUtils.cos(rotation)*(localX) - MathUtils.sin(rotation)*(localY)+origin.x);
-		float y = (float) (MathUtils.sin(rotation)*(localX) + MathUtils.cos(rotation)*(localY)+origin.y);
+		float x =  (MathUtils.cos(rotation)*(localX) - MathUtils.sin(rotation)*(localY)+origin.x);
+		float y =  (MathUtils.sin(rotation)*(localX) + MathUtils.cos(rotation)*(localY)+origin.y);
 		point.set(x,y);
 	}
 	
 	public static void localToGlobal (float localX, float localY, Vector2 vector, float rotation, Vector2 origin) {
-		float x = (float) (MathUtils.cos(rotation)*(localX) - MathUtils.sin(rotation)*(localY)+origin.x);
-		float y = (float) (MathUtils.sin(rotation)*(localX) + MathUtils.cos(rotation)*(localY)+origin.y);
+		float x =  (MathUtils.cos(rotation)*(localX) - MathUtils.sin(rotation)*(localY)+origin.x);
+		float y =  (MathUtils.sin(rotation)*(localX) + MathUtils.cos(rotation)*(localY)+origin.y);
 		vector.set(x,y);
 	}
 	
 	public static void localToGlobalOut (Vector2 vector, float rotation, Vector2 origin) {
-		float x = (float) (MathUtils.cos(rotation)*(vector.x) - MathUtils.sin(rotation)*(vector.y)+origin.x);
-		float y = (float) (MathUtils.sin(rotation)*(vector.x) + MathUtils.cos(rotation)*(vector.y)+origin.y);
+		float x =  (MathUtils.cos(rotation)*(vector.x) - MathUtils.sin(rotation)*(vector.y)+origin.x);
+		float y =  (MathUtils.sin(rotation)*(vector.x) + MathUtils.cos(rotation)*(vector.y)+origin.y);
 		vector.set(x,y);
 	}
 	
 	public static void globalToLocalOut (Coordinate point, float rotation, Vector2 origin) {
-		float x = (float) (MathUtils.cos(-rotation)*(point.x-origin.x) - MathUtils.sin(-rotation)*(point.y-origin.y));
-		float y = (float) (MathUtils.sin(-rotation)*(point.x-origin.x) + MathUtils.cos(-rotation)*(point.y-origin.y));
+		float x =  (MathUtils.cos(-rotation)*(point.x-origin.x) - MathUtils.sin(-rotation)*(point.y-origin.y));
+		float y =  (MathUtils.sin(-rotation)*(point.x-origin.x) + MathUtils.cos(-rotation)*(point.y-origin.y));
 		point.set(x, y);
 	}
 }
