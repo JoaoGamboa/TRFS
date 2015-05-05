@@ -72,11 +72,8 @@ public class MainMenu implements Screen {
 		i += 5;
 		rotation = i;
 		
-		MiscUtils.localToGlobalOut(localCG.set(0, 0.3f * length), rotation
-				* MathUtils.degRad, new Vector2(x + origin.x, y + origin.y));
-		MiscUtils.localToGlobalOut(localFrontAxis.set(0, 0.55f * length),
-				rotation * MathUtils.degRad, new Vector2(x + origin.x, y
-						+ origin.y));
+		localCG.set(0, 0.3f * length).rotateRad(rotation * MathUtils.degRad).add(new Vector2(x + origin.x, y + origin.y));
+		localFrontAxis.set(0, 0.55f * length).rotateRad(rotation * MathUtils.degRad).add(new Vector2(x + origin.x, y + origin.y));
 		
 		batch.setColor(Color.YELLOW);
 		batch.begin();

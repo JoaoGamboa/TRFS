@@ -91,9 +91,9 @@ public class Vehicle /*extends Actor*/ {
 		renderer.setColor(Color.BLUE);
 		renderer.line(physics.position, acl);
 		
-		Vector2 fwd = new Vector2().set(physics.forward).nor().scl(1).add(physics.position);
-		renderer.setColor(Color.RED);
-		renderer.line(physics.position, fwd);
+		//Vector2 fwd = new Vector2().set(physics.forward).nor().scl(4).add(physics.position);
+		renderer.setColor(Color.WHITE);
+		renderer.line(physics.position, physics.forward);
 		
 		
 		Vector2 steer = new Vector2().set(0,1).scl(0.5f).rotateRad(physics.steerAngle+physics.heading).add(physics.faPosition);
@@ -135,7 +135,7 @@ public class Vehicle /*extends Actor*/ {
 						forward = new Vector2();
 		
 		//Angular
-		public float 	heading, angularVelocity, angularAcceleration;
+		public float 	heading, angularVelocity;
 		
 		public VehicleConfig config;
 		
@@ -144,14 +144,16 @@ public class Vehicle /*extends Actor*/ {
 		}
 		
 		public void updatePhysics(float delta, float engineForce, float brakeForce, float steerAngle) {
-						
+		
 			localVelocity.set(velocity).rotateRad(heading);
 			
-			//float yawSpeedFront = angularVelocity * config.cRToFrontAxle;
-			//float slipAngleFront = MathUtils.atan2(Math.abs(localVelocity.y)-movingFwd*steerAngle, localVelocity.x + yawSpeedFront);//TODO NEEDED?
-			//TESTAR VALORES DE CORNERSTIFF E VER SE PODEMOS USAR LOGO O TIREGRIP
-			float frictionForce = (localVelocity.x > 0 ? -1 : 1) * VehicleConfig.tireGrip * config.axlWeight;//TODO
+			float yawSpeed = angularVelocity * config.cgToFrontAxle;
+			float slipAngleFront = (float) Math.atan2(localVelocity.x + yawSpeed, Math.abs(localVelocity.y) - (localVelocity.y > 0 ? 1 : -1) * steerAngle);
+			float slipAngleRear = (float) Math.atan2(localVelocity.x - yawSpeed, Math.abs(localVelocity.y));
 			
+			float frictionForceFront = -VehicleConfig.cornerStiffness * slipAngleFront * config.axlWeight;
+			float frictionForceRear = -VehicleConfig.cornerStiffness * slipAngleRear * config.axlWeight;
+						
 			//Traction
 			traction.x = 0;
 			traction.y = engineForce + brakeForce;
@@ -159,15 +161,17 @@ public class Vehicle /*extends Actor*/ {
 			drag.x = -VehicleConfig.rollDrag * localVelocity.x - VehicleConfig.airDrag * localVelocity.x * Math.abs(localVelocity.x);
 			drag.y = -VehicleConfig.rollDrag * localVelocity.y - VehicleConfig.airDrag * localVelocity.y * Math.abs(localVelocity.y);
 			
-			totalForces.x = drag.x + MathUtils.cos(steerAngle) * frictionForce * 2;
+			totalForces.x = drag.x + (float) Math.cos(steerAngle) * frictionForceFront + frictionForceRear;
 			totalForces.y = traction.y + drag.y;
+			System.out.println(totalForces.x);
 			
 			//Update linear components
 			acceleration.set(totalForces.x/config.mass, totalForces.y/config.mass).rotateRad(-heading);
-			velocity.mulAdd(acceleration, delta).clamp(-20, VehicleConfig.maxLinearSpeed);
+			velocity.mulAdd(acceleration, delta)/*.clamp(-VehicleConfig.maxLinearSpeed, VehicleConfig.maxLinearSpeed)*/;
 			
 			//Update Angular components
-			angularAcceleration = (((frictionForce + traction.x)* config.cRToFrontAxle) - frictionForce * config.cRToRearAxle/config.mass);
+			float angularAcceleration = (frictionForceFront * config.cgToFrontAxle - frictionForceRear * config.cgToRearAxle) / config.mass;
+			
 			angularVelocity += angularAcceleration * delta;// TODO
 			
 			if (velocity.len2() < 0.5 && engineForce == 0) {
@@ -181,12 +185,13 @@ public class Vehicle /*extends Actor*/ {
 			position.mulAdd(velocity, delta);
 			
 			//Update center of gravity and front axis positions
-			MiscUtils.localToGlobalOut(cgPosition.set(0, 0.3f*config.length), heading, position);
-			MiscUtils.localToGlobalOut(faPosition.set(0, 0.6f*config.length), heading, position);
-			MiscUtils.localToGlobalOut(forward.set(0,1), heading, position);
-			
+			cgPosition.set(0, 0.3f*config.length).rotateRad(heading).add(position);
+			faPosition.set(0, 0.6f*config.length).rotateRad(heading).add(position);
+			forward.set(0, 1).scl(4).rotateRad(heading).add(position);
+						
 			config.rotateShape(heading, position);
 			movingFwd = localVelocity.y > 0 ? 1 : localVelocity.y == 0 ? 0 : -1;
+			
 		}
 		
 		public void updateAI(float delta) {
@@ -201,15 +206,16 @@ public class Vehicle /*extends Actor*/ {
 			
 			//Steering
 			int steerInput = steerInputLeft - steerInputRight; //Negative if steering right, positive if steering left.
+						
 			float steerMultiplier = 2f;
 			if (Math.abs(steerInput) != 0) {
-				steer = MathUtils.clamp(steerInput * delta * steerMultiplier + steer, -1, 1);
+				float percentageTakenByVelocity = (1 - getSpeed()/1000);
+				steer = MathUtils.clamp(steerInput * delta * steerMultiplier * percentageTakenByVelocity + steer, -1, 1);
 			} else { 
 				steer = MathUtils.lerp(steer, 0, delta * steerMultiplier);
 				if (Math.abs(steer) < 0.001) steer = 0;
 			}
-			steer = steer * (1 - getSpeed()*3.6f/600);
-			
+
 			steerAngle = steer * VehicleConfig.maxSteeringAngle;
 			
 			//Throttle
@@ -250,6 +256,7 @@ public class Vehicle /*extends Actor*/ {
 		public void setLocation(Vector2 position, float heading) {
 			this.position.set(position.x, position.y);
 			this.heading = heading;
+			this.config.rotateShape(heading, position);
 		}
 	}
 	
@@ -258,15 +265,15 @@ public class Vehicle /*extends Actor*/ {
 		public boolean selected, userControlled;
 		
 		public float width, length, mass;
-		public float cRToFrontAxle, cRToRearAxle, axlWeight;
+		public float cgToFrontAxle, cgToRearAxle, axlWeight;
 		
 		public Array<Coordinate> localVertices;
 		public Array<Vector2> globalVertices;
 		
 		public Color defaultColor, color;
 		
-		public static final float engineForce = 8000, brakeForce = 12000, airDrag = 2.5f, rollDrag = 8;//(N)
-		public static final float tireGrip = 800f; //TODO
+		public static final float engineForce = 8000, brakeForce = 12000, airDrag = 6f, rollDrag = 10;//(N)
+		public static final float tireGrip = 10, cornerStiffness = 10; //TODO
 		public static final float maxLinearSpeed = 55; //(m/s)
 		public static final float maxSteeringAngle = 60 * MathUtils.degRad; //Radians
 		
@@ -280,8 +287,8 @@ public class Vehicle /*extends Actor*/ {
 			this.defaultColor = color;
 			this.color = color;
 			
-			this.cRToFrontAxle = 0.6f * length;
-			this.cRToRearAxle = 0;
+			this.cgToFrontAxle = 0.3f * length;
+			this.cgToRearAxle = 0.3f * length;
 			this.axlWeight = mass * 0.5f * 9.8f;
 			
 			this.localVertices = new Array<Coordinate>();
@@ -301,8 +308,9 @@ public class Vehicle /*extends Actor*/ {
 		
 		public void rotateShape(float rotation, Vector2 origin) {
 			for (int i = 0; i < localVertices.size; i++) {
-				MiscUtils.localToGlobal(localVertices.get(i).x, localVertices.get(i).y, 
-						globalVertices.get(i), rotation, origin);
+				globalVertices.get(i).set(localVertices.get(i).x, localVertices.get(i).y).rotateRad(rotation).add(origin);
+				/*MiscUtils.localToGlobal(localVertices.get(i).x, localVertices.get(i).y, 
+						globalVertices.get(i), rotation, origin);*/
 			}			
 		}	
 	}
