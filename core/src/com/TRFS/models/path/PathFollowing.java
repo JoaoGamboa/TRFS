@@ -25,7 +25,7 @@ public class PathFollowing {
 	
 	//linearAcceleration is here if needed to update in the future, but not yet used
 	public float update(Vehicle vehicle, float linearAcceleration, float steerAngle) {
-		path.updateTargetPosition(vehicle.physics.cgPosition, targetPosition, state, targetOffset);
+		path.updateTargetPosition(vehicle.physics.position, targetPosition, state, targetOffset);
 
 		//Set aim to the target
 		steerAngle = frontAxisToTarget.set(targetPosition).sub(vehicle.physics.faPosition).angleRad();
