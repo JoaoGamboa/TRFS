@@ -47,6 +47,9 @@ public class MainMenu implements Screen {
 	Vector2 localFrontAxis = new Vector2();
 	Vector2 globalFrontAxis = new Vector2();
 	Vector2 origin = new Vector2();
+	Vector2 v3 = new Vector2();
+	Vector2 v4 = new Vector2();
+	Vector2 lv4 = new Vector2();
 	//END TESTS
 	
 	@Override
@@ -67,13 +70,20 @@ public class MainMenu implements Screen {
 		v2.set(700,700);
 		float rotation2 = new Vector2().set(v2).sub(v1).angle();
 		
-
+		
 		
 		i += 5;
-		rotation = i;
+		rotation = rotation2 -90;
 		
 		localCG.set(0, 0.3f * length).rotateRad(rotation * MathUtils.degRad).add(new Vector2(x + origin.x, y + origin.y));
 		localFrontAxis.set(0, 0.55f * length).rotateRad(rotation * MathUtils.degRad).add(new Vector2(x + origin.x, y + origin.y));
+		
+		v3.set(300,100);
+		v4.set(v3).add(-50, 50);
+		
+		float rotation3 = new Vector2().set(v4).sub(v3).angle() -90 ;
+		
+		lv4.set(v4).sub(v3).rotate(rotation3).add(v3);	
 		
 		batch.setColor(Color.YELLOW);
 		batch.begin();
@@ -83,6 +93,10 @@ public class MainMenu implements Screen {
 		renderer.setColor(Color.GREEN);
 		renderer.begin(ShapeType.Line);
 		renderer.line(v1, v2);
+		renderer.setColor(Color.YELLOW);
+		renderer.line(v3, v4);
+		renderer.setColor(Color.RED);
+		renderer.line(v3, lv4);
 		renderer.end();
 		
 		renderer.begin(ShapeType.Filled);

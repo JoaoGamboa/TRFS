@@ -134,6 +134,8 @@ public class Vehicle /*extends Actor*/ {
 						traction = new Vector2(), drag = new Vector2(),	totalForces = new Vector2(),
 						forward = new Vector2();
 		
+		public Vector2 frontWPos = new Vector2(), rearWPos = new Vector2(), deltaPosition = new Vector2();
+		
 		//Angular
 		public float 	heading, angularVelocity;
 		
@@ -145,17 +147,49 @@ public class Vehicle /*extends Actor*/ {
 		
 		public VehiclePhysics(Vehicle vehicle) {
 			this.config = vehicle.config;
-		}
-		
-		public void updateSimplePhysics(float delta, float engineForce, float brakeForce, float steerAngle) {
-			
+			//this.frontWPos = new Vector2(0,config.wheelBase/2);
+			//this.rearWPos = new Vector2(0,-config.wheelBase/2);
 			
 		}
 		
 		public void updatePhysics(float delta, float engineForce, float brakeForce, float steerAngle) {
+			//System.out.println(engineForce+ ",  " + brakeForce+ ",  " + steerAngle+ ",  " + velocity.len());
+			float traction = engineForce + brakeForce;
+			float drag = (-VehicleConfig.rollDragConst * localVelocity.y) + (- VehicleConfig.airDragConst * localVelocity.y * speed);
+			
+			float accel = (traction + drag) / config.mass;
+			
+			localVelocity.add(0, accel * delta);
+			speed = localVelocity.len();
+			
+			if (speed < 0.5 && engineForce == 0) {
+				localVelocity.setZero();
+			}
+			
+			float distance = localVelocity.y * delta;
+					
+			frontWPos.set(0,config.wheelBase/2).add(distance * (float) Math.sin(-steerAngle), distance * (float) Math.cos(-steerAngle));
+			rearWPos.set(0,-config.wheelBase/2).add(0, distance);
+			
+			deltaPosition.set((frontWPos.x + rearWPos.x)/2, (frontWPos.y + rearWPos.y)/2).rotateRad(heading);
+			heading -= (float) Math.atan2(frontWPos.x - rearWPos.x, frontWPos.y - rearWPos.y);
+			
+			
+			position.add(deltaPosition);
+			velocity.set(localVelocity).rotateRad(heading);
+			//Update center of gravity and front axis positions
+			faPosition.set(0, 0.3f*config.length).rotateRad(heading).add(position);
+			forward.set(0, 1).scl(4).rotateRad(heading).add(position);
+			
+			config.rotateShape(heading, position);
+			movingFwd = localVelocity.y > 0 ? 1 : localVelocity.y == 0 ? 0 : -1;
+			
+		}
+		
+		public void updateoldPhysics(float delta, float engineForce, float brakeForce, float steerAngle) {
 			//System.out.println(engineForce+ ",  " + brakeForce+ ",  " + steerAngle+ ",  " + velocity.len() + ",  " + acceleration.len());
 		
-			localVelocity.set(velocity).rotateRad(heading);
+			localVelocity.set(velocity).rotateRad(-heading);
 			speed = localVelocity.len();
 			
 			float yawSpeed = angularVelocity * config.cgToFrontAxle;
@@ -180,7 +214,7 @@ public class Vehicle /*extends Actor*/ {
 			angularVelocity = angularAcc * delta;// TODO
 			
 			//Update linear components
-			acceleration.set(totalForces.x/config.mass, totalForces.y/config.mass).rotateRad(-heading);
+			acceleration.set(totalForces.x/config.mass, totalForces.y/config.mass).rotateRad(heading);
 			velocity.mulAdd(acceleration, delta);
 			
 			if (speed < 0.5 && engineForce == 0) {
@@ -188,7 +222,7 @@ public class Vehicle /*extends Actor*/ {
 			}
 			
 			//Update heading and position
-			heading -= angularVelocity * delta;
+			heading += angularVelocity * delta;
 			position.mulAdd(velocity, delta);
 			
 			//Update center of gravity and front axis positions
@@ -200,91 +234,7 @@ public class Vehicle /*extends Actor*/ {
 			System.out.println(forward.angle() + "   ,   " + acceleration.angle()  + "   ,   " + velocity.angle()+ "   ,   " + heading);
 			//System.out.println(acc.angle());
 		}
-		
-		public void updateCopy(float delta, float engineForce, float brakeForce, float steerAngle) {
-			System.out.println(engineForce+ ",  " + brakeForce+ ",  " + steerAngle+ ",  " + velocity.len() + ",  " + acceleration.len());
-			// Pre-calc heading vector
-			float sn = (float) Math.sin(this.heading);
-			float cs = (float) Math.cos(this.heading);
-
-			// Get velocity in local car coordinates
-			localVelocity.x = cs * velocity.x + sn * velocity.y;
-			localVelocity.y = cs * velocity.y - sn * velocity.x;
-
-			// Weight on axles based on centre of gravity and weight shift due to forward/reverse acceleration
-			float axleWeightFront = config.mass * (config.axleWeightRatioFront * 9.8f - 0.2f * acceleration.x * 0.55f / config.wheelBase);
-			float axleWeightRear = config.mass * (config.axleWeightRatioRear * 9.8f + 0.2f * acceleration.x * 0.55f / config.wheelBase);
-
-			// Resulting velocity of the wheels as result of the yaw rate of the car body.
-			// v = yawrate * r where r is distance from axle to CG and yawRate (angular velocity) in rad/s.
-			float yawSpeedFront = config.cgToFrontAxle * this.yawRate;
-			float yawSpeedRear = -config.cgToRearAxle * this.yawRate;
-
-			// Calculate slip angles for front and rear wheels (a.k.a. alpha)
-			float slipAngleFront = (float) (Math.atan2(localVelocity.y + yawSpeedFront, Math.abs(localVelocity.x)) - (localVelocity.x > 0 ? 1 : -1)  * steerAngle);
-			float slipAngleRear  = (float) Math.atan2(localVelocity.y + yawSpeedRear,  Math.abs(localVelocity.x));
-			
-			float tireGripFront = VehicleConfig.tireGrip;
-			float tireGripRear = VehicleConfig.tireGrip; // reduce rear grip when ebrake is on
-
-			float frictionForceFront_cy = MathUtils.clamp(-VehicleConfig.cornerStiffness * slipAngleFront, -tireGripFront, tireGripFront) * axleWeightFront;
-			float frictionForceRear_cy = MathUtils.clamp(-VehicleConfig.cornerStiffness * slipAngleRear, -tireGripRear, tireGripRear) * axleWeightRear;
-			System.out.println(frictionForceRear_cy);
-			//  Resulting force in local car coordinates.
-			//  This is implemented as a RWD car only.
-			float tractionForce_cx = engineForce + brakeForce;
-			float tractionForce_cy = 0;
-
-			float dragForce_cx = -VehicleConfig.rollDragConst * localVelocity.x - VehicleConfig.airDragConst * localVelocity.x * Math.abs(localVelocity.x);
-			float dragForce_cy = -VehicleConfig.rollDragConst * localVelocity.y - VehicleConfig.airDragConst * Math.abs(localVelocity.y);
-
-			// total force in car coordinates
-			float totalForce_cx = dragForce_cx + tractionForce_cx;
-			float totalForce_cy = (float) (dragForce_cy + tractionForce_cy + Math.cos(steerAngle) * frictionForceFront_cy + frictionForceRear_cy);
-
-			// acceleration along car axes
-			Vector2 accel_c = new Vector2();
-			accel_c.x = totalForce_cx / config.mass;  // forward/reverse accel
-			accel_c.y = totalForce_cy / config.mass;  // sideways accel
-
-			// acceleration in world coordinates
-			acceleration.y = cs * accel_c.x - sn * accel_c.y;
-			acceleration.x = sn * accel_c.x + cs * accel_c.y;
-
-			// update velocity
-			velocity.x += acceleration.x * delta;
-			velocity.y += acceleration.y * delta;
-
-			float absVel = velocity.len();
-
-			// calculate rotational forces
-			float angularTorque = (frictionForceFront_cy + tractionForce_cy) * config.cgToFrontAxle - frictionForceRear_cy * config.cgToRearAxle;
-
-			//  Sim gets unstable at very slow speeds, so just stop the car
-			if( Math.abs(absVel) < 0.5 && engineForce == 0 )
-			{
-				velocity.x = velocity.y = absVel = 0;
-				angularTorque = yawRate = 0;
-			}
-
-			float angularAccel = angularTorque / config.mass;
-
-			this.yawRate += angularAccel * delta;
-			this.heading += yawRate * delta;
-
-			//  finally we can update position
-			position.x += velocity.x * delta;
-			position.y += velocity.y * delta;
-			//System.out.println(position);
-			
-			//Update center of gravity and front axis positions
-			faPosition.set(0, 0.3f*config.length).rotateRad(heading).add(position);
-			forward.set(0, 1).scl(4).rotateRad(heading).add(position);
-						
-			config.rotateShape(heading, position);
-			movingFwd = localVelocity.y > 0 ? 1 : localVelocity.y == 0 ? 0 : -1;
-		}
-		
+				
 		public void updateAI(float delta) {
 			 //float throttle, steerAngle; 
 			 this.engineForce = 0;
@@ -298,17 +248,16 @@ public class Vehicle /*extends Actor*/ {
 			//Steering
 			int steerInput = steerInputLeft - steerInputRight; //Negative if steering right, positive if steering left.
 						
-			float steerMultiplier = 2f;
+			float steerMult = 0.8f;
 			if (Math.abs(steerInput) != 0) {
-				float percentageTakenByVelocity = (1 - getSpeed()/1000);
-				steer = MathUtils.clamp(steerInput * delta * steerMultiplier * percentageTakenByVelocity + steer, -1, 1);
+				steer = MathUtils.clamp(steerInput * delta * steerMult + steer, -1, 1) * (1 - getSpeed()/280);
 			} else { 
-				steer = MathUtils.lerp(steer, 0, delta * steerMultiplier);
+				steer = MathUtils.lerp(steer, 0, delta * steerMult * 5);
 				if (Math.abs(steer) < 0.001) steer = 0;
 			}
 
 			steerAngle = steer * VehicleConfig.maxSteeringAngle;
-			
+
 			//Throttle
 			float throttleMultiplier = 3f, brakeMultiplier = 10f;
 			int throttleDir =  throttleInputFwd - throttleInputBck; //Defines the direction of the engine or brake force
@@ -329,9 +278,8 @@ public class Vehicle /*extends Actor*/ {
 			
 			engineForce = throttle * VehicleConfig.engineForce;
 			brakeForce = brake * VehicleConfig.brakeForce;
-								
+
 			updatePhysics(delta, engineForce, brakeForce, steerAngle);
-			//updateCopy(delta, engineForce, brakeForce, steerAngle);
 		}
 				
 		public float getSpeed() {
