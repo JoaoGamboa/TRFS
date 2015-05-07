@@ -147,6 +147,11 @@ public class Vehicle /*extends Actor*/ {
 			this.config = vehicle.config;
 		}
 		
+		public void updateSimplePhysics(float delta, float engineForce, float brakeForce, float steerAngle) {
+			
+			
+		}
+		
 		public void updatePhysics(float delta, float engineForce, float brakeForce, float steerAngle) {
 			//System.out.println(engineForce+ ",  " + brakeForce+ ",  " + steerAngle+ ",  " + velocity.len() + ",  " + acceleration.len());
 		
@@ -170,20 +175,20 @@ public class Vehicle /*extends Actor*/ {
 			totalForces.x = traction.x + drag.x + (float) Math.sin(steerAngle) * frictionForceFront + frictionForceRear; 
 			totalForces.y = traction.y + drag.y;	
 			
-			//Update linear components
-			acceleration.set(totalForces.x/config.mass, totalForces.y/config.mass).rotateRad(heading);
-			velocity.mulAdd(acceleration, delta);
-			
 			//Update Angular components	
 			float angularAcc = (frictionForceFront * config.cgToFrontAxle - frictionForceRear * config.cgToRearAxle) / config.mass;
 			angularVelocity = angularAcc * delta;// TODO
+			
+			//Update linear components
+			acceleration.set(totalForces.x/config.mass, totalForces.y/config.mass).rotateRad(-heading);
+			velocity.mulAdd(acceleration, delta);
 			
 			if (speed < 0.5 && engineForce == 0) {
 				velocity.setZero();	angularVelocity = 0;
 			}
 			
 			//Update heading and position
-			heading += angularVelocity * delta;
+			heading -= angularVelocity * delta;
 			position.mulAdd(velocity, delta);
 			
 			//Update center of gravity and front axis positions
@@ -192,7 +197,8 @@ public class Vehicle /*extends Actor*/ {
 						
 			config.rotateShape(heading, position);
 			movingFwd = localVelocity.y > 0 ? 1 : localVelocity.y == 0 ? 0 : -1;
-			System.out.println(forward.angle()
+			System.out.println(forward.angle() + "   ,   " + acceleration.angle()  + "   ,   " + velocity.angle()+ "   ,   " + heading);
+			//System.out.println(acc.angle());
 		}
 		
 		public void updateCopy(float delta, float engineForce, float brakeForce, float steerAngle) {
