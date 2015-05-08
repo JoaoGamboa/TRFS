@@ -28,7 +28,7 @@ public class PathFollowing {
 		path.updateTargetPosition(vehicle.physics.position, targetPosition, state, targetOffset);
 
 		//Set aim to the target
-		steerAngle = frontAxisToTarget.set(targetPosition).sub(vehicle.physics.faPosition).angleRad();
+		steerAngle = frontAxisToTarget.set(targetPosition).sub(vehicle.physics.frontAxisPostion).angleRad();
 		
 		return steerAngle * MathUtils.degRad;
 	}

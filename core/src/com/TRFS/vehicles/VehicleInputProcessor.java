@@ -67,7 +67,6 @@ public class VehicleInputProcessor {
 	}
 	
 	public boolean isTouched(Vehicle vehicle, float worldX, float worldY){
-		
 		//Quick test
 		if (Math.abs(worldX - vehicle.physics.position.x) > 10 ) return false;
 		if (Math.abs(worldY - vehicle.physics.position.y) > 10 ) return false;
@@ -76,10 +75,10 @@ public class VehicleInputProcessor {
 		localMouseClick.set(worldX, worldY);
 		MiscUtils.globalToLocalOut(localMouseClick, vehicle.physics.heading, vehicle.physics.position);
 		
-		if (localMouseClick.x > vehicle.config.localVertices.get(0).x
-				&& localMouseClick.x < vehicle.config.localVertices.get(1).x) {
-			if (localMouseClick.y > vehicle.config.localVertices.get(0).y
-					&& localMouseClick.y < vehicle.config.localVertices.get(2).y) {
+		if (localMouseClick.x > -vehicle.config.width/2
+				&& localMouseClick.x < vehicle.config.width/2) {
+			if (localMouseClick.y > -vehicle.config.length/2
+					&& localMouseClick.y < vehicle.config.length/2) {
 				return true;
 			}
 		}

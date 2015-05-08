@@ -68,25 +68,23 @@ public class Behavior {
 		}
 		
 		float linearAccelMagnitude = 0;
-		float steerAngle = 0;
 		
-		//Update CarFollowing (gives the initial vector magnitude)
+		//Update CarFollowing (returns an amount of throttle or brake ranging from -1 to 1)
 		Vehicle leader = null; // TODO
 		
 		linearAccelMagnitude = updateCarFollowing(leader);
-		if (linearAccelMagnitude >= 0) {
+		/*if (linearAccelMagnitude >= 0) {
 			MathUtils.clamp(linearAccelMagnitude, -vehicle.config.maxLinearAcceleration, vehicle.config.maxLinearAcceleration);
 		} else {
 			MathUtils.clamp(linearAccelMagnitude, -vehicle.config.maxBrakeAcceleration, vehicle.config.maxBrakeAcceleration);
-		}
+		}*/
 
 		//TODO other constraints that might affect the acceleration magnitude.
 		
 		//Update PathFollowing (sets the vector direction)
+		float steerAngle = 0;
 		pathFollowing.update(vehicle, linearAccelMagnitude, steerAngle);
 		MathUtils.clamp(steerAngle, -VehicleConfig.maxSteeringAngle, VehicleConfig.maxSteeringAngle);
-				
-		//Build vector
 
 		// TODO when changing lanes, must find a way to make the velocity point
 		// to the target lane
@@ -94,7 +92,12 @@ public class Behavior {
 		//Update Vehicle
 		//vehicle.physics.accelerationInput = linearAccelMagnitude; TODO throttle
 		vehicle.physics.steerAngle = steerAngle;
+		vehicle.physics.updateAI(dT, TODO, TODO);
 	}
+	
+		
+		//Build vector
+	
 	
 	/**Updates the {@link Vehicle}'s {@link CarFollowingModel} regarding it's leader.
 	 * @param leader
@@ -104,8 +107,8 @@ public class Behavior {
 		//Update car-following behaviour
 		if (leader != null) {
 			float carFollowingAcceleration = carFollowingModel.update(leader.physics.position.dst(vehicle.physics.position),
-					leader.physics.getSpeed() - vehicle.physics.getSpeed(), leader.config.length,	vehicle.physics.getSpeed(), leader.physics.getSpeed(), 
-					leader.physics.getAccelMagnitude(), currentLink.getMaxspeed(), desiredSpeed);
+					leader.physics.speed - vehicle.physics.speed, leader.config.length,	vehicle.physics.speed, leader.physics.speed, 
+					leader.physics.acceleration, currentLink.getMaxspeed(), desiredSpeed);
 			
 			return carFollowingAcceleration;
 			
