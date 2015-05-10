@@ -58,13 +58,13 @@ public class Path {
 		temp3.set(point);
 
 		Vector2 distStartFinish = temp2.sub(pathSegment.start);
-		float t = (temp3.sub(pathSegment.finish)).dot(distStartFinish)
-				/ distStartFinish.len2();
+		//System.out.println((temp3.sub(pathSegment.finish)).dot(distStartFinish));
+		float t = (temp3.sub(pathSegment.start)).dot(distStartFinish) / distStartFinish.len2();
 		t = MathUtils.clamp(t, 0, 1);
 		outNearestPoint.set(temp1.add(distStartFinish.scl(t)));
-
 		temp1.set(outNearestPoint);
 		Vector2 pointToNearest = temp1.sub(point);
+
 		return pointToNearest.len2();
 	}
 
@@ -101,7 +101,7 @@ public class Path {
 			Vector2 point) {
 		float smallestDistanceSq = Float.POSITIVE_INFINITY;
 
-		int startIndex = state.isUpdated() ? state.getCurrentSegmentIndex() : 0;
+		int startIndex = state.updated ? state.currentSegmentIndex : 0;
 
 		PathSegment nearestSegment = null;
 		for (int i = startIndex; i < segments.size; i++) {
@@ -109,14 +109,13 @@ public class Path {
 					segments.get(i), point);
 
 			if (distanceSq < smallestDistanceSq) {
-				state.getNearestPointOnPath().set(temp4);
+				state.nearestPointOnPath.set(temp4);
 				smallestDistanceSq = distanceSq;
 				nearestSegment = segments.get(i);
-				state.setCurrentSegmentIndex(i);
-				state.setUpdated(true);
+				state.currentSegmentIndex = i;
+				state.updated = true;
 			}
 		}
-
 		return nearestSegment;
 	}
 
@@ -136,8 +135,10 @@ public class Path {
 		PathSegment nearestSegment = findNearestSegment(state, point);
 		
 		float distanceFromPathStart = nearestSegment.cumulativeLength
-				- state.getNearestPointOnPath().dst(nearestSegment.finish);
-		state.setDistanceOnPath(distanceFromPathStart);
+				- state.nearestPointOnPath.dst(nearestSegment.finish);
+		
+		state.distanceOnPath = distanceFromPathStart;
+		
 		return distanceFromPathStart;
 	}
 
@@ -158,7 +159,7 @@ public class Path {
 
 		float targetDistance = distanceFromPathStart(state, agentPosition)
 				+ targetOffset;
-	
+		
 		if (targetDistance > length)
 			targetDistance = length;
 		if (targetDistance < 0)
@@ -169,7 +170,7 @@ public class Path {
 		
 		float targetDistanceOnSegment = desiredSegment.cumulativeLength
 				- targetDistance;
-
+		
 		targetPosition.set(desiredSegment.start).sub(desiredSegment.finish)
 				.scl(targetDistanceOnSegment / desiredSegment.length)
 				.add(desiredSegment.finish);
@@ -177,7 +178,7 @@ public class Path {
 
 	public PathSegment getSegmentFromDistanceFromStart(
 			PathFollowingState state, float targetDistance) {
-		for (int i = state.getCurrentSegmentIndex(); i < segments.size; i++) {
+		for (int i = state.currentSegmentIndex; i < segments.size; i++) {
 			PathSegment segment = segments.get(i);
 			if (segment.cumulativeLength >= targetDistance) {
 				return segment;

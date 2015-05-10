@@ -1,9 +1,11 @@
 package com.TRFS.models.path;
 
+import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Path;
 import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.sun.corba.se.impl.protocol.giopmsgheaders.TargetAddressHelper;
 
 /**
@@ -14,21 +16,25 @@ public class PathFollowing {
 
 	private Path path;
 	private PathFollowingState state;
+	private Array<Link> linkSequence;
 
-	private Vector2 targetPosition, frontAxisToTarget;
+	private Vector2 targetPosition;
 	private float targetOffset=5f;
 
 	public PathFollowing() {
 		this.state = new PathFollowingState();
 		this.targetPosition = new Vector2();
-		this.frontAxisToTarget = new Vector2();
+		this.linkSequence = new Array<Link>();
 	}
 	
 	//linearAcceleration is here if needed to update in the future, but not yet used
 	public float update(Vehicle vehicle) {
-		path.updateTargetPosition(vehicle.physics.position, targetPosition, state, targetOffset);
-		
+		path.updateTargetPosition(vehicle.physics.position, targetPosition, state, targetOffset);		
 		vehicle.targetPos.set(targetPosition); //TODO delete debug only
+		
+		
+		if ((state.distanceOnPath + targetOffset * 1.5f) > path.getLength()) nextLink();
+		
 		
 		//Set aim to the target
 		float targetHeading = (float) Math.atan2(targetPosition.x - vehicle.physics.position.x, targetPosition.y - vehicle.physics.position.y);
@@ -38,7 +44,12 @@ public class PathFollowing {
 
 	public void setPath(Path path) {
 		this.path = path;
-		this.state.setUpdated(false);
+		//this.state.nearestPointOnPath = path.getStartPoint().cpy();
+		this.state.updated = false;
+	}
+	
+	public void nextLink() {
+		//TODO set path as the next link on the link sequence
 	}
 
 	public PathFollowingState getState() {
@@ -54,46 +65,15 @@ public class PathFollowing {
 	 */
 	public class PathFollowingState {
 
-		private int currentSegmentIndex;
-		private float distanceOnPath;
-		private Vector2 nearestPointOnPath;
-		private boolean updated;
+		public int currentSegmentIndex;
+		public float distanceOnPath;
+		public Vector2 nearestPointOnPath;
+		public boolean updated;
 
 		public PathFollowingState() {
-			this.nearestPointOnPath = new Vector2();
+			nearestPointOnPath = new Vector2();
 		}
 
-		public Vector2 getNearestPointOnPath() {
-			return nearestPointOnPath;
-		}
-
-		public void setNearestPointOnPath(Vector2 nearestPointOnPath) {
-			this.nearestPointOnPath = nearestPointOnPath;
-		}
-
-		public int getCurrentSegmentIndex() {
-			return currentSegmentIndex;
-		}
-
-		public void setCurrentSegmentIndex(int currentSegmentIndex) {
-			this.currentSegmentIndex = currentSegmentIndex;
-		}
-
-		public float getDistanceUntilCurrentSegment() {
-			return distanceOnPath;
-		}
-
-		public void setDistanceOnPath(float distanceOnPath) {
-			this.distanceOnPath = distanceOnPath;
-		}
-
-		public boolean isUpdated() {
-			return updated;
-		}
-
-		public void setUpdated(boolean updated) {
-			this.updated = updated;
-		}
 	}
 
 }

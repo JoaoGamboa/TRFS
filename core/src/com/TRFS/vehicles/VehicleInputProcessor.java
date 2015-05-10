@@ -36,6 +36,7 @@ public class VehicleInputProcessor {
 			sVehicle.config.userControlled = true;
 		} else {
 			sVehicle.config.color = sVehicle.config.defaultColor;
+			sVehicle.behavior.rellocateAfterUserControlled();
 			sVehicle.config.userControlled = false;
 			sVehicle.config.selected = false;
 			sVehicle = null;

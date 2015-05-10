@@ -162,6 +162,11 @@ public class Behavior {
 		vehicle.physics.setLocation(startLane.getPath().getStartPoint(), rotation);
 	}
 	
+	public void rellocateAfterUserControlled() {
+		//TODO find nearest link/lane, set it as path
+		
+	}
+	
 	public void setCurrentLink(Link currentLink) {
 		this.currentLink = currentLink;
 	}
