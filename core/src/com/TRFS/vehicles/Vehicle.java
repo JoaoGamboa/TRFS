@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.Array;
  * @author jgamboa
  */
 
-public class Vehicle /*extends Actor*/ {
+public class Vehicle {
 
 	// Properties
 	public VehiclePhysics physics;
@@ -31,6 +31,9 @@ public class Vehicle /*extends Actor*/ {
 	
 	// Shape & Aspect
 	protected TextureRegion region;
+	
+	//Debug
+	public Vector2 targetPos = new Vector2();
 	
 	/**
 	 * Creates a new vehicle.
@@ -74,17 +77,20 @@ public class Vehicle /*extends Actor*/ {
 	}
 	
 	public void drawVehicleDebug(ShapeRenderer renderer) {
-		renderer.begin(ShapeType.Line);
+		
+		/*renderer.begin(ShapeType.Line);
 		renderer.setColor(config.color);
 		for (int i = 0; i < config.vertices.size - 1; i++) {
 			renderer.line(config.vertices.get(i), config.vertices.get(i+1));
 		}
 		renderer.line(config.vertices.peek(), config.vertices.first());	
-		renderer.end();
+		renderer.end();*/
 		
 		renderer.begin(ShapeType.Filled);		
-		renderer.setColor(Color.BLUE);
-		renderer.circle(physics.position.x, physics.position.y, 0.3f);
+		/*renderer.setColor(Color.BLUE);
+		renderer.circle(physics.position.x, physics.position.y, 0.3f);*/
+		renderer.setColor(Color.YELLOW);
+		renderer.circle(targetPos.x, targetPos.y, 0.3f);
 		renderer.end();
 	}
 					
@@ -106,7 +112,7 @@ public class Vehicle /*extends Actor*/ {
 			this.position = new Vector2();
 			this.frontAxisPostion = new Vector2();
 		}
-		
+				
 		private void updatePhysics(float delta) {
 			
 			float engineForce = throttle * VehicleConfig.engineForce;
@@ -117,7 +123,7 @@ public class Vehicle /*extends Actor*/ {
 			
 			acceleration = MathUtils.clamp((traction + drag) / config.mass, -VehicleConfig.maxLinearAcceleration, VehicleConfig.maxLinearAcceleration);	
 			speed = MathUtils.clamp(acceleration * delta + speed, -VehicleConfig.maxLinearSpeed, VehicleConfig.maxLinearSpeed);
-		
+						
 			if (Math.abs(speed) < 0.5 && engineForce == 0) speed = 0;
 			
 			float dXY = speed * delta;
@@ -127,6 +133,7 @@ public class Vehicle /*extends Actor*/ {
 			
 			deltaPosition.set((frontWPos.x + rearWPos.x)/2, (frontWPos.y + rearWPos.y)/2).rotateRad(heading);
 			heading -= (float) Math.atan2(frontWPos.x - rearWPos.x, frontWPos.y - rearWPos.y);
+			heading %= MathUtils.PI2;
 			
 			position.add(deltaPosition);
 			
@@ -137,28 +144,37 @@ public class Vehicle /*extends Actor*/ {
 			config.updateVertices(heading, position);
 		}
 				
-		public void updateAI(float delta, float throttle, float brake) {
-			float throttleMultiplier = 1f, brakeMultiplier = 10f;
-			this.throttle = MathUtils.clamp(throttleMultiplier * throttle * delta + this.throttle, -1, 1);
-			this.brake = MathUtils.clamp(brakeMultiplier * brake * delta + this.brake, -1, 1);
+		public void updateAI(float delta, float throttle, float brake, float steerAngle) {
+			float throttleMultiplier = 1f, brakeMultiplier = 10f, steerMultiplier = 0.8f;
+			
+			this.steerAngle = MathUtils.clamp(steerMultiplier * steerAngle * delta
+					+ this.steerAngle, -VehicleConfig.maxSteeringAngle,
+					VehicleConfig.maxSteeringAngle) * (1 - Math.abs(speed)/280);
+			if (Math.abs(steerAngle) < 0.1) this.steerAngle = steerAngle;
+			
+			this.throttle = (float) (MathUtils.clamp(throttleMultiplier * throttle
+					* delta + this.throttle, -1, 1) * (1 - Math.abs(steerAngle)*0.2));
+			
+			this.brake = MathUtils.clamp(brakeMultiplier * brake * delta
+					+ this.brake, -1, 1);
 			updatePhysics(delta);
 		}
 		
-		public void updateUserInput(float delta) {
+		private void updateUserInput(float delta) {
 			
 			//Steering
 			int steerInput = steerInputLeft - steerInputRight; //Negative if steering right, positive if steering left.
 			
 			float steerMult = 0.8f;
 			if (Math.abs(steerInput) != 0) {
-				steer = MathUtils.clamp(steerInput * delta * steerMult + steer, -1, 1) * (1 - speed/280);
+				steer = MathUtils.clamp(steerInput * delta * steerMult + steer, -1, 1) * (1 - Math.abs(speed)/280);
 			} else { 
 				steer = MathUtils.lerp(steer, 0, delta * steerMult * 5);
 				if (Math.abs(steer) < 0.001) steer = 0;
 			}
 
 			//Throttle
-			float throttleMultiplier = 1f, brakeMultiplier = 10f;
+			float throttleMultiplier = 1f, brakeMultiplier = 15f;
 			int throttleDir =  throttleInputFwd - throttleInputBck; //Defines the direction of the engine or brake force
 			int throttleMult = movingFwd * throttleDir; //Defines if the vehicle is braking (-1), accelerating (1) or free (0)
 			
@@ -187,7 +203,6 @@ public class Vehicle /*extends Actor*/ {
 			this.heading = heading;
 			this.config.updateVertices(heading, position);
 		}
-		
 	}
 	
 	public class VehicleConfig {
@@ -198,7 +213,7 @@ public class Vehicle /*extends Actor*/ {
 		public float width, length, mass, wheelBase;
 		public Array<Vector2> vertices;
 		
-		public static final float engineForce = 8000, brakeForce = 12000, airDragConst = 0.5f, rollDragConst = 12.8f;//(N)
+		public static final float engineForce = 10000, brakeForce = 20000, airDragConst = 8f, rollDragConst = 12.8f;//(N)
 		public static final float maxLinearSpeed = 40, maxLinearAcceleration = 8, /*(m/s)*/ maxSteeringAngle = 45 * MathUtils.degRad; /*Rad*/
 							
 		public VehicleConfig(Vehicle vehicle, float width, float length, float mass, Color color) {

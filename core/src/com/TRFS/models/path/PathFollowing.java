@@ -4,6 +4,7 @@ import com.TRFS.scenarios.map.Path;
 import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.sun.corba.se.impl.protocol.giopmsgheaders.TargetAddressHelper;
 
 /**
  * @author J.P.Gamboa jpgamboa@outlook.com
@@ -24,13 +25,15 @@ public class PathFollowing {
 	}
 	
 	//linearAcceleration is here if needed to update in the future, but not yet used
-	public float update(Vehicle vehicle, float linearAcceleration, float steerAngle) {
+	public float update(Vehicle vehicle) {
 		path.updateTargetPosition(vehicle.physics.position, targetPosition, state, targetOffset);
-
-		//Set aim to the target
-		steerAngle = frontAxisToTarget.set(targetPosition).sub(vehicle.physics.frontAxisPostion).angleRad();
 		
-		return steerAngle * MathUtils.degRad;
+		vehicle.targetPos.set(targetPosition); //TODO delete debug only
+		
+		//Set aim to the target
+		float targetHeading = (float) Math.atan2(targetPosition.x - vehicle.physics.position.x, targetPosition.y - vehicle.physics.position.y);
+
+		return -targetHeading;
 	}
 
 	public void setPath(Path path) {

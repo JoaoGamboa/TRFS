@@ -62,9 +62,6 @@ public class GraphicsManager {
 	public void dispose() {
 		shapeRenderer.dispose();
 		batch.dispose();
-		/*for (Stage stage : stages) {
-			stage.dispose();
-		}*/
 	}
 
 	public WorldCamera getCamera() {

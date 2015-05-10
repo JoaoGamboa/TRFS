@@ -67,32 +67,26 @@ public class Behavior {
 			setDesiredSpeed(currentLink.getMaxspeed() * desiredSpeedFactor);
 		}
 		
-		float linearAccelMagnitude = 0;
-		
+		// From -1 to 1, to be passed to the updatePhysics method as a % of the total vehicle capability
+		float throttle = 0, brake = 0, steerAngle = 0; 
+		throttle = 0.5f;
 		//Update CarFollowing (returns an amount of throttle or brake ranging from -1 to 1)
 		Vehicle leader = null; // TODO
 		
-		linearAccelMagnitude = updateCarFollowing(leader);
-		/*if (linearAccelMagnitude >= 0) {
-			MathUtils.clamp(linearAccelMagnitude, -vehicle.config.maxLinearAcceleration, vehicle.config.maxLinearAcceleration);
-		} else {
-			MathUtils.clamp(linearAccelMagnitude, -vehicle.config.maxBrakeAcceleration, vehicle.config.maxBrakeAcceleration);
-		}*/
+		float carFollowingThrottle = updateCarFollowing(leader);
 
 		//TODO other constraints that might affect the acceleration magnitude.
 		
 		//Update PathFollowing (sets the vector direction)
-		float steerAngle = 0;
-		pathFollowing.update(vehicle, linearAccelMagnitude, steerAngle);
-		MathUtils.clamp(steerAngle, -VehicleConfig.maxSteeringAngle, VehicleConfig.maxSteeringAngle);
+		float targetHeading = pathFollowing.update(vehicle);
+		steerAngle = targetHeading - vehicle.physics.heading;
+		if (steerAngle > MathUtils.PI) steerAngle -= MathUtils.PI2;
 
 		// TODO when changing lanes, must find a way to make the velocity point
 		// to the target lane
 		
 		//Update Vehicle
-		//vehicle.physics.accelerationInput = linearAccelMagnitude; TODO throttle
-		vehicle.physics.steerAngle = steerAngle;
-		vehicle.physics.updateAI(dT, TODO, TODO);
+		vehicle.physics.updateAI(dT, throttle, brake, steerAngle);
 	}
 	
 		
