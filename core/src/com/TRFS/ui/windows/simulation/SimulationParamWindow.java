@@ -65,12 +65,12 @@ public class SimulationParamWindow {
 			slider.setValue(slider.getParameter().getCurrentVal());
 		}
 
-		for (Link link : currentScenario.getMap().getInFlowLinks()) {
+		for (Link link : currentScenario.map.inFlowLinks) {
 			DynamicParamSlider slider = new DynamicParamSlider(
-					link.getInFlowParam());
+					link.inFlowParam);
 			sliderListFlows.add(slider);
 
-			SimulationParameters.simParamsListFlows.add(link.getInFlowParam());
+			SimulationParameters.simParamsListFlows.add(link.inFlowParam);
 
 			table.add(slider.getLabel()).row();
 			table.add(slider).width(250).pad(10).row();
@@ -104,7 +104,7 @@ public class SimulationParamWindow {
 		}
 
 		for (int i = 0; i < ((WorldScreen) ScreensManager.getWorldScreen())
-				.getScenario().getMap().getInFlowLinks().size; i++) {
+				.getScenario().map.inFlowLinks.size; i++) {
 			DynamicSimParam param = SimulationParameters.simParamsListFlows
 					.get(i);
 			param.setCurrentVal(param.getDefaultVal());

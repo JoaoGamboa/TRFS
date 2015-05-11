@@ -10,7 +10,6 @@ import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Path;
 import com.TRFS.vehicles.Vehicle;
-import com.TRFS.vehicles.Vehicle.VehicleConfig;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -28,15 +27,15 @@ public class Behavior {
 
 	//public static DynamicSimParam[] calibrationParameters;
 	private CarFollowingModel carFollowingModel;
-	private PathFollowing pathFollowing;
+	public PathFollowing pathFollowing;
 
 	private Vehicle vehicle;
 
 	private float desiredSpeed, desiredSpeedFactor;
 	
 	private boolean changedLink;
-	private Link currentLink;
-	private Lane currentLane;
+	public Link currentLink;
+	public Lane currentLane;
 	
 	private float maxDesiredAcceleration = 5; //TODO should be variable for each driver
 	
@@ -64,7 +63,7 @@ public class Behavior {
 	public void update(float dT) {
 
 		if (changedLink) {
-			setDesiredSpeed(currentLink.getMaxspeed() * desiredSpeedFactor);
+			setDesiredSpeed(currentLink.maxspeed * desiredSpeedFactor);
 		}
 		
 		// From -1 to 1, to be passed to the updatePhysics method as a % of the total vehicle capability
@@ -89,10 +88,6 @@ public class Behavior {
 		vehicle.physics.updateAI(dT, throttle, brake, steerAngle);
 	}
 	
-		
-		//Build vector
-	
-	
 	/**Updates the {@link Vehicle}'s {@link CarFollowingModel} regarding it's leader.
 	 * @param leader
 	 * @return Updated acceleration float.
@@ -102,7 +97,7 @@ public class Behavior {
 		if (leader != null) {
 			float carFollowingAcceleration = carFollowingModel.update(leader.physics.position.dst(vehicle.physics.position),
 					leader.physics.speed - vehicle.physics.speed, leader.config.length,	vehicle.physics.speed, leader.physics.speed, 
-					leader.physics.acceleration, currentLink.getMaxspeed(), desiredSpeed);
+					leader.physics.acceleration, currentLink.maxspeed, desiredSpeed);
 			
 			return carFollowingAcceleration;
 			
@@ -137,29 +132,17 @@ public class Behavior {
 		this.desiredSpeed = (float) (new Random().nextGaussian() * 20 + maxSpeed);
 	}
 	
-	public boolean isChangedLink() {
-		return changedLink;
-	}
-
-	public void setChangedLink(boolean changedLink) {
-		this.changedLink = changedLink;
-	}
-
-	public Link getCurrentLink() {
-		return currentLink;
-	}
-
 	/** Sets the initial location ({@link Link} and {@link Lane}) of the vehicle.
 	 * Updates the vehicle {@link PathFollowing}'s {@link Path} and sets the {@link Vehicle}'s position.
 	 * @param startLink
 	 * @param startLane
 	 */
 	public void setInitialLocation(Link startLink, Lane startLane) {
-		setCurrentLink(startLink);
-		setCurrentLane(startLane);
-		pathFollowing.setPath(startLane.getPath());
-		float rotation = (float) (new Vector2().set(startLane.getPath().getSecondPoint()).sub(startLane.getPath().getStartPoint()).angleRad()-(Math.PI/2f));
-		vehicle.physics.setLocation(startLane.getPath().getStartPoint(), rotation);
+		currentLink = startLink;
+		currentLane = startLane;
+		pathFollowing.setPath(startLane.path);
+		float rotation = (float) (new Vector2().set(startLane.path.getSecondPoint()).sub(startLane.path.getStartPoint()).angleRad()-(Math.PI/2f));
+		vehicle.physics.setLocation(startLane.path.getStartPoint(), rotation);
 	}
 	
 	public void rellocateAfterUserControlled() {
@@ -167,15 +150,4 @@ public class Behavior {
 		
 	}
 	
-	public void setCurrentLink(Link currentLink) {
-		this.currentLink = currentLink;
-	}
-
-	public Lane getCurrentLane() {
-		return currentLane;
-	}
-
-	public void setCurrentLane(Lane currentLane) {
-		this.currentLane = currentLane;
-	}
 }

@@ -13,11 +13,13 @@ import com.badlogic.gdx.utils.Array;
 public class TrafficManager {
 	
 	private InFlowsManager inFlowsManager;
+
 	private Array<Array<Vehicle>> vehicleLayers;
 
 	public TrafficManager(Scenario scenario) {
 		inFlowsManager = new InFlowsManager(scenario);
 		this.vehicleLayers = scenario.getVehicleLayers();
+		
 	}
 	
 	public void update(float delta, float simulationTime) {

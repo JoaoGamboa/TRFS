@@ -5,7 +5,7 @@ import com.TRFS.scenarios.map.Link;
 public class LinkAttributes {
 		
 	public static void handleHierarchy(Link link) {
-		int hierarchy = link.getHierarchy();
+		int hierarchy = link.hierarchy;
 		
 		//defaults
 		float laneWidth = 3.0f;
@@ -46,12 +46,12 @@ public class LinkAttributes {
 				break;
 		}
 		
-		if (link.getHierarchy() == 0 ) link.setHierarchy(4);
-		if (link.getNrOfLanes() == 0) link.setNrOfLanes(lanes);
-		if (link.getMaxspeed() == 0) link.setMaxspeed(maxSpeed);
+		if (link.hierarchy == 0 ) link.hierarchy = 4;
+		if (link.nrOfLanes == 0) link.nrOfLanes = lanes;
+		if (link.maxspeed == 0) link.maxspeed = maxSpeed;
 		
-		link.setLaneWidth(laneWidth);
-		link.setLaneCapacity(laneCapacity);
+		link.laneWidth = laneWidth;
+		link.laneCapacity = laneCapacity;
 
 	}
 	

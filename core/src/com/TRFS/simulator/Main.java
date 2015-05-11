@@ -1,5 +1,7 @@
 package com.TRFS.simulator;
 
+import java.util.Random;
+
 import com.TRFS.simulator.screens.Settings;
 import com.TRFS.simulator.screens.SplashScreen;
 import com.badlogic.gdx.Game;

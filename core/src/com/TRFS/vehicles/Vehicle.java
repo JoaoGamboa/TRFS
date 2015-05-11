@@ -1,9 +1,7 @@
 package com.TRFS.vehicles;
 
 import com.TRFS.models.Behavior;
-import com.TRFS.scenarios.map.Coordinate;
 import com.TRFS.simulator.AssetsMan;
-import com.TRFS.simulator.MiscUtils;
 import com.TRFS.simulator.SimulationParameters;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;

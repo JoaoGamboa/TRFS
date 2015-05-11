@@ -32,18 +32,20 @@ public class JSONMapUtils {
 			JSONProperties properties = features.get(j).getProperties();
 
 			// Create Link with extracted data. Coordinate are added later.
-			Link link = new Link(j, properties.getHierarchy(),
+			Link link = new Link();
+			
+			link.setAttributes(j, properties.getHierarchy(),
 					properties.getInFlow(), properties.getLanes(),
 					properties.getMaxspeed(), properties.getOneway(),
 					properties.getZ());
 
-			if (!map.getzLevels().contains(link.getZ(), true))
-				map.getzLevels().add(link.getZ());
+			if (!map.zLevels.contains(link.z, true))
+				map.zLevels.add(link.z);
 
-			map.getLinks().add(link);
+			map.links.add(link);
 			// If this link has inflows data, add it to an array for posterity.
-			if (link.getInFlow() > 0)
-				map.getInFlowLinks().add(link);
+			if (link.inFlow > 0)
+				map.inFlowLinks.add(link);
 
 			Array<Coordinate> coordinates = new Array<Coordinate>();
 			for (int k = 0; k < coordinatesList.size(); k++) {
@@ -58,8 +60,8 @@ public class JSONMapUtils {
 						coordinatesList.get(k));
 
 				Coordinate pannedCoordinate = new Coordinate(jsonCoordinate
-						.getXYPoint().getX() + mapRelocation.getX(), jsonCoordinate
-						.getXYPoint().getY() + mapRelocation.getY());
+						.getXYPoint().x + mapRelocation.x, jsonCoordinate
+						.getXYPoint().y + mapRelocation.y);
 
 				// If it's a first or last point, then it's a node
 				if (isFirstPoint || isLastPoint) {
@@ -76,43 +78,47 @@ public class JSONMapUtils {
 				coordinates = LinkGeometryUtils.smoothGeometry(coordinates, 4);
 				
 			link.setCoordinates(coordinates);
+			link.finalizeBuild();
 		}
 	}
 	
 	
-	public static void addNode(Map map, Coordinate coordinates, boolean isFirstPoint, Link fromLink) {
+	public static void addNode(Map map, Coordinate coordinates, boolean isFirstPoint, Link sourceLink) {
 		boolean isRepeated = false;
 		Node finalNode = null;
 		
-		for (Link link : map.getLinks()) {
-			if (link.getFromNode() != null) {
-				if (coordinates.equals(link.getFromNode().getCoordinates())) {
+		//Check if node already exists and get a handle to update it
+		for (Link link : map.links) {
+			if (link.fromNode != null) {
+				if (coordinates.equals(link.fromNode.coordinate)) {
 					isRepeated = true;
-					finalNode = link.getFromNode();
+					finalNode = link.fromNode;
 				}
 			}
-			if (link.getToNode() != null) {
-				if (coordinates.equals(link.getToNode().getCoordinates())) {
+			if (link.toNode != null) {
+				if (coordinates.equals(link.toNode.coordinate)) {
 					isRepeated = true;
-					finalNode = link.getToNode();
+					finalNode = link.toNode;
 				}
 			}
-		}
-
-		if (isRepeated) {
-			//This node already exists, so update it.
-			finalNode.getFromLinks().add(fromLink);
-		} else {
-			//This is a new node, so add it.
-			finalNode = new Node(coordinates, map.getNodes().size+1, fromLink);
-			map.getNodes().add(finalNode);
 		}
 		
-		if (isFirstPoint) {
-			fromLink.setFromNode(finalNode);
-		} else { 
-			fromLink.setToNode(finalNode);
+		//If it doesn't exist, create a new one
+		if (!isRepeated) {
+			//This is a new node, so add it.
+			finalNode = new Node(coordinates, map.nodes.size+1, sourceLink);
+			map.nodes.add(finalNode);
 		}
+		
+		//If this node is a first point, then this Link becomes a toLink. If last point, then a fromLink
+		if (isFirstPoint) {
+			finalNode.toLinks.add(sourceLink);
+			sourceLink.fromNode = finalNode;
+		} else {
+			finalNode.fromLinks.add(sourceLink);
+			sourceLink.toNode = finalNode;
+		}
+		
 	}
 
 	/**
@@ -129,8 +135,8 @@ public class JSONMapUtils {
 			for (int l = 0; l < coordinatesList.size(); l++) {
 				JSONCoordinates jsonCoordinate = new JSONCoordinates(
 						coordinatesList.get(l));
-				coordinatesX.add((double) jsonCoordinate.getXYPoint().getX());
-				coordinatesY.add((double) jsonCoordinate.getXYPoint().getY());
+				coordinatesX.add((double) jsonCoordinate.getXYPoint().x);
+				coordinatesY.add((double) jsonCoordinate.getXYPoint().y);
 			}
 		}
 		return new Coordinate(-MiscUtils.average(coordinatesX),

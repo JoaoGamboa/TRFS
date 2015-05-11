@@ -20,22 +20,6 @@ public class Coordinate {
 		this.y = y;
 	}
 
-	public float getX() {
-		return x;
-	}
-
-	public void setX(float x) {
-		this.x = x;
-	}
-
-	public float getY() {
-		return y;
-	}
-
-	public void setY(float y) {
-		this.y = y;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

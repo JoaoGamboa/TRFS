@@ -24,7 +24,7 @@ public class GraphicsManager {
 	
 	public GraphicsManager(Scenario scenario, WorldCamera camera,
 			SpriteBatch batch) {
-		this.map = scenario.getMap();
+		this.map = scenario.map;
 		this.camera = camera;
 		this.batch = batch;
 		this.vehicleLayers = scenario.getVehicleLayers();
@@ -39,7 +39,7 @@ public class GraphicsManager {
 	public void render(float delta) {
 		batch.setProjectionMatrix(camera.combined);
 
-		for (Integer zLevel : map.getzLevels()) {
+		for (Integer zLevel : map.zLevels) {
 			MapRenderer.render(map, zLevel);
 			for (Vehicle vehicle : vehicleLayers.get(zLevel)) {
 				batch.begin();
@@ -51,7 +51,7 @@ public class GraphicsManager {
 		if (SimulationParameters.drawDebug){
 			shapeRenderer.setProjectionMatrix(camera.combined);
 			MapRenderer.renderDebug(map, shapeRenderer);
-			for (Integer zLevel : map.getzLevels()) {
+			for (Integer zLevel : map.zLevels) {
 				for (Vehicle vehicle : vehicleLayers.get(zLevel)) {
 					vehicle.drawVehicleDebug(shapeRenderer);
 				}

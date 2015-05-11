@@ -24,7 +24,7 @@ public class Scenario {
 	private Array<Array<Vehicle>> vehicleLayers;
 	//private Array<Stage> stages;
 	
-	private Map map;
+	public Map map;
 	
 	private long startTime = TimeUtils.millis(), elapsedTime = 0;
 	private float simulationTime = 0;
@@ -38,7 +38,7 @@ public class Scenario {
 		this.batch = new SpriteBatch();
 		
 		vehicleLayers = new Array<Array<Vehicle>>();
-		for (@SuppressWarnings("unused") Integer zLevel : map.getzLevels()) {
+		for (@SuppressWarnings("unused") Integer zLevel : map.zLevels) {
 			this.vehicleLayers.add(new Array<Vehicle>());			
 		}
 		
@@ -74,10 +74,6 @@ public class Scenario {
 		graphicsManager.resize(width, height);
 	}
 	
-	public Map getMap() {
-		return map;
-	}
-	
 	public void dispose() {
 		graphicsManager.dispose();
 	}
@@ -93,10 +89,6 @@ public class Scenario {
 	public float getSimulationTime() {
 		return simulationTime;
 	}
-
-	/*public Array<Stage> getStages() {
-		return stages;
-	}*/
 	
 	public Array<Array<Vehicle>> getVehicleLayers() {
 		return vehicleLayers;

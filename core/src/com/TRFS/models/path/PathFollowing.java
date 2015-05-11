@@ -14,9 +14,9 @@ import com.sun.corba.se.impl.protocol.giopmsgheaders.TargetAddressHelper;
  */
 public class PathFollowing {
 
-	private Path path;
-	private PathFollowingState state;
-	private Array<Link> linkSequence;
+	public Path path;
+	public PathFollowingState state;
+	public Array<Link> linkSequence;
 
 	private Vector2 targetPosition;
 	private float targetOffset=5f;
@@ -50,10 +50,6 @@ public class PathFollowing {
 	
 	public void nextLink() {
 		//TODO set path as the next link on the link sequence
-	}
-
-	public PathFollowingState getState() {
-		return state;
 	}
 
 	/**Contains parameters regarding the current position of the agent on the

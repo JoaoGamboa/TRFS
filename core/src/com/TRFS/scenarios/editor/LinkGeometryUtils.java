@@ -18,8 +18,8 @@ public class LinkGeometryUtils {
 		for (int i = 1; i < coordinates.size - 1; i++) {
 			point = coordinates.get(i);
 
-			float dx = point.getX() - prevPoint.getX(), dy = point.getY()
-					- prevPoint.getY();
+			float dx = point.x - prevPoint.x, dy = point.y
+					- prevPoint.y;
 			float distSQ = dx * dx + dy * dy;
 
 			if (distSQ > tolerance) {
@@ -40,8 +40,8 @@ public class LinkGeometryUtils {
 		if (iterations > 0) {
 			if (coordinates.size > 2) {
 				// Add First Point
-				newCoordinates.add(new Coordinate(coordinates.get(0).getX(),
-						coordinates.get(0).getY()));
+				newCoordinates.add(new Coordinate(coordinates.get(0).x,
+						coordinates.get(0).y));
 
 				for (int j = 0; j < coordinates.size - 1; j++) {
 
@@ -50,10 +50,10 @@ public class LinkGeometryUtils {
 
 					// Create two new points between p0 and p1 with Chaikin's
 					// smoothing algorithm and add to new array
-					Coordinate n1 = new Coordinate(0.75f * p0.getX() + 0.25f
-							* p1.getX(), 0.75f * p0.getY() + 0.25f * p1.getY());
-					Coordinate n2 = new Coordinate(0.25f * p0.getX() + 0.75f
-							* p1.getX(), 0.25f * p0.getY() + 0.75f * p1.getY());
+					Coordinate n1 = new Coordinate(0.75f * p0.x + 0.25f
+							* p1.x, 0.75f * p0.y + 0.25f * p1.y);
+					Coordinate n2 = new Coordinate(0.25f * p0.x + 0.75f
+							* p1.x, 0.25f * p0.y + 0.75f * p1.y);
 
 					newCoordinates.add(n1);
 					newCoordinates.add(n2);
@@ -61,8 +61,8 @@ public class LinkGeometryUtils {
 
 				// Add last point
 				newCoordinates.add(new Coordinate(coordinates.get(
-						coordinates.size - 1).getX(), coordinates.get(
-						coordinates.size - 1).getY()));
+						coordinates.size - 1).x, coordinates.get(
+						coordinates.size - 1).y));
 			} else
 				newCoordinates = coordinates;
 		} else

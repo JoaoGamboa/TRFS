@@ -16,7 +16,6 @@ import com.TRFS.ui.windows.stats.SimulationStatsWindow;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -155,7 +154,7 @@ public class WorldScreen implements Screen {
 		statsButton = new UIButton("SIMUL. STATS", statsWindow, slidingWindowManager, stage);
 		
 		UIButton[] topBarButtons = {statsButton, modelParamButton, simParamButton,buttonBack};
-		topBarTable = new TopBarTable(SimulationParameters.currentMap.getName(), stage, topBarButtons);
+		topBarTable = new TopBarTable(SimulationParameters.currentMap.name, stage, topBarButtons);
 		
 		mouseCoordinatesLabel = new Label("", AssetsMan.uiSkin, "smallLabel");
 		mouseCoordinatesLabel.setPosition(20, 20);

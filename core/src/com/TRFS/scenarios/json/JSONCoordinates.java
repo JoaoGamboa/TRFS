@@ -24,11 +24,11 @@ public class JSONCoordinates {
 	}
 	
 	public double getX() {
-		return this.xyCoordinates.getX();
+		return this.xyCoordinates.x;
 	}
 	
 	public double getY() {
-		return this.xyCoordinates.getY();
+		return this.xyCoordinates.y;
 	}
 	
 	public double getLongitude() {

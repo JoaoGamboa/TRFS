@@ -13,14 +13,13 @@ public class WorldCamera extends OrthographicCamera {
 
 	public WorldCamera(Scenario scenario) {
 		super();
-		this.map = scenario.getMap();
+		this.map = scenario.map;
 	}
 
 	public void resize(float width, float height) {
 		this.viewportWidth = width;
 		this.viewportHeight = height;
-		this.position.set(this.map.getCentroid().getX(), this.map.getCentroid()
-				.getY(), 0);
+		this.position.set(this.map.centroid.x, this.map.centroid.y, 0);
 		this.update();
 	}
 
@@ -82,12 +81,8 @@ public class WorldCamera extends OrthographicCamera {
 		this.translate(-nDX, -nDY);
 
 		// Pan limits
-		this.position.x = MathUtils.clamp(this.position.x, (float) (map
-				.getBottomLeft().getX() - 200), (float) (map.getTopRight()
-				.getX() + 200));
-		this.position.y = MathUtils.clamp(this.position.y, (float) (map
-				.getBottomLeft().getY() - 200), (float) (map.getTopRight()
-				.getY() + 200));
+		this.position.x = MathUtils.clamp(this.position.x, (float) (map.bottomLeft.x - 200), (float) (map.topRight.x + 200));
+		this.position.y = MathUtils.clamp(this.position.y, (float) (map.bottomLeft.y - 200), (float) (map.topRight.y + 200));
 
 		this.update();
 	}

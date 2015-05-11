@@ -14,10 +14,10 @@ public class MapGeometryUtils {
 		
 		ArrayList<Double> xValues = new ArrayList<Double>(); 	
 		ArrayList<Double> yValues = new ArrayList<Double>(); 
-		for (Link link : map.getLinks()) {
-			for (Coordinate coordinate : link.getCoordinates()) {
-				xValues.add((double) coordinate.getX());
-				yValues.add((double) coordinate.getY());
+		for (Link link : map.links) {
+			for (Coordinate coordinate : link.coordinates) {
+				xValues.add((double) coordinate.x);
+				yValues.add((double) coordinate.y);
 			}			
 		}
 		
@@ -26,14 +26,14 @@ public class MapGeometryUtils {
 		double maxY = Collections.max(yValues);
 		double minY = Collections.min(yValues);
 
-		map.setTopRight(new Coordinate((float) maxX, (float) maxY));
-		map.setBottomLeft(new Coordinate((float) minX, (float) minY));
+		map.topRight = new Coordinate((float) maxX, (float) maxY);
+		map.bottomLeft = new Coordinate((float) minX, (float) minY);
 		
-		map.setDimensions(new Coordinate((float) (maxX - minX), (float) (maxY - minY)));
-		map.setCenter(new Coordinate((float) (minX + (map.getDimensions()
-				.getX()) / 2),(float) (minY + (map.getDimensions().getY()) / 2)));
+		map.dimensions = new Coordinate((float) (maxX - minX), (float) (maxY - minY));
+		
+		map.center = new Coordinate((float) (minX + (map.dimensions.x) / 2),(float) (minY + (map.dimensions.y) / 2));
 
-		map.setCentroid(new Coordinate(MiscUtils.average(xValues), MiscUtils.average(yValues)));
+		map.centroid = new Coordinate(MiscUtils.average(xValues), MiscUtils.average(yValues));
 		
 	}
 	

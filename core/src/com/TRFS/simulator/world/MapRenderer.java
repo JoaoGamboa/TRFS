@@ -5,7 +5,6 @@ import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Map;
 import com.TRFS.scenarios.map.Node;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -17,15 +16,15 @@ public class MapRenderer {
 	public static void render(Map map, int zLevel) {
 		
 		// Start required graphic utils for rendering links
-		for (Link link : map.getLinks()) {
-			if (link.getZ() == zLevel) {
+		for (Link link : map.links) {
+			if (link.z == zLevel) {
 				/* link.render() */
 			}
 			;
 		}
 		// Render the nodes
-		for (Node node : map.getNodes()) {
-			if (node.getzLevel() == zLevel) {
+		for (Node node : map.nodes) {
+			if (node.zLevel == zLevel) {
 				/* node.render(); */
 			}
 		}
@@ -37,10 +36,10 @@ public class MapRenderer {
 		// Render Lines
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(Color.BLACK);
-		for (Link link : map.getLinks()) {
-			for (Lane lane : link.getLanes()) {
-				renderLine(lane.getLeftOffset(), shapeRenderer);
-				renderLine(lane.getRightOffset(), shapeRenderer);
+		for (Link link : map.links) {
+			for (Lane lane : link.lanes) {
+				renderLine(lane.leftOffset, shapeRenderer);
+				renderLine(lane.rightOffset, shapeRenderer);
 			}
 			//renderLine(link.getCoordinates(), shapeRenderer);
 		}
@@ -50,14 +49,14 @@ public class MapRenderer {
 		shapeRenderer.begin(ShapeType.Filled);
 		// Nodes
 		shapeRenderer.setColor(Color.WHITE);
-		for (Node node : map.getNodes()) {
+		for (Node node : map.nodes) {
 			node.renderDebugPoints(shapeRenderer);
 		}
 		// Lane centerLine
 		shapeRenderer.setColor(Color.RED);
-		for (Link link : map.getLinks()) {
-			for (Lane lane : link.getLanes()) {
-				renderDebugPoints(lane.getCenterLine(), shapeRenderer);
+		for (Link link : map.links) {
+			for (Lane lane : link.lanes) {
+				renderDebugPoints(lane.centerLine, shapeRenderer);
 			}
 		}
 
@@ -69,17 +68,17 @@ public class MapRenderer {
 		for (int i = 0; i < coordinates.size; i++) {
 			int next = (i + 1) % coordinates.size;
 			if (next != 0)
-				shapeRenderer.line(coordinates.get(i).getX(), coordinates
-						.get(i).getY(), coordinates.get(next).getX(),
-						coordinates.get(next).getY());
+				shapeRenderer.line(coordinates.get(i).x, coordinates
+						.get(i).y, coordinates.get(next).x,
+						coordinates.get(next).y);
 		}
 	}
 
 	public static void renderDebugPoints(Array<Coordinate> coordinates,
 			ShapeRenderer shapeRenderer) {
 		for (int i = 0; i < coordinates.size; i++)
-			shapeRenderer.circle(coordinates.get(i).getX(), coordinates.get(i)
-					.getY(), 0.5f);
+			shapeRenderer.circle(coordinates.get(i).x, coordinates.get(i)
+					.y, 0.5f);
 	}
 
 	public static void renderDebugVectorPoints(Array<Vector2> vectors,

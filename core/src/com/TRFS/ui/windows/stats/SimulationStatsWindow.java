@@ -49,7 +49,7 @@ public class SimulationStatsWindow {
 	public static void render() {
 		elapsedTimeLabel.setText(String.format("%.1f", (float) scenario.getElapsedTime()/1000));
 		simulationTimeLabel.setText(String.format("%.1f", scenario.getSimulationTime()));
-		vehicleCountLabel.setText("" + scenario.getTrafficManager().getInFlowsManager().getVehicleCount());
+		vehicleCountLabel.setText("" + scenario.getTrafficManager().getInFlowsManager().vehicleCount);
 	}
 	
 }

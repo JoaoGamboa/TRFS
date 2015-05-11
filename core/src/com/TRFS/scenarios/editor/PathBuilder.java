@@ -17,7 +17,7 @@ public class PathBuilder {
 		Array<Vector2> vectors = new Array<Vector2>();
 		
 		for (Coordinate coord : coordinates) {
-			vectors.add(new Vector2(coord.getX(), coord.getY()));
+			vectors.add(new Vector2(coord.x, coord.y));
 		}
 		
 		return new Path(vectors);
