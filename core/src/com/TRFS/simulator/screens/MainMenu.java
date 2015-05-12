@@ -5,13 +5,6 @@ import com.TRFS.simulator.MiscUtils;
 import com.TRFS.ui.general.UIButton;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -32,84 +25,12 @@ public class MainMenu implements Screen {
 						buttonSettings = new UIButton("SETTINGS", "Settings", true, stage), 
 						buttonAbout = new UIButton("ABOUT", "AboutScreen", true, stage), 
 						buttonExit = new UIButton("EXIT", true);
-	
-	//TESTSSSS
-	SpriteBatch batch = new SpriteBatch();
-	TextureRegion region = new TextureRegion(AssetsMan.uiSkin.getRegion("testcar"));
-	ShapeRenderer renderer = new ShapeRenderer();
-	int i;
-	float rotation;
-	Vector2 v1 = new Vector2();
-	Vector2 v2 = new Vector2();
-	
-	Vector2 localCG = new Vector2();
-	Vector2 globalCG = new Vector2();
-	Vector2 localFrontAxis = new Vector2();
-	Vector2 globalFrontAxis = new Vector2();
-	Vector2 origin = new Vector2();
-	Vector2 v3 = new Vector2();
-	Vector2 v4 = new Vector2();
-	Vector2 lv4 = new Vector2();
-	//END TESTS
-	
+		
 	@Override
 	public void render(float delta) {
 		MiscUtils.clearScreen();
 		stage.act(delta);
 		stage.draw();
-		
-		//TESTS
-		float width = 60;
-		float length = 100f;
-		float x = 150;
-		float y = 200;
-		
-		origin.set(width/2, 0.2f*length);
-		
-		v1.set(-600,-10);
-		v2.set(700,700);
-		float rotation2 = new Vector2().set(v2).sub(v1).angle();
-		
-		
-		
-		i += 5;
-		rotation = rotation2 -90;
-		
-		localCG.set(0, 0.3f * length).rotateRad(rotation * MathUtils.degRad).add(new Vector2(x + origin.x, y + origin.y));
-		localFrontAxis.set(0, 0.55f * length).rotateRad(rotation * MathUtils.degRad).add(new Vector2(x + origin.x, y + origin.y));
-		
-		v3.set(300,100);
-		v4.set(v3).add(-50, 50);
-		
-		float rotation3 = new Vector2().set(v4).sub(v3).angle() -90 ;
-		
-		lv4.set(v4).sub(v3).rotate(rotation3).add(v3);	
-		
-		batch.setColor(Color.YELLOW);
-		batch.begin();
-		batch.draw(region, x, y, origin.x, origin.y, width, length, 1f, 1f, rotation);
-		batch.end();
-		
-		renderer.setColor(Color.GREEN);
-		renderer.begin(ShapeType.Line);
-		renderer.line(v1, v2);
-		renderer.setColor(Color.YELLOW);
-		renderer.line(v3, v4);
-		renderer.setColor(Color.RED);
-		renderer.line(v3, lv4);
-		renderer.end();
-		
-		renderer.begin(ShapeType.Filled);
-		renderer.setColor(Color.BLUE);
-		renderer.circle(x, y, 5);
-		renderer.setColor(Color.GREEN);
-		renderer.circle(x+origin.x, y+origin.y, 5);
-		renderer.circle(v1.x, v1.y, 5);
-		renderer.circle(v2.x, v2.y, 5);
-		renderer.circle(localCG.x, localCG.y, 5);
-		renderer.circle(localFrontAxis.x, localFrontAxis.y, 5);
-		renderer.end();
-		//TESTS--------------
 	}
 
 	@Override
@@ -139,7 +60,6 @@ public class MainMenu implements Screen {
 		
 		// TODO add ISEL logo
 		// TODO add author name
-		
 	}
 
 	@Override

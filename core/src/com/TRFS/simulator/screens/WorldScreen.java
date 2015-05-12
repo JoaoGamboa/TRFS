@@ -131,7 +131,7 @@ public class WorldScreen implements Screen {
 	}
 	
 	public void implementUI() {
-		stage = new Stage(new ScreenViewport(), scenario.getGraphicsManager().getBatch());
+		stage = new Stage(new ScreenViewport(), scenario.batch);
 				
 		MiscUtils.fadeIn(stage);
 		
@@ -163,7 +163,7 @@ public class WorldScreen implements Screen {
 	
 	private void renderUI() {	
 		tmp.set(Gdx.input.getX(), Gdx.input.getY(),1);
-		tmp2.set(scenario.getGraphicsManager().getCamera().unproject(tmp));
+		tmp2.set(scenario.camera.unproject(tmp));
 		mouseCoordinatesLabel.setText(String.format("%.1f, %.1f",tmp2.x, tmp2.y));
 		SimulationStatsWindow.render();
 	}

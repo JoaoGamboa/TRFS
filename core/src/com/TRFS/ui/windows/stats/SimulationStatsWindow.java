@@ -13,11 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
  */
 public class SimulationStatsWindow {
 
-
 	private static Skin skin = AssetsMan.uiSkin;
 	private static Label simulationTimeLabel, elapsedTimeLabel, vehicleCountLabel;
 	private static Scenario scenario;
-	
 	
 	public static void create (SlidingWindow window, Scenario currentScenario) {
 		scenario = currentScenario;
@@ -47,9 +45,9 @@ public class SimulationStatsWindow {
 	}
 	
 	public static void render() {
-		elapsedTimeLabel.setText(String.format("%.1f", (float) scenario.getElapsedTime()/1000));
-		simulationTimeLabel.setText(String.format("%.1f", scenario.getSimulationTime()));
-		vehicleCountLabel.setText("" + scenario.getTrafficManager().getInFlowsManager().vehicleCount);
+		elapsedTimeLabel.setText(String.format("%.1f", (float) scenario.elapsedTime/1000));
+		simulationTimeLabel.setText(String.format("%.1f", scenario.simulationTime));
+		vehicleCountLabel.setText("" + scenario.trafficManager.inFlowsManager.vehicleCount);
 	}
 	
 }

@@ -20,7 +20,7 @@ public class WorldInputProcessor implements InputProcessor {
 	
 	public WorldInputProcessor(Scenario scenario) {
 		this.scenario = scenario;
-		this.camera = scenario.getGraphicsManager().getCamera();
+		this.camera = scenario.camera;
 		this.vehicleInputProcessor = new VehicleInputProcessor();
 	}
 	
@@ -51,7 +51,7 @@ public class WorldInputProcessor implements InputProcessor {
 		
 		if (button == Input.Buttons.LEFT) {
 			updateUnprojected(screenX, screenY);
-			vehicleInputProcessor.findClicked(scenario.getVehicleLayers(), unprojectedCoord.x, unprojectedCoord.y);
+			vehicleInputProcessor.findClicked(scenario.trafficManager.vehicleLayers, unprojectedCoord.x, unprojectedCoord.y);
 		}
 		return false;
 	}

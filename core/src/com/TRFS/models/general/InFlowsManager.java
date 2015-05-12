@@ -12,6 +12,10 @@ import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * @author J.P.Gamboa jpgamboa@outlook.com
+ *
+ */
 public class InFlowsManager {
 	
 	private Scenario scenario;
@@ -20,7 +24,7 @@ public class InFlowsManager {
 	private float[] timeCounters;
 	public int vehicleCount;
 	private int[] queueOutsideNetwork;
-	private boolean debugOneVeh = false;
+	private boolean debugOneVeh = true;
 	private PathFinder pathFinder;
 	
 	private Vehicle vehicle;
@@ -29,6 +33,7 @@ public class InFlowsManager {
 		this.scenario = scenario;
 		this.inflowLinks = scenario.map.inFlowLinks;
 		this.timeCounters = new float[this.inflowLinks.size];
+		this.queueOutsideNetwork = new int[this.inflowLinks.size];
 		this.pathFinder = new PathFinder(scenario.map);
 		
 		//Clear counters
@@ -46,9 +51,9 @@ public class InFlowsManager {
 				timeCounters[i] += flowDT;
 
 				if (timeCounters[i] >= 1) {
-					int laneWithSpace = chooseLane(link);
-					if (laneWithSpace >= 0)	{
-						addVehicle(link, laneWithSpace);
+					int lane = chooseLane(link);
+					if (lane >= 0)	{
+						addVehicle(link, lane);
 						if (queueOutsideNetwork[i] > 0) queueOutsideNetwork[i] -= 1;
 					} else {
 						queueOutsideNetwork[i] += 1;
@@ -64,8 +69,13 @@ public class InFlowsManager {
 
 	}
 	
+	/**Randomly selects a {@link Lane} from the provided {@link Link} and checks for enough space for another vehicle to be added.
+	 * Is the randomly selected lane has no space available, the remaining lanes will be evaluated starting from the rightmost one. 
+	 * @param link
+	 * @return The lane index or -1 if no lane available
+	 */
 	public int chooseLane(Link link){
-		int lane = new Random().nextInt((link.nrOfLanes) + 1);
+		int lane = new Random().nextInt((link.nrOfLanes));
 		if (checkLaneForSpace(link, lane)) {
 			return lane;
 		} else {
@@ -78,41 +88,42 @@ public class InFlowsManager {
 		return -1;
 	}
 	
+	/** Checks the provided {@link Lane} for space for another vehicle to be added.
+	 * @param link
+	 * @param lane
+	 * @return True is there is enough space on this lane.
+	 */
+	
+	private float minimumAvailableSpace = 6f;
 	public boolean checkLaneForSpace (Link link, int lane) {
 		
-		for (Array<Vehicle> layer : scenario.getVehicleLayers()) {
+		for (Array<Vehicle> layer : scenario.trafficManager.vehicleLayers) {
 			for (Vehicle vehicle : layer) {
 				if (vehicle.behavior.currentLink.internalID == link.internalID) {
 					if (vehicle.behavior.currentLane.index == lane) {
-						if (vehicle.behavior.pathFollowing.state.distanceOnPath < 6f) {
+						if (vehicle.behavior.pathFollowing.state.distanceOnPath < minimumAvailableSpace) {
 							return false;
 						}}}}}
 		return true;
 	}
 	
+	
+	/**Adds a new vehicle to the network, located at the beggining of the provided {@link Lane}.
+	 * Decides what kind of vehicle to be added based on the truck percentage defined by the user.
+	 * @param link
+	 * @param lane
+	 */
 	public void addVehicle(Link link, int lane){
-		boolean enoughSpace = true;
 		
-		//link.getvehicle at 0 ?
-		//Check if there is space, then create new vehicle and then add
+		if (MathUtils.random(100) > SimulationParameters.truckPercent.getCurrentVal())
+			vehicle = new Car();
+		else
+			vehicle = new Truck();
 		
-		if(enoughSpace) {
-			//DECIDE WHICH LANE 
-			lane = 0;
-			//Decide weather to add a car or a truck			
-			if (MathUtils.random(100) > SimulationParameters.truckPercent.getCurrentVal()) {
-				vehicle = new Car();
-			} else {
-				vehicle = new Truck();
-			}
-			
-			vehicle.behavior.setInitialLocation(link, link.lanes.get(lane));
-			scenario.getVehicleLayers().get(link.z).add(vehicle);
-			
-			//this.scenario.getStages().get(link.getZ()).addActor(vehicle);
-			
-			vehicleCount += 1;
-						
-		}
+		vehicle.behavior.setInitialLocation(link, link.lanes.get(lane));
+		pathFinder.findRandomPath(link);
+		scenario.trafficManager.vehicleLayers.get(link.z).add(vehicle);
+				
+		vehicleCount += 1;			
 	}	
 }

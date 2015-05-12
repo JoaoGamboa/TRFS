@@ -45,15 +45,12 @@ public class Behavior {
 	 * @param laneChangingBehaviour Lane changing behavior for this vehicle.
 	 */
 
-	public Behavior(Vehicle vehicle, String carFollowingBehavior,
-			String laneChangingBehavior) {
+	public Behavior(Vehicle vehicle, String carFollowingBehavior, String laneChangingBehavior) {
 		this.vehicle = vehicle;
 		this.desiredSpeedFactor = (new Random().nextInt((150 - 70) + 1) + 70)/100f;
-		
 		this.pathFollowing = new PathFollowing();
 		
 		setCarFollowingModel(carFollowingBehavior);
-		
 	}
 
 	/**Updates the behaviour of this HVE.

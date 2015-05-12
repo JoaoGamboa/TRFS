@@ -11,15 +11,18 @@ import com.badlogic.gdx.utils.Array;
  */
 
 public class TrafficManager {
-	
-	private InFlowsManager inFlowsManager;
-
-	private Array<Array<Vehicle>> vehicleLayers;
+	private Scenario scenario;
+	public InFlowsManager inFlowsManager;
+	public Array<Array<Vehicle>> vehicleLayers;
 
 	public TrafficManager(Scenario scenario) {
-		inFlowsManager = new InFlowsManager(scenario);
-		this.vehicleLayers = scenario.getVehicleLayers();
+		this.scenario = scenario;
+		this.inFlowsManager = new InFlowsManager(scenario);
 		
+		this.vehicleLayers = new Array<Array<Vehicle>>();
+		for (@SuppressWarnings("unused") Integer zLevel : scenario.map.zLevels) {
+			this.vehicleLayers.add(new Array<Vehicle>());			
+		}
 	}
 	
 	public void update(float delta, float simulationTime) {
@@ -33,10 +36,6 @@ public class TrafficManager {
 		
 		inFlowsManager.update(delta, simulationTime);
 		
-	}
-		
-	public InFlowsManager getInFlowsManager() {
-		return inFlowsManager;
 	}
 
 }

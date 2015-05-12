@@ -1,12 +1,9 @@
 package com.TRFS.simulator.world;
 
 import com.TRFS.scenarios.Scenario;
-import com.TRFS.scenarios.map.Map;
 import com.TRFS.simulator.SimulationParameters;
 import com.TRFS.vehicles.Vehicle;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
 
 /**
  * @author jgamboa
@@ -15,44 +12,36 @@ import com.badlogic.gdx.utils.Array;
 
 public class GraphicsManager {
 
-	private WorldCamera camera;
-	private ShapeRenderer shapeRenderer;
-	private SpriteBatch batch;
+	private Scenario scenario;
+	public ShapeRenderer shapeRenderer;
 	
-	private Array<Array<Vehicle>> vehicleLayers;
-	private Map map;
-	
-	public GraphicsManager(Scenario scenario, WorldCamera camera,
-			SpriteBatch batch) {
-		this.map = scenario.map;
-		this.camera = camera;
-		this.batch = batch;
-		this.vehicleLayers = scenario.getVehicleLayers();
+	public GraphicsManager(Scenario scenario) {
+		this.scenario = scenario;
 		this.shapeRenderer = new ShapeRenderer();
 
 	}
 
 	public void resize(int width, int height) {
-		camera.resize(width, height);
+		scenario.camera.resize(width, height);
 	}
 
 	public void render(float delta) {
-		batch.setProjectionMatrix(camera.combined);
+		scenario.batch.setProjectionMatrix(scenario.camera.combined);
 
-		for (Integer zLevel : map.zLevels) {
-			MapRenderer.render(map, zLevel);
-			for (Vehicle vehicle : vehicleLayers.get(zLevel)) {
-				batch.begin();
-				vehicle.draw(batch);
-				batch.end();
+		for (Integer zLevel : scenario.map.zLevels) {
+			MapRenderer.render(scenario.map, zLevel);
+			for (Vehicle vehicle : scenario.trafficManager.vehicleLayers.get(zLevel)) {
+				scenario.batch.begin();
+				vehicle.draw(scenario.batch);
+				scenario.batch.end();
 			}
 		}
 
 		if (SimulationParameters.drawDebug){
-			shapeRenderer.setProjectionMatrix(camera.combined);
-			MapRenderer.renderDebug(map, shapeRenderer);
-			for (Integer zLevel : map.zLevels) {
-				for (Vehicle vehicle : vehicleLayers.get(zLevel)) {
+			shapeRenderer.setProjectionMatrix(scenario.camera.combined);
+			MapRenderer.renderDebug(scenario.map, shapeRenderer);
+			for (Integer zLevel : scenario.map.zLevels) {
+				for (Vehicle vehicle : scenario.trafficManager.vehicleLayers.get(zLevel)) {
 					vehicle.drawVehicleDebug(shapeRenderer);
 				}
 			}
@@ -61,15 +50,6 @@ public class GraphicsManager {
 
 	public void dispose() {
 		shapeRenderer.dispose();
-		batch.dispose();
-	}
-
-	public WorldCamera getCamera() {
-		return camera;
-	}
-
-	public SpriteBatch getBatch() {
-		return batch;
 	}
 
 }
