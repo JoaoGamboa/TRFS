@@ -14,11 +14,12 @@ public class GraphicsManager {
 
 	private Scenario scenario;
 	public ShapeRenderer shapeRenderer;
+	//public static StaticDebugRendering staticRendering;
 	
 	public GraphicsManager(Scenario scenario) {
 		this.scenario = scenario;
 		this.shapeRenderer = new ShapeRenderer();
-
+		//GraphicsManager.staticRendering = new StaticDebugRendering(shapeRenderer);
 	}
 
 	public void resize(int width, int height) {
@@ -45,6 +46,8 @@ public class GraphicsManager {
 					vehicle.drawVehicleDebug(shapeRenderer);
 				}
 			}
+			
+			//GraphicsManager.staticRendering.render();
 		}
 	}
 

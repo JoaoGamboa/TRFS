@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array;
 public class Link {
 
 	public Array<Coordinate> coordinates;
-	public int internalID, hierarchy, inFlow, maxspeed, nrOfLanes, oneway, z, laneCapacity;
+	public int internalID, hierarchy, maxspeed, nrOfLanes, oneway, z, laneCapacity, inFlow = 0;
 	public DynamicSimParam inFlowParam;
 	public float laneWidth, flowAtraction;
 	public Node fromNode, toNode;

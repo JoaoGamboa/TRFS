@@ -24,7 +24,7 @@ public class InFlowsManager {
 	private float[] timeCounters;
 	public int vehicleCount;
 	private int[] queueOutsideNetwork;
-	private boolean debugOneVeh = true;
+	private boolean debugOneVeh = false;
 	private PathFinder pathFinder;
 	
 	private Vehicle vehicle;

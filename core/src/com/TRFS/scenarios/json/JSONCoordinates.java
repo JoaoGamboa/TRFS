@@ -1,67 +1,40 @@
 package com.TRFS.scenarios.json;
 
-import com.TRFS.scenarios.map.Coordinate;
+import com.TRFS.scenarios.editor.DoubleCoordinate;
 
 public class JSONCoordinates {
 
-	private double longitude;
-	private double latitude;
-	
 	private int earthRadius = 6371; //km
+
+	public DoubleCoordinate latLongCoordinates;
+	public DoubleCoordinate catersianCoordinates;
 	
-	private Coordinate coordinates;
-	private Coordinate xyCoordinates;
-		
-	public String JsonOutoput;
-	
+
 	public JSONCoordinates(Object coordinates) {
-		this.JsonOutoput = coordinates.toString();
+		String JsonOutput = coordinates.toString();
 		
-		double x = earthRadius * 1000 * Math.cos(Math.toRadians(getLatitude())) * Math.cos(Math.toRadians(getLongitude())); 
-		double y = earthRadius * 1000 * Math.cos(Math.toRadians(getLatitude())) * Math.sin(Math.toRadians(getLongitude())); 
-		
-		this.xyCoordinates = new Coordinate((float) x, (float) y);
+		this.latLongCoordinates = new DoubleCoordinate(splitString(JsonOutput, "lat"), splitString(JsonOutput, "lon"));
+
+		double x = earthRadius * 1000 * Math.sin(Math.toRadians(latLongCoordinates.x)) * Math.sin(Math.toRadians(latLongCoordinates.y)); 
+		double y = earthRadius * 1000 * Math.sin(Math.toRadians(latLongCoordinates.x)) * Math.cos(Math.toRadians(latLongCoordinates.y)); 
+
+		this.catersianCoordinates = new DoubleCoordinate(x, y);
 	}
-	
-	public double getX() {
-		return this.xyCoordinates.x;
-	}
-	
-	public double getY() {
-		return this.xyCoordinates.y;
-	}
-	
-	public double getLongitude() {
-		this.longitude = splitString("lon");
-		return this.longitude;
-	}
-	
-	public double getLatitude() {
-		this.latitude = splitString("lat");
-		return this.latitude;
-	}
-	
-	public Coordinate getXYPoint() {
-		return this.xyCoordinates;
-	}
-	
-	public Coordinate getLongLatPoint() {
-		this.coordinates = new Coordinate((float) getLongitude(), (float) getLatitude());
-		return this.coordinates;
-	}
-	
+
 	//Tools
-	private double splitString (String coord) {
+	private double splitString (String JsonOutput, String coord) {
 		int i = 0;
-		if (coord.equals("lon")) { i = 0; } else if (coord.equals("lat")) { i = 1; } 
-		
-		String s = this.JsonOutoput.toString();
+
+		if (coord.equals("lon")) i = 0;
+			else if (coord.equals("lat")) i = 1; 
+
+		String s = JsonOutput.toString();
 		s = s.substring(1, s.length() - 1); 
 
 		String[] parts = s.split(", ");
 
 		double value = Double.parseDouble(parts[i]);
 		return value;
+
 	}
-	
 }

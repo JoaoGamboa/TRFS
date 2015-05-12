@@ -1,7 +1,5 @@
 package com.TRFS.simulator;
 
-import java.util.Random;
-
 import com.TRFS.simulator.screens.Settings;
 import com.TRFS.simulator.screens.SplashScreen;
 import com.badlogic.gdx.Game;
@@ -13,7 +11,7 @@ import com.badlogic.gdx.Game;
 public class Main extends Game {
 	
 	//Name & Version
-	public static final String TITLE = "TRFS", VERSION = "0.1.2";
+	public static final String TITLE = "TRFS", VERSION = "0.1.3";
 		
 	@Override
 	public void create () {

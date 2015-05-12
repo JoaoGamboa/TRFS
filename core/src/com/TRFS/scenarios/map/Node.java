@@ -7,7 +7,8 @@ public class Node {
 	
 	public int internalID, zLevel;
 	public Array<Link> fromLinks, toLinks;
-	public Coordinate coordinate;
+	public Array<Array<Link>> availablePaths;
+ 	public Coordinate coordinate;
 	public boolean networkEntrance, networkExit;
 		
 	public Node (Coordinate coordinates, int internalID, Link fromLink) {

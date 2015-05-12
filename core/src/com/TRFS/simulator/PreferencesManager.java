@@ -10,7 +10,7 @@ import com.badlogic.gdx.Gdx;
 
 public class PreferencesManager {
 	
-	private static float currentFileVersion = 7;
+	private static float currentFileVersion = 8;
 	private static boolean firstRun;
 	
 	// USER PREFERENCES --------------------

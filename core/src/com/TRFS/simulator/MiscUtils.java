@@ -1,7 +1,5 @@
 package com.TRFS.simulator;
 
-import java.util.List;
-
 import com.TRFS.scenarios.map.Coordinate;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.Array;
 
 public class MiscUtils {
 	
@@ -29,15 +28,35 @@ public class MiscUtils {
 		stage.getViewport().update(width, height, true);
 	}
 	
-	public static float average(List <Double> list) {
+	public static double averageDouble(Array<Double> list) {
 		double sum = 0;
-		if(!list.isEmpty()) {
+		if(list.size >= 1) {
 			for (Double value : list) {
 				sum += value;
 			}
-			return (float) (sum / list.size());
+			return (sum / list.size);
 		}
-		return (float) sum;
+		return sum;
+	}
+	
+	public static float averageFloat(Array<Float> list) {
+		float sum = 0;
+		if(list.size >= 1) {
+			for (Float value : list) {
+				sum += value;
+			}
+			return (sum / list.size);
+		}
+		return sum;
+	}
+	
+	public static float floatArrayMaxMin (Array<Float> list, boolean max) {
+		float maxMin = list.get(0);
+		for (Float f : list) {
+			if (max) if (f > maxMin) maxMin = f;
+			if (!max) if (f < maxMin) maxMin = f;
+		}
+		return maxMin;
 	}
 	
 	public static float vectorToAngle(Vector2 vector) {
