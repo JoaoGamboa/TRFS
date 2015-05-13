@@ -2,8 +2,8 @@ package com.TRFS.models.general;
 
 import java.util.Random;
 
-import com.TRFS.models.path.PathFinder;
 import com.TRFS.scenarios.Scenario;
+import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.simulator.SimulationParameters;
 import com.TRFS.vehicles.Car;
@@ -25,7 +25,6 @@ public class InFlowsManager {
 	public int vehicleCount;
 	private int[] queueOutsideNetwork;
 	private boolean debugOneVeh = false;
-	private PathFinder pathFinder;
 	
 	private Vehicle vehicle;
 	
@@ -34,8 +33,7 @@ public class InFlowsManager {
 		this.inflowLinks = scenario.map.inFlowLinks;
 		this.timeCounters = new float[this.inflowLinks.size];
 		this.queueOutsideNetwork = new int[this.inflowLinks.size];
-		this.pathFinder = new PathFinder(scenario.map);
-		
+
 		//Clear counters
 		for (int i = 0; i < inflowLinks.size; i++) {
 			timeCounters[i] = 0f;
@@ -108,7 +106,7 @@ public class InFlowsManager {
 	}
 	
 	
-	/**Adds a new vehicle to the network, located at the beggining of the provided {@link Lane}.
+	/**Adds a new vehicle to the network, located at the beginning of the provided {@link Lane}.
 	 * Decides what kind of vehicle to be added based on the truck percentage defined by the user.
 	 * @param link
 	 * @param lane
@@ -121,7 +119,8 @@ public class InFlowsManager {
 			vehicle = new Truck();
 		
 		vehicle.behavior.setInitialLocation(link, link.lanes.get(lane));
-		pathFinder.findRandomPath(link);
+		vehicle.behavior.pathFollowing.linkSequence = scenario.trafficManager.pathFinder.getRandomPathFromNode(link.fromNode);
+
 		scenario.trafficManager.vehicleLayers.get(link.z).add(vehicle);
 				
 		vehicleCount += 1;			

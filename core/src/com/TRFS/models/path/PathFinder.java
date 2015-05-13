@@ -37,14 +37,19 @@ public class PathFinder {
 		
 		for (Node entranceNode : entranceNodes) {
 			for (Node exitNode : exitNodes) {
+				//Find all possible paths.
 				possiblePaths.add(findDFSPath(entranceNode, exitNode));
+				
+				//Identify the shortest one
+				int indexOfShortestPath = 0;
+				for (int i = 0; i < possiblePaths.size; i++) {
+					if (possiblePaths.get(i).size < possiblePaths.get(indexOfShortestPath).size) indexOfShortestPath = i;
+				}
+				
+				//Store it within the entrance node
+				entranceNode.availablePaths.add(possiblePaths.get(indexOfShortestPath));
+				possiblePaths.clear();
 			}
-			
-			int indexOfShortestPath = 0;
-			for (int i = 0; i < possiblePaths.size; i++) {
-				if (possiblePaths.get(i).size < possiblePaths.get(indexOfShortestPath).size) indexOfShortestPath = i;
-			}
-			
 		}
 	}
 			
@@ -123,5 +128,9 @@ public class PathFinder {
 			depthFirst(exitNode, visited);
 			visited.pop();
 		}
+	}
+	
+	public Array<Link> getRandomPathFromNode(Node entranceNode) {
+		return entranceNode.availablePaths.get(new Random().nextInt(entranceNode.availablePaths.size));
 	}
 }
