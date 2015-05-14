@@ -73,10 +73,13 @@ public class Behavior {
 
 		//TODO other constraints that might affect the acceleration magnitude.
 		
-		//Update PathFollowing (sets the vector direction)
+		//Updates the target and returns the angle between the target and the vehicle's CG
 		float targetHeading = pathFollowing.update(vehicle);
 		steerAngle = targetHeading - vehicle.physics.heading;
 		if (steerAngle > MathUtils.PI) steerAngle -= MathUtils.PI2;
+		
+		//This method updates all path related states and returns a brake value
+		brake += pathFollowing.state.update();
 
 		// TODO when changing lanes, must find a way to make the velocity point
 		// to the target lane
@@ -112,7 +115,6 @@ public class Behavior {
 				model = i;
 			}
 		}
-
 		switch (model) {
 		case 0:
 			carFollowingModel = new W74CarFollowing();
@@ -146,5 +148,5 @@ public class Behavior {
 		//TODO find nearest link/lane, set it as path
 		
 	}
-	
+		
 }
