@@ -26,7 +26,7 @@ public class SimulationParameters {
 	public static boolean smoothGeometry;
 	public static boolean drawDebug;
 	public static boolean paused;
-	
+		
 	//Dynamic															NAME				MIN			MAX		DEFAULT	INCREMENT	DecimalFormat
 	public static DynamicSimParam simSpeed 		= new DynamicSimParam("Simulation Speed"	, 0, 		2, 		1, 		0.1f,	 	"0.0", "Times");
 	public static DynamicSimParam desVelocity 	= new DynamicSimParam("Desired Velocity"	, 0, 		200, 	90, 	1,  		"###", "Km/h"		);

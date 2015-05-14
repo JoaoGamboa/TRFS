@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Array;
 public class TrafficManager {
 	//private Scenario scenario;
 	public InFlowsManager inFlowsManager;
-	public Array<Array<Vehicle>> vehicleLayers;
+	public Array<Vehicle> vehicles;
 	public PathFinder pathFinder;
 
 	public TrafficManager(Scenario scenario) {
@@ -22,23 +22,25 @@ public class TrafficManager {
 		this.inFlowsManager = new InFlowsManager(scenario);
 		this.pathFinder = new PathFinder(scenario.map);
 		
-		this.vehicleLayers = new Array<Array<Vehicle>>();
-		for (@SuppressWarnings("unused") Integer zLevel : scenario.map.zLevels) {
-			this.vehicleLayers.add(new Array<Vehicle>());			
-		}
+		this.vehicles = new Array<Vehicle>();	
+		this.vehicles.ensureCapacity(300);
 	}
 	
 	public void update(float delta, float simulationTime) {
 		
 		//Update all actors
-		for (Array<Vehicle> layer : vehicleLayers) {
-			for (Vehicle vehicle : layer) {
-				vehicle.update(delta);
-			}
+		int vehicleIndex = 0;
+		for (Vehicle vehicle : vehicles) {
+			vehicle.update(delta);
+			
+			if (vehicle.behavior.pathFollowing.state.finished) vehicles.removeIndex(vehicleIndex);
+			
+			vehicleIndex++;
 		}
 		
+		inFlowsManager.vehicleCount = vehicleIndex;
+				
 		inFlowsManager.update(delta, simulationTime);
-		
 	}
-
+	
 }

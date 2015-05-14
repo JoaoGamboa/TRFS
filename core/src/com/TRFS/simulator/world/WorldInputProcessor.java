@@ -51,7 +51,7 @@ public class WorldInputProcessor implements InputProcessor {
 		
 		if (button == Input.Buttons.LEFT) {
 			updateUnprojected(screenX, screenY);
-			vehicleInputProcessor.findClicked(scenario.trafficManager.vehicleLayers, unprojectedCoord.x, unprojectedCoord.y);
+			vehicleInputProcessor.findClicked(scenario, unprojectedCoord.x, unprojectedCoord.y);
 		}
 		return false;
 	}

@@ -1,6 +1,7 @@
 package com.TRFS.vehicles;
 
 import com.TRFS.models.Behavior;
+import com.TRFS.models.general.InFlowsManager;
 import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.SimulationParameters;
 import com.badlogic.gdx.graphics.Color;
@@ -27,6 +28,8 @@ public class Vehicle {
 	public VehicleConfig config;
 	public Behavior behavior;
 	
+	public int id;
+	
 	// Shape & Aspect
 	protected TextureRegion region;
 	
@@ -46,7 +49,7 @@ public class Vehicle {
 		this.physics = new VehiclePhysics(this);
 		
 		this.region = new TextureRegion(AssetsMan.uiSkin.getRegion(textureName));//TODO make draw method
-						
+		this.id = InFlowsManager.nextVehicleID++;				
 		this.behavior = new Behavior(this,
 				SimulationParameters.currentCarFolModel,
 				SimulationParameters.currentLaneChangeModel);
@@ -91,10 +94,32 @@ public class Vehicle {
 		renderer.circle(targetPos.x, targetPos.y, 0.3f);
 		renderer.end();
 	}
-					
+			
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Vehicle other = (Vehicle) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
 	public class VehiclePhysics {
 
-		public int throttleInputFwd, throttleInputBck, steerInputLeft, steerInputRight, movingFwd; // 0, 1 (for user input)
+		public int throttleInputFwd, throttleInputBck, steerInputLeft, steerInputRight, movingFwd, zLevel; // 0, 1 (for user input)
 		public float throttle, brake, steer; //Percentage of max force
 		public float steerAngle, heading, speed, acceleration; //Actual values
 		
@@ -147,7 +172,7 @@ public class Vehicle {
 			
 			this.steerAngle = MathUtils.clamp(steerMultiplier * steerAngle * delta
 					+ this.steerAngle, -VehicleConfig.maxSteeringAngle,
-					VehicleConfig.maxSteeringAngle) * (1 - Math.abs(speed)/280);
+					VehicleConfig.maxSteeringAngle) /* (1 - Math.abs(speed)/280)*/;
 			if (Math.abs(steerAngle) < 0.1) this.steerAngle = steerAngle;
 			
 			this.throttle = (float) (MathUtils.clamp(throttleMultiplier * throttle

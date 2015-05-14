@@ -33,7 +33,7 @@ public class Behavior {
 
 	private float desiredSpeed, desiredSpeedFactor;
 	
-	private boolean changedLink;
+	public boolean changedLink;
 	public Link currentLink;
 	public Lane currentLane;
 	
@@ -58,7 +58,7 @@ public class Behavior {
 	 * @return accelVector, the resulting acceleration vector
 	 */
 	public void update(float dT) {
-
+		
 		if (changedLink) {
 			setDesiredSpeed(currentLink.maxspeed * desiredSpeedFactor);
 		}
@@ -79,7 +79,7 @@ public class Behavior {
 		if (steerAngle > MathUtils.PI) steerAngle -= MathUtils.PI2;
 		
 		//This method updates all path related states and returns a brake value
-		brake += pathFollowing.state.update();
+		brake += pathFollowing.state.update(vehicle);
 
 		// TODO when changing lanes, must find a way to make the velocity point
 		// to the target lane

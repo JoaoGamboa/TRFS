@@ -100,11 +100,11 @@ public class Path {
 	public PathSegment findNearestSegment(PathFollowingState state,
 			Vector2 point) {
 		float smallestDistanceSq = Float.POSITIVE_INFINITY;
-
-		int startIndex = state.updated ? state.currentSegmentIndex : 0;
+		
+		if (!state.updated) state.currentSegmentIndex = 0;
 
 		PathSegment nearestSegment = null;
-		for (int i = startIndex; i < segments.size; i++) {
+		for (int i = state.currentSegmentIndex; i < segments.size; i++) {
 			float distanceSq = shortestSquareDistanceToSegment(temp4,
 					segments.get(i), point);
 

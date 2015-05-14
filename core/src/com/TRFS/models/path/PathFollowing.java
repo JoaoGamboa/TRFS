@@ -15,7 +15,7 @@ public class PathFollowing {
 	public Path path;
 	public PathFollowingState state;
 	public Array<Link> linkSequence;
-	private int currentLinkIndex;
+	private int currentLinkIndex = -1;
 	
 	private Vector2 targetPosition;
 	private float targetOffset=5f;
@@ -40,12 +40,17 @@ public class PathFollowing {
 
 	public void setPath(Path path) {
 		this.path = path;
+		this.currentLinkIndex++;
 		this.state.updated = false;
 	}
 	
-	public void goToNextLink() {
-		int lane = 0; //TODO decide somehow to which lane of the next link the vehicle should go. perhaps a "toLane" int stored in each lane.
-		setPath(linkSequence.get(currentLinkIndex).lanes.get(lane).path);
+	public void goToNextLink(Vehicle vehicle) {
+		if (currentLinkIndex < linkSequence.size) {
+			int lane = 0; //TODO decide somehow to which lane of the next link the vehicle should go. perhaps a "toLane" int stored in each lane.
+			setPath(linkSequence.get(currentLinkIndex).lanes.get(lane).path);
+		} else {
+			state.finished = true;
+		}
 	}
 
 	/**Contains parameters regarding the current position of the agent on the
@@ -59,18 +64,17 @@ public class PathFollowing {
 		public int currentSegmentIndex;
 		public float distanceOnPath;
 		public Vector2 nearestPointOnPath;
-		public boolean updated;
+		public boolean updated, finished;
 
 		public PathFollowingState() {
 			nearestPointOnPath = new Vector2();
 		}
 		
-		public float update() {
+		public float update(Vehicle vehicle) {
 			float brake = 0f;
 			
 			//Near the end of the path, so go to next path.
-			if ((state.distanceOnPath + targetOffset * 1.5f) > path.getLength()) goToNextLink();
-			
+			if ((state.distanceOnPath + targetOffset * 1.5f) > path.getLength()) goToNextLink(vehicle);
 
 			return brake;
 		}

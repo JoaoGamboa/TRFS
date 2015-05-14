@@ -2,8 +2,8 @@ package com.TRFS.models.general;
 
 import java.util.Random;
 
-import com.TRFS.models.path.PathFinder;
 import com.TRFS.scenarios.Scenario;
+import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.simulator.SimulationParameters;
 import com.TRFS.vehicles.Car;
@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
  *
  */
 public class InFlowsManager {
+	public static int nextVehicleID;
 	
 	private Scenario scenario;
 	private Array<Link> inflowLinks; 
@@ -93,18 +94,16 @@ public class InFlowsManager {
 	 */
 	
 	private float minimumAvailableSpace = 6f;
+	
 	public boolean checkLaneForSpace (Link link, int lane) {
-		
-		for (Array<Vehicle> layer : scenario.trafficManager.vehicleLayers) {
-			for (Vehicle vehicle : layer) {
-				if (vehicle.behavior.currentLink.internalID == link.internalID) {
-					if (vehicle.behavior.currentLane.index == lane) {
-						if (vehicle.behavior.pathFollowing.state.distanceOnPath < minimumAvailableSpace) {
-							return false;
-						}}}}}
+		for (Vehicle vehicle : scenario.trafficManager.vehicles) {
+			if (vehicle.behavior.currentLink.internalID == link.internalID) {
+				if (vehicle.behavior.currentLane.index == lane) {
+					if (vehicle.behavior.pathFollowing.state.distanceOnPath < minimumAvailableSpace) {
+						return false;
+					}}}}
 		return true;
 	}
-	
 	
 	/**Adds a new vehicle to the network, located at the beggining of the provided {@link Lane}.
 	 * Decides what kind of vehicle to be added based on the truck percentage defined by the user.
@@ -119,9 +118,8 @@ public class InFlowsManager {
 			vehicle = new Truck();
 		
 		vehicle.behavior.setInitialLocation(link, link.lanes.get(lane));
-		//vehicle.behavior.pathFollowing.linkSequence = scenario.trafficManager.pathFinder.getRandomPathFromNode(link.fromNode);
-		scenario.trafficManager.vehicleLayers.get(link.z).add(vehicle);
-				
-		vehicleCount += 1;			
+		vehicle.behavior.pathFollowing.linkSequence = scenario.trafficManager.pathFinder.getRandomPathFromNode(link.fromNode);
+		scenario.trafficManager.vehicles.add(vehicle);
+						
 	}	
 }

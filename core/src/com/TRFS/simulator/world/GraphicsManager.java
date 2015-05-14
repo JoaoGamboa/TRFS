@@ -28,26 +28,27 @@ public class GraphicsManager {
 
 	public void render(float delta) {
 		scenario.batch.setProjectionMatrix(scenario.camera.combined);
-
-		for (Integer zLevel : scenario.map.zLevels) {
-			MapRenderer.render(scenario.map, zLevel);
-			for (Vehicle vehicle : scenario.trafficManager.vehicleLayers.get(zLevel)) {
-				scenario.batch.begin();
-				vehicle.draw(scenario.batch);
-				scenario.batch.end();
-			}
-		}
-
-		if (SimulationParameters.drawDebug){
+		
+		boolean drawDebug = SimulationParameters.drawDebug;
+		if (drawDebug) {
 			shapeRenderer.setProjectionMatrix(scenario.camera.combined);
 			MapRenderer.renderDebug(scenario.map, shapeRenderer);
-			for (Integer zLevel : scenario.map.zLevels) {
-				for (Vehicle vehicle : scenario.trafficManager.vehicleLayers.get(zLevel)) {
-					vehicle.drawVehicleDebug(shapeRenderer);
+		}
+		
+		//Loop through layers starting from the topmost one
+		for (int i = scenario.map.zLevels.size - 1; i >= 0; i--) {
+			int z = scenario.map.zLevels.get(i);
+			
+			MapRenderer.render(scenario.map, z);
+			
+			for (Vehicle vehicle : scenario.trafficManager.vehicles) {
+				if (vehicle.physics.zLevel == z) {
+					scenario.batch.begin();
+					vehicle.draw(scenario.batch);
+					scenario.batch.end();
+					if (drawDebug) vehicle.drawVehicleDebug(shapeRenderer);
 				}
 			}
-			
-			//GraphicsManager.staticRendering.render();
 		}
 	}
 

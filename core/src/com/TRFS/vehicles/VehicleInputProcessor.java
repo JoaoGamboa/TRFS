@@ -1,11 +1,11 @@
 package com.TRFS.vehicles;
 
+import com.TRFS.scenarios.Scenario;
 import com.TRFS.scenarios.map.Coordinate;
 import com.TRFS.simulator.MiscUtils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.Array;
 
 public class VehicleInputProcessor {
 	
@@ -43,18 +43,16 @@ public class VehicleInputProcessor {
 		}
 	}
 	
-	public void findClicked(Array<Array<Vehicle>> vehicleLayers, float worldX, float worldY) {
-		
+	public void findClicked(Scenario scenario, float worldX, float worldY) {
 		//Loop through layers starting from the topmost one
-		for (int i = vehicleLayers.size - 1; i >=0; i--) {
-			if (vehicleLayers.get(i).size == 0) continue;
-			for (Vehicle vehicle : vehicleLayers.get(i)) {
-				if (isTouched(vehicle, worldX, worldY)) {
-					tVehicle = vehicle;
-					break;
-				}
-			}
-		}
+		for (int i =  scenario.map.zLevels.size - 1; i >= 0; i--) {
+			int z = scenario.map.zLevels.get(i);
+			for (Vehicle vehicle : scenario.trafficManager.vehicles) {
+				if (vehicle.physics.zLevel == z) {
+					if (isTouched(vehicle, worldX, worldY)) {
+						tVehicle = vehicle;
+						break;
+					}}}}
 	}
 	
 	public void confirmClicked(float worldX, float worldY) {
