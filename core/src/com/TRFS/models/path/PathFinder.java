@@ -16,6 +16,10 @@ public class PathFinder {
 	private Array<Node> tmpVisitedNodes, tmpNeighbourNodes;
 	private Array<Link> tmpVisitedLinks, tmpNeighbourLinks;
 	
+	/**Returns a random non-weighted path using the Depth-First Search (DFS) algorithm. 
+	 * @param entranceNode
+	 * @return An {@link Array} of {@link Link}s defining the path. 
+	 */
 	public PathFinder (Map map) {
 		//this.map = map;
 		
@@ -28,10 +32,9 @@ public class PathFinder {
 		this.possiblePaths = new Array<Array<Link>>();
 				
 		for (Node entranceNode : map.entranceNodes) {
-			System.out.println("new entrance");
 			for (Node exitNode : map.exitNodes) {
 				//Find all possible paths.
-				findDFSPath(entranceNode, exitNode);
+				iterDepthFirst(entranceNode, exitNode);
 			}
 			//Identify the shortest one
 			int indexOfShortestPath = 0;
@@ -46,61 +49,6 @@ public class PathFinder {
 			}
 		}
 	}
-			
-	/**Returns a random non-weighted path using the Depth-First Search (DFS) algorithm. 
-	 * @param entranceNode
-	 * @return An {@link Array} of {@link Link}s defining the path. 
-	 */
-	public void findDFSPath(Node entranceNode, Node exitNode) {		
-		//Depth-First Search (DFS)
-		//tmpVisitedNodes.add(entranceNode);
-		
-		//The entrance node should never have more than one "toLink", so it's safe to add the first in the array.
-		//tmpVisitedLinks.add(entranceNode.toLinks.get(0));
-		//depthFirstLink(exitNode, tmpVisitedLinks);
-		//depthFirst(exitNode, tmpVisitedNodes);
-		iterDepthFirst(entranceNode, exitNode);
-		//tmpVisitedLinks.clear();
-		//tmpNeighbourLinks.clear();
-		//tmpVisitedNodes.clear();
-	}
-	
-	private void depthFirstLink(Node exitNode, Array<Link> visited) {
-		tmpNeighbourLinks.clear();		
-		for (Link link : tmpVisitedLinks.peek().toNode.toLinks) tmpNeighbourLinks.add(link);
-		System.out.println(tmpNeighbourLinks.size);
-		for (int i = 0; i < tmpNeighbourLinks.size; i++) {
-			if(tmpVisitedLinks.contains(tmpNeighbourLinks.get(i), false)) continue;
-			
-			if(tmpNeighbourLinks.get(i).toNode.equals(exitNode)) {
-				visited.add(tmpNeighbourLinks.get(i));
-				
-				Array<Link> path = new Array<Link>();
-				for (Link visitedLink : visited) {
-					path.add(visitedLink);
-				}
-				possiblePaths.add(path);
-				
-				tmpVisitedLinks.pop();
-			}
-			
-		}
-		
-		/*for (Link link : tmpVisitedLinks) {
-		}*/
-		
-		for (int i = 0; i < tmpNeighbourLinks.size; i++) {
-			if (visited.contains(tmpNeighbourLinks.get(i), false) || tmpNeighbourLinks.get(i).toNode.equals(exitNode)) continue;
-			visited.add(tmpNeighbourLinks.get(i));
-			depthFirstLink(exitNode, visited);
-			visited.pop();
-		}
-		
-		/*for (Link link : tmpNeighbourLinks) {
-			if (tmpVisitedLinks.contains(link, false) || link.toNode.equals(exitNode)) continue;
-			
-		}*/
-	}
 	
 	public Array<Link> getRandomPathFromNode(Node entranceNode) {
 		return entranceNode.availablePaths.get(new Random().nextInt(entranceNode.availablePaths.size));
@@ -108,74 +56,57 @@ public class PathFinder {
 	
 	private void iterDepthFirst(Node entranceNode, Node exitNode) {
 		Array<Node> visited = new Array<Node>();
-		visited.add(entranceNode);
-		
 		Array<Node> stack = new Array<Node>();
+		
 		stack.add(entranceNode);
 		
-		Node v, w;
+		Node current, neighbour;
 		
 		while (stack.size > 0) {
-			v = stack.pop();
-			if (!v.equals(entranceNode)) visited.add(v);
 			
-			if (!visited.contains(v, false)) {
-				visited.add(v);
+			current = stack.peek();
+			
+			neighbour = getUnvisitedNeighbourNode(current, visited);
+			
+			if (neighbour != null) {
+				visited.add(neighbour);
+				stack.add(neighbour);
+			} else stack.pop();
+	
+			if (neighbour.equals(exitNode)) {
 				
-				System.out.print(v.coordinate + " ");
+			}
+			
+			
+			/*
+			if (!visited.contains(v, false)) visited.add(v);
+			
+			if (v.equals(exitNode)) {
+				//save path
 				
-				for (Link link : v.toLinks) {
-					w = link.toNode;
-					if (!visited.contains(w, false)) {
-						stack.add(w);
-						visited.add(w);
-						
-						/*if (w.equals(exitNode)) {
-							for (Node node : stack) {
-								System.out.println(node.coordinate);
-								System.out.println("new exit");
-							}
-						}*/
-					}
+				stack.pop();
+				continue;
+				//visited.removeValue(v, false);
+			}
+			
+			if (v.toLinks.size == 0) stack.pop();
+							
+			for (Link link : v.toLinks) {
+				w = link.toNode;
+				if (!visited.contains(w, false)) {
+					stack.add(w);
+					break;
+				} else {
+					stack.pop();
 				}
-			}			
+			}	*/	
 		}
-		
 	}
 	
-	
-	private void depthFirst(Node exitNode, Array<Node> visited) {
-
-		for (Link link : visited.peek().toLinks) tmpNeighbourNodes.add(link.toNode);
-		
-		for (Node node : tmpNeighbourNodes) {
-			if(tmpVisitedNodes.contains(node, false)) continue;
-			
-			if(node.equals(exitNode)) {
-				visited.add(node);
-				
-				for (int i = 0; i < visited.size; i++) {
-					System.out.println(visited.get(i).coordinate + ",  ");
-					//if (i > 0 && i < tmpVisitedNodes.size-1) System.out.print(tmpVisitedNodes.get(i).internalID + ",  ");
-					//if (i == tmpVisitedNodes.size-1) System.out.print(tmpVisitedNodes.get(i).coordinate + ",  ");
-				}
-				
-				/*for (Node visNode : tmpVisitedNodes) {
-					
-					System.out.print(visNode.internalID + ",  ");
-				}*/
-				
-				System.out.println();
-				visited.pop();
-			}
+	private Node getUnvisitedNeighbourNode(Node node, Array<Node> visited) {
+		for (Link link : node.toLinks) {
+			if (!visited.contains(link.toNode, false)) return link.toNode;
 		}
-		
-		for (Node node : tmpNeighbourNodes) {
-			if (visited.contains(node, false) || node.equals(exitNode)) continue;
-			
-			visited.add(node);
-			depthFirst(exitNode, visited);
-			visited.pop();
-		}
+		return null;
 	}
 }
