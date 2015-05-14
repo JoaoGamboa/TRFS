@@ -12,13 +12,13 @@ import com.badlogic.gdx.utils.Array;
  */
 
 public class TrafficManager {
-	private Scenario scenario;
+	//private Scenario scenario;
 	public InFlowsManager inFlowsManager;
 	public Array<Array<Vehicle>> vehicleLayers;
 	public PathFinder pathFinder;
 
 	public TrafficManager(Scenario scenario) {
-		this.scenario = scenario;
+		//this.scenario = scenario;
 		this.inFlowsManager = new InFlowsManager(scenario);
 		this.pathFinder = new PathFinder(scenario.map);
 		

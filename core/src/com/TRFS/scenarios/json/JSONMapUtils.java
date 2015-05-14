@@ -89,7 +89,7 @@ public class JSONMapUtils {
 	public static void addNode(Map map, Coordinate coordinates, boolean isFirstPoint, Link sourceLink) {
 		boolean isRepeated = false;
 		Node finalNode = null;
-
+		
 		//Check if node already exists and get a handle to update it
 		for (Link link : map.links) {
 			if (link.fromNode != null) {

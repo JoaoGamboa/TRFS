@@ -3,10 +3,8 @@ package com.TRFS.models.path;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Path;
 import com.TRFS.vehicles.Vehicle;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.sun.corba.se.impl.protocol.giopmsgheaders.TargetAddressHelper;
 
 /**
  * @author J.P.Gamboa jpgamboa@outlook.com
@@ -17,10 +15,11 @@ public class PathFollowing {
 	public Path path;
 	public PathFollowingState state;
 	public Array<Link> linkSequence;
-
+	private int currentLinkIndex;
+	
 	private Vector2 targetPosition;
 	private float targetOffset=5f;
-
+	
 	public PathFollowing() {
 		this.state = new PathFollowingState();
 		this.targetPosition = new Vector2();
@@ -29,12 +28,9 @@ public class PathFollowing {
 	
 	//linearAcceleration is here if needed to update in the future, but not yet used
 	public float update(Vehicle vehicle) {
+		
 		path.updateTargetPosition(vehicle.physics.position, targetPosition, state, targetOffset);		
 		vehicle.targetPos.set(targetPosition); //TODO delete debug only
-		
-		
-		if ((state.distanceOnPath + targetOffset * 1.5f) > path.getLength()) nextLink();
-		
 		
 		//Set aim to the target
 		float targetHeading = (float) Math.atan2(targetPosition.x - vehicle.physics.position.x, targetPosition.y - vehicle.physics.position.y);
@@ -44,12 +40,12 @@ public class PathFollowing {
 
 	public void setPath(Path path) {
 		this.path = path;
-		//this.state.nearestPointOnPath = path.getStartPoint().cpy();
 		this.state.updated = false;
 	}
 	
-	public void nextLink() {
-		//TODO set path as the next link on the link sequence
+	public void goToNextLink() {
+		int lane = 0; //TODO decide somehow to which lane of the next link the vehicle should go. perhaps a "toLane" int stored in each lane.
+		setPath(linkSequence.get(currentLinkIndex).lanes.get(lane).path);
 	}
 
 	/**Contains parameters regarding the current position of the agent on the
@@ -57,7 +53,6 @@ public class PathFollowing {
 	 * position.
 	 * 
 	 * @author J.P.Gamboa jpgamboa@outlook.com
-	 *
 	 */
 	public class PathFollowingState {
 
@@ -69,7 +64,17 @@ public class PathFollowing {
 		public PathFollowingState() {
 			nearestPointOnPath = new Vector2();
 		}
+		
+		public float update() {
+			float brake = 0f;
+			
+			//Near the end of the path, so go to next path.
+			if ((state.distanceOnPath + targetOffset * 1.5f) > path.getLength()) goToNextLink();
+			
 
+			return brake;
+		}
+		
 	}
 
 }

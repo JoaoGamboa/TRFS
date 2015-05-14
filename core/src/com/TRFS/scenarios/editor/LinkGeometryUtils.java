@@ -1,6 +1,7 @@
 package com.TRFS.scenarios.editor;
 
 import com.TRFS.scenarios.map.Coordinate;
+import com.TRFS.scenarios.map.Link;
 import com.badlogic.gdx.utils.Array;
 
 public class LinkGeometryUtils {
@@ -69,6 +70,17 @@ public class LinkGeometryUtils {
 			newCoordinates = coordinates;
 
 		return newCoordinates;
+	}
+	
+	public static float length(Link link) {
+		float length = 0;
+		for (int j = 0; j < link.coordinates.size - 1; j++) {
+			Coordinate c0 = link.coordinates.get(j);
+			Coordinate c1 = link.coordinates.get(j +1);
+			length += Math.sqrt((c1.x - c0.x) * (c1.x - c0.x) + (c1.y - c0.y) * (c1.y - c0.y));
+		}
+
+		return length;
 	}
 
 }

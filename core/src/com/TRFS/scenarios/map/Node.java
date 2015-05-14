@@ -11,18 +11,19 @@ public class Node {
  	public Coordinate coordinate;
 	public boolean networkEntrance, networkExit;
 		
-	public Node (Coordinate coordinates, int internalID, Link fromLink) {
+	public Node (Coordinate coordinates, int internalID, Link sourceLink) {
 		this.coordinate = coordinates;
 		this.internalID = internalID;
 		this.fromLinks = new Array<Link>();
 		this.toLinks = new Array<Link>();
-		this.fromLinks.add(fromLink);
-		this.zLevel = fromLink.z;
+		this.zLevel = sourceLink.z;
 	}
 	
 	public void finalizeBuild() {
-		if(fromLinks.size < 1) networkEntrance = true;
-		if(toLinks.size < 1)   networkExit = true;
+		if (fromLinks.size < 1) networkEntrance = true;
+		if (toLinks.size < 1)   networkExit = true;
+		
+		if (networkEntrance && availablePaths == null) availablePaths = new Array<Array<Link>>();
 	}
 	
 	public void renderDebugPoints(ShapeRenderer shapeRenderer) {

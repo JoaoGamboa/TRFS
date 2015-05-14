@@ -7,9 +7,13 @@ import com.badlogic.gdx.utils.Array;
 public class Map {
 	
 	public MapPreview mapPreview;
-	public Array<Link> links, inFlowLinks;
+	public Array<Link> links;
 	public Array<Node> nodes;
 	public Array<Integer> zLevels;
+	
+	//Holders for other methods
+	public Array<Link> inFlowLinks;
+	public Array<Node> exitNodes, entranceNodes;
 
 	/** Map attributes */
 	public String name;
@@ -20,20 +24,30 @@ public class Map {
 		this.name = mapPreview.name;
 		this.links = new Array<Link>();
 		this.nodes = new Array<Node>();
-		this.inFlowLinks = new Array<Link>();
 		this.zLevels = new Array<Integer>();
+
+		this.inFlowLinks = new Array<Link>();
+		this.entranceNodes = new Array<Node>();
+		this.exitNodes = new Array<Node>();
 		
 		if (this.mapPreview.fromJSON) {
 			JSONMapUtils.makeLinksAndNodes(this, mapPreview.fileHandle);
 		}
 		
-		MapGeometryUtils.setMapAttributes(this);
-		
 		finalizeBuild();
-
 	}
 	
 	public void finalizeBuild() {
-		for (Node node : nodes) node.finalizeBuild();
+		MapGeometryUtils.setMapAttributes(this);
+		
+		if (links.size > 0) for (Link link : links) link.finalizeBuild();
+		
+		if (nodes.size > 0) {
+			for (Node node : nodes) {
+				node.finalizeBuild();
+				if (node.networkEntrance == true) entranceNodes.add(node);
+				if (node.networkExit == true) exitNodes.add(node);
+			}
+		}
 	}
 }

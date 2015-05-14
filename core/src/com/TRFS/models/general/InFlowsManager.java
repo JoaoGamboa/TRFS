@@ -25,7 +25,6 @@ public class InFlowsManager {
 	public int vehicleCount;
 	private int[] queueOutsideNetwork;
 	private boolean debugOneVeh = false;
-	private PathFinder pathFinder;
 	
 	private Vehicle vehicle;
 	
@@ -34,7 +33,6 @@ public class InFlowsManager {
 		this.inflowLinks = scenario.map.inFlowLinks;
 		this.timeCounters = new float[this.inflowLinks.size];
 		this.queueOutsideNetwork = new int[this.inflowLinks.size];
-		this.pathFinder = new PathFinder(scenario.map);
 		
 		//Clear counters
 		for (int i = 0; i < inflowLinks.size; i++) {
@@ -121,7 +119,7 @@ public class InFlowsManager {
 			vehicle = new Truck();
 		
 		vehicle.behavior.setInitialLocation(link, link.lanes.get(lane));
-		pathFinder.findRandomPath(link);
+		//vehicle.behavior.pathFollowing.linkSequence = scenario.trafficManager.pathFinder.getRandomPathFromNode(link.fromNode);
 		scenario.trafficManager.vehicleLayers.get(link.z).add(vehicle);
 				
 		vehicleCount += 1;			
