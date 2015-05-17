@@ -180,6 +180,7 @@ public class Vehicle {
 			
 			this.brake = MathUtils.clamp(brakeMultiplier * brake * delta
 					+ this.brake, -1, 1);
+			
 			updatePhysics(delta);
 		}
 		

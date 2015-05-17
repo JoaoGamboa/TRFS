@@ -92,12 +92,11 @@ public class InFlowsManager {
 	 * @param lane
 	 * @return True is there is enough space on this lane.
 	 */
-	
 	private float minimumAvailableSpace = 6f;
 	
 	public boolean checkLaneForSpace (Link link, int lane) {
 		for (Vehicle vehicle : scenario.trafficManager.vehicles) {
-			if (vehicle.behavior.currentLink.internalID == link.internalID) {
+			if (vehicle.behavior.currentLink.quickEquals(link)) {
 				if (vehicle.behavior.currentLane.index == lane) {
 					if (vehicle.behavior.pathFollowing.state.distanceOnPath < minimumAvailableSpace) {
 						return false;

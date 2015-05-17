@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Node {
 	
-	public int internalID, zLevel;
+	public int id, zLevel;
 	public Array<Link> fromLinks, toLinks;
 	public Array<Array<Link>> availablePaths;
  	public Coordinate coordinate;
@@ -13,7 +13,7 @@ public class Node {
 		
 	public Node (Coordinate coordinates, int internalID, Link sourceLink) {
 		this.coordinate = coordinates;
-		this.internalID = internalID;
+		this.id = internalID;
 		this.fromLinks = new Array<Link>();
 		this.toLinks = new Array<Link>();
 		this.zLevel = sourceLink.z;
@@ -41,8 +41,13 @@ public class Node {
 				return false;
 		} else if (!coordinate.equals(other.coordinate))
 			return false;
-		if (internalID != other.internalID)
+		if (id != other.id)
 			return false;
+		return true;
+	}
+	
+	public boolean quickEquals(Node other) {
+		if (id != other.id) return false;
 		return true;
 	}
 

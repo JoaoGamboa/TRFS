@@ -2,7 +2,7 @@ package com.TRFS.ui.windows.models;
 
 import java.util.ArrayList;
 
-import com.TRFS.models.Behavior;
+import com.TRFS.models.carFollowing.CarFollowingModel;
 import com.TRFS.models.carFollowing.FritzscheCarFollowing;
 import com.TRFS.models.carFollowing.W74CarFollowing;
 import com.TRFS.simulator.AssetsMan;
@@ -42,8 +42,8 @@ public class ModelParameterSliders {
 		outterTable.add(SimulationParameters.currentCarFolModel + " Simulation Parameters", "smallLabel").pad(5,0,5,0).row();
 				
 		int model = 0;
-		for (int i = 0; i < Behavior.carFolModels.length; i++) {
-			if (SimulationParameters.currentCarFolModel.equals(Behavior.carFolModels[i])) {
+		for (int i = 0; i < CarFollowingModel.carFolModels.length; i++) {
+			if (SimulationParameters.currentCarFolModel.equals(CarFollowingModel.carFolModels[i])) {
 				model = i;
 			}
 		}

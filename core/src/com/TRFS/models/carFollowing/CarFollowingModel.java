@@ -1,5 +1,7 @@
 package com.TRFS.models.carFollowing;
 
+import com.TRFS.vehicles.Vehicle;
+
 
 /**
  * @author jgamboa
@@ -7,8 +9,9 @@ package com.TRFS.models.carFollowing;
  */
 public abstract class CarFollowingModel {
 	
-	public CarFollowingModel() {
-	}
+	public static final String[] carFolModels = new String[] { "Wiedemann '74", "Fritzsche" };
+	
+	public CarFollowingModel() {}
 	
 	/**
 	 * @param dX - Distance between leader and this
@@ -22,4 +25,26 @@ public abstract class CarFollowingModel {
 		return 0;
 	}
 
+	
+	/**Sets the {@link Vehicle}'s {@link CarFollowingModel} to the desired choice.
+	 * @param carFollowingBehavior
+	 */
+	public static CarFollowingModel set(String carFollowingModel) {
+		
+		int model = 0;
+		for (int i = 0; i < CarFollowingModel.carFolModels.length; i++) {
+			if (carFollowingModel.equals(CarFollowingModel.carFolModels[i])) {
+				model = i;
+			}
+		}
+		switch (model) {
+		
+		case 0:
+			return new W74CarFollowing();
+		case 1:
+			return new FritzscheCarFollowing();
+		}
+		
+		return null;
+	}
 }

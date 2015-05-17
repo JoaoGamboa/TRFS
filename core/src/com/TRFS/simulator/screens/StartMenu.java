@@ -1,7 +1,7 @@
 package com.TRFS.simulator.screens;
 
-import com.TRFS.models.Behavior;
-import com.TRFS.models.laneChanging.LaneChanging;
+import com.TRFS.models.carFollowing.CarFollowingModel;
+import com.TRFS.models.laneChanging.LaneChangingModel;
 import com.TRFS.scenarios.ScenariosManager;
 import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.Main;
@@ -260,8 +260,8 @@ public class StartMenu implements Screen {
 		int bevelWidth = 4;
 		
 		if (onCreate) {
-			carFolSelBox.setItems(Behavior.carFolModels);
-			laneChangeSelBox.setItems(LaneChanging.laneChangeModels);
+			carFolSelBox.setItems(CarFollowingModel.carFolModels);
+			laneChangeSelBox.setItems(LaneChangingModel.laneChangeModels);
 			
 			centerTable.top();
 			centerTable.add("Simulation Models", "mediumWarning").expandX().left().colspan(3).pad(10).row();

@@ -3,8 +3,7 @@ package com.TRFS.models;
 import java.util.Random;
 
 import com.TRFS.models.carFollowing.CarFollowingModel;
-import com.TRFS.models.carFollowing.FritzscheCarFollowing;
-import com.TRFS.models.carFollowing.W74CarFollowing;
+import com.TRFS.models.laneChanging.LaneChangingModel;
 import com.TRFS.models.path.PathFollowing;
 import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
@@ -20,18 +19,17 @@ import com.badlogic.gdx.math.Vector2;
  * 
  * @author jgamboa
  */
-
 public class Behavior {
 
-	public static final String[] carFolModels = new String[] { "Wiedemann '74", "Fritzsche" };
-
 	//public static DynamicSimParam[] calibrationParameters;
-	private CarFollowingModel carFollowingModel;
+	private CarFollowingModel carFollowingBehaviour;
+	public LaneChangingModel laneChangingBehaviour;
 	public PathFollowing pathFollowing;
 
 	private Vehicle vehicle;
+	public Vehicle leader;
 
-	private float desiredSpeed, desiredSpeedFactor;
+	private float desiredSpeedFactor;
 	
 	public boolean changedLink;
 	public Link currentLink;
@@ -47,10 +45,12 @@ public class Behavior {
 
 	public Behavior(Vehicle vehicle, String carFollowingBehavior, String laneChangingBehavior) {
 		this.vehicle = vehicle;
-		this.desiredSpeedFactor = (new Random().nextInt((150 - 70) + 1) + 70)/100f;
 		this.pathFollowing = new PathFollowing();
 		
-		setCarFollowingModel(carFollowingBehavior);
+		this.carFollowingBehaviour = CarFollowingModel.set(carFollowingBehavior);
+		this.laneChangingBehaviour = LaneChangingModel.set(laneChangingBehavior);
+		
+		this.desiredSpeedFactor = (new Random().nextInt((150 - 70) + 1) + 70)/100f;
 	}
 
 	/**Updates the behaviour of this HVE.
@@ -58,20 +58,14 @@ public class Behavior {
 	 * @return accelVector, the resulting acceleration vector
 	 */
 	public void update(float dT) {
-		
-		if (changedLink) {
-			setDesiredSpeed(currentLink.maxspeed * desiredSpeedFactor);
-		}
-		
 		// From -1 to 1, to be passed to the updatePhysics method as a % of the total vehicle capability
 		float throttle = 0, brake = 0, steerAngle = 0; 
-		throttle = 0.5f;
+				
 		//Update CarFollowing (returns an amount of throttle or brake ranging from -1 to 1)
-		Vehicle leader = null; // TODO
-		
 		float carFollowingThrottle = updateCarFollowing(leader);
-
-		//TODO other constraints that might affect the acceleration magnitude.
+		
+		//TODO other constraints that might affect the throttle magnitude.
+		throttle = carFollowingThrottle;
 		
 		//Updates the target and returns the angle between the target and the vehicle's CG
 		float targetHeading = pathFollowing.update(vehicle);
@@ -80,9 +74,6 @@ public class Behavior {
 		
 		//This method updates all path related states and returns a brake value
 		brake += pathFollowing.state.update(vehicle);
-
-		// TODO when changing lanes, must find a way to make the velocity point
-		// to the target lane
 		
 		//Update Vehicle
 		vehicle.physics.updateAI(dT, throttle, brake, steerAngle);
@@ -93,44 +84,12 @@ public class Behavior {
 	 * @return Updated acceleration float.
 	 */
 	private float updateCarFollowing(Vehicle leader) {
-		//Update car-following behaviour
-		if (leader != null) {
-			float carFollowingAcceleration = carFollowingModel.update(leader.physics.position.dst(vehicle.physics.position),
+		if (leader != null) return carFollowingBehaviour.update(leader.physics.position.dst(vehicle.physics.position),
 					leader.physics.speed - vehicle.physics.speed, leader.config.length,	vehicle.physics.speed, leader.physics.speed, 
-					leader.physics.acceleration, currentLink.maxspeed, desiredSpeed);
-			
-			return carFollowingAcceleration;
-			
-		} else 	return maxDesiredAcceleration;
+					leader.physics.acceleration, currentLink.maxspeed, currentLink.maxspeed * desiredSpeedFactor);
+		return maxDesiredAcceleration;
+	}
 		
-	}
-	
-	/**Sets this {@link Vehicle}'s {@link CarFollowingModel}.
-	 * @param carFollowingBehavior
-	 */
-	private void setCarFollowingModel(String carFollowingBehavior) {
-		int model = 0;
-		for (int i = 0; i < carFolModels.length; i++) {
-			if (carFollowingBehavior.equals(carFolModels[i])) {
-				model = i;
-			}
-		}
-		switch (model) {
-		case 0:
-			carFollowingModel = new W74CarFollowing();
-			//calibrationParameters = W74CarFollowing.calibrationParameters;
-		case 1:
-			carFollowingModel = new FritzscheCarFollowing();
-		}
-	}
-
-	/**Sets this {@link Vehicle}'s desired speed randomly with {@link Random#nextGaussian()}.
-	 * @param maxSpeed
-	 */
-	public void setDesiredSpeed(float maxSpeed) {
-		this.desiredSpeed = (float) (new Random().nextGaussian() * 20 + maxSpeed);
-	}
-	
 	/** Sets the initial location ({@link Link} and {@link Lane}) of the vehicle.
 	 * Updates the vehicle {@link PathFollowing}'s {@link Path} and sets the {@link Vehicle}'s position.
 	 * @param startLink
@@ -146,7 +105,8 @@ public class Behavior {
 	
 	public void rellocateAfterUserControlled() {
 		//TODO find nearest link/lane, set it as path
-		
 	}
+	
+	
 		
 }

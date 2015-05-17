@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Array;
 public class Link {
 
 	public Array<Coordinate> coordinates;
-	public int internalID, hierarchy, maxspeed, nrOfLanes, oneway, z, laneCapacity, inFlow = 0;
+	public int id, hierarchy, maxspeed, nrOfLanes, oneway, z, laneCapacity, inFlow = 0;
 	public DynamicSimParam inFlowParam;
 	public float cost, laneWidth, flowAtraction;
 	public Node fromNode, toNode;
@@ -24,7 +24,7 @@ public class Link {
 		if (cost == 0 && coordinates != null) cost = LinkGeometryUtils.length(this);
 		
 		if (inFlow > 0 & inFlowParam == null) 
-			inFlowParam = new DynamicSimParam("Desired Flow " + internalID, 0, 4000, inFlow, 1, "####", "Veh/h");
+			inFlowParam = new DynamicSimParam("Desired Flow " + id, 0, 4000, inFlow, 1, "####", "Veh/h");
 		
 		if (lanes == null) {
 			lanes = new Array<Lane>();
@@ -36,8 +36,8 @@ public class Link {
 		LaneGeometryUtils.makeLaneGeometry(this);
 	}
 	
-	public void setAttributes(int internalID, int hierarchy, int inFlow, int nrOfLanes, int maxspeed, int oneway, int z) {
-		this.internalID = internalID;
+	public void setAttributes(int internalid, int hierarchy, int inFlow, int nrOfLanes, int maxspeed, int oneway, int z) {
+		this.id = internalid;
 		this.hierarchy = hierarchy;
 		this.inFlow = inFlow;
 		this.nrOfLanes = nrOfLanes;
@@ -50,6 +50,16 @@ public class Link {
 	public void setCoordinates(Array<Coordinate> coordinates) {
 		this.coordinates = coordinates;
 	}
+	
+	/**Checks if this Link has priority over the provided Link according to the priority-to-the-right rule.
+	 * TODO Once traffic signs are implemented, check for those to decide the priority.
+	 * @param link
+	 * @return
+	 */
+	public boolean hasPriorityOver(Link link) {
+		
+		return false;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -57,8 +67,13 @@ public class Link {
 		if (obj == null)	return false;
 		if (getClass() != obj.getClass())	return false;
 		Link other = (Link) obj;
-		if (internalID != other.internalID)
+		if (id != other.id)
 			return false;
+		return true;
+	}
+	
+	public boolean quickEquals(Link other) {
+		if (id != other.id)	return false;
 		return true;
 	}
 }
