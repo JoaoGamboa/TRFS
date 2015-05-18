@@ -1,7 +1,5 @@
 package com.TRFS.models;
 
-import java.util.Random;
-
 import com.TRFS.models.carFollowing.CarFollowingModel;
 import com.TRFS.models.laneChanging.LaneChangingModel;
 import com.TRFS.models.path.PathFollowing;
@@ -22,15 +20,12 @@ import com.badlogic.gdx.math.Vector2;
 public class Behavior {
 
 	//public static DynamicSimParam[] calibrationParameters;
-	private CarFollowingModel carFollowingBehaviour;
+	public CarFollowingModel carFollowingBehaviour;
 	public LaneChangingModel laneChangingBehaviour;
 	public PathFollowing pathFollowing;
 
-	private Vehicle vehicle;
-	public Vehicle leader;
+	public Vehicle vehicle, lastOnPriorityLink, firstOnNextLink;
 
-	private float desiredSpeedFactor;
-	
 	public boolean changedLink;
 	public Link currentLink;
 	public Lane currentLane;
@@ -47,10 +42,9 @@ public class Behavior {
 		this.vehicle = vehicle;
 		this.pathFollowing = new PathFollowing();
 		
-		this.carFollowingBehaviour = CarFollowingModel.set(carFollowingBehavior);
-		this.laneChangingBehaviour = LaneChangingModel.set(laneChangingBehavior);
+		this.carFollowingBehaviour = CarFollowingModel.set(carFollowingBehavior, vehicle);
+		this.laneChangingBehaviour = LaneChangingModel.set(laneChangingBehavior, vehicle);
 		
-		this.desiredSpeedFactor = (new Random().nextInt((150 - 70) + 1) + 70)/100f;
 	}
 
 	/**Updates the behaviour of this HVE.
@@ -62,7 +56,7 @@ public class Behavior {
 		float throttle = 0, brake = 0, steerAngle = 0; 
 				
 		//Update CarFollowing (returns an amount of throttle or brake ranging from -1 to 1)
-		float carFollowingThrottle = updateCarFollowing(leader);
+		float carFollowingThrottle = updateCarFollowing();
 		
 		//TODO other constraints that might affect the throttle magnitude.
 		throttle = carFollowingThrottle;
@@ -83,10 +77,8 @@ public class Behavior {
 	 * @param leader
 	 * @return Updated acceleration float.
 	 */
-	private float updateCarFollowing(Vehicle leader) {
-		if (leader != null) return carFollowingBehaviour.update(leader.physics.position.dst(vehicle.physics.position),
-					leader.physics.speed - vehicle.physics.speed, leader.config.length,	vehicle.physics.speed, leader.physics.speed, 
-					leader.physics.acceleration, currentLink.maxspeed, currentLink.maxspeed * desiredSpeedFactor);
+	private float updateCarFollowing() {
+		if (this.carFollowingBehaviour.leader != null) return carFollowingBehaviour.update();
 		return maxDesiredAcceleration;
 	}
 		

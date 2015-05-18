@@ -7,11 +7,15 @@ import com.TRFS.vehicles.Vehicle;
  * @author jgamboa
  * Base class for car-following models.
  */
-public abstract class CarFollowingModel {
+public class CarFollowingModel {
 	
 	public static final String[] carFolModels = new String[] { "Wiedemann '74", "Fritzsche" };
 	
-	public CarFollowingModel() {}
+	public Vehicle vehicle, leader;
+	
+	public CarFollowingModel(Vehicle vehicle) {
+		this.vehicle = vehicle;
+	}
 	
 	/**
 	 * @param dX - Distance between leader and this
@@ -21,7 +25,7 @@ public abstract class CarFollowingModel {
 	 * @param Vn1
 	 * @param an1
 	 */
-	public float update(float dX, float dV, float leaderLength, float Vn, float Vn1, float an1, float maxSpeed, float desiredSpeed) {
+	public float update() {
 		return 0;
 	}
 
@@ -29,7 +33,7 @@ public abstract class CarFollowingModel {
 	/**Sets the {@link Vehicle}'s {@link CarFollowingModel} to the desired choice.
 	 * @param carFollowingBehavior
 	 */
-	public static CarFollowingModel set(String carFollowingModel) {
+	public static CarFollowingModel set(String carFollowingModel, Vehicle vehicle) {
 		
 		int model = 0;
 		for (int i = 0; i < CarFollowingModel.carFolModels.length; i++) {
@@ -40,9 +44,9 @@ public abstract class CarFollowingModel {
 		switch (model) {
 		
 		case 0:
-			return new W74CarFollowing();
+			return new W74CarFollowing(vehicle);
 		case 1:
-			return new FritzscheCarFollowing();
+			return new FritzscheCarFollowing(vehicle);
 		}
 		
 		return null;

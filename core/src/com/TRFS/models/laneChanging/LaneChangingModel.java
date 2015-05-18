@@ -3,15 +3,16 @@ package com.TRFS.models.laneChanging;
 import com.TRFS.vehicles.Vehicle;
 
 
-public abstract class LaneChangingModel {
+public class LaneChangingModel {
 	
 	public static final String[] laneChangeModels = new String[]{"TRFS Lane Changing"};
-	
+		
+	public Vehicle vehicle, leader, frontOnTargetLane, rearOnTargetLane;
 	public int currentLaneIndex, targetLaneIndex;
 	public boolean desireToChange;
 	
-	public LaneChangingModel () {
-		
+	public LaneChangingModel (Vehicle vehicle) {
+		this.vehicle = vehicle;
 	}
 	
 	public void update() {
@@ -21,7 +22,7 @@ public abstract class LaneChangingModel {
 	/**Sets the {@link Vehicle}'s {@link LaneChangingModel} to the desired choice.
 	 * @param carFollowingBehavior
 	 */
-	public static LaneChangingModel set(String laneChangingModel) {
+	public static LaneChangingModel set(String laneChangingModel, Vehicle vehicle) {
 		
 		int model = 0;
 		for (int i = 0; i < LaneChangingModel.laneChangeModels.length; i++) {
@@ -32,7 +33,7 @@ public abstract class LaneChangingModel {
 		
 		switch (model) {
 		case 0:
-			return new TRFSLaneChanging();
+			return new TRFSLaneChanging(vehicle);
 		}
 		
 		return null;

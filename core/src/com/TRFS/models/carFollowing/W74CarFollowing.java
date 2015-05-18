@@ -3,6 +3,7 @@ package com.TRFS.models.carFollowing;
 import java.util.Random;
 
 import com.TRFS.ui.general.parameters.DynamicSimParam;
+import com.TRFS.vehicles.Vehicle;
 
 /**
  * @author jgamboa
@@ -33,22 +34,33 @@ public class W74CarFollowing extends CarFollowingModel {
 	// Wiedemann '74 Variables
 	// Variable Parameters
 	public float AX, BX, CX, EX, ABX, SDV, SDX, OPDV, FaktorV;
-
-	private float NRND, RND1, RND2, RND3;
+	private float NRND, RND1, RND2, RND3, desiredSpeedFactor;
 
 	private int state; // 1-Braking; 2-Approaching; 3-Following; 4-Free Flow
-
-	public W74CarFollowing() {
+	
+	public W74CarFollowing(Vehicle vehicle) {
+		super(vehicle);
+		
 		this.NRND = (float) (new Random().nextGaussian() * 0.15f + 0.5f);
 		this.RND1 = (float) (new Random().nextGaussian() * 0.15f + 0.5f);
 		this.RND2 = (float) (new Random().nextGaussian() * 0.15f + 0.5f);
 		this.RND3 = (float) (new Random().nextGaussian() * 0.15f + 0.5f);
+		
+		this.desiredSpeedFactor = (new Random().nextInt((150 - 70) + 1) + 70)/100f;
 	}
 
 	@Override
-	public float update(float dX, float dV, float length1, float Vn, float Vn1,
-			float an1, float maxSpeed, float desiredSpeed) {
-
+	public float update() {
+	
+		float dX = leader.physics.position.dst(vehicle.physics.position);
+		float dV = leader.physics.speed - vehicle.physics.speed;
+		float length1 = leader.config.length;
+		float Vn = vehicle.physics.speed;
+		float Vn1 = leader.physics.speed;
+		float an1 = leader.physics.acceleration;
+		float maxSpeed = vehicle.behavior.currentLink.maxspeed;
+		float desiredSpeed = vehicle.behavior.currentLink.maxspeed * desiredSpeedFactor;
+		
 		AX = length1 + AXadd.getCurrentVal() + RND1 * AXmult.getCurrentVal();
 		BX = (float) ((BXadd.getCurrentVal() + BXmult.getCurrentVal() * RND1) * Math
 				.sqrt(dV > 0 ? Vn : Vn1));
