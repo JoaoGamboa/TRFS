@@ -52,6 +52,11 @@ public class PathFollowing {
 			state.finished = true;
 		}
 	}
+	
+	public Link nextLink() {
+		if (currentLinkIndex < linkSequence.size) return linkSequence.get(currentLinkIndex + 1);
+		return linkSequence.get(currentLinkIndex);
+	}
 
 	/**Contains parameters regarding the current position of the agent on the
 	 * path used to reduce the scope of the lookup when finding the current
@@ -64,7 +69,7 @@ public class PathFollowing {
 		public int currentSegmentIndex;
 		public float distanceOnPath;
 		public Vector2 nearestPointOnPath;
-		public boolean updated, finished;
+		public boolean updated, finished, approachingLinkEnd, atLinkEnd;
 
 		public PathFollowingState() {
 			nearestPointOnPath = new Vector2();
@@ -73,8 +78,11 @@ public class PathFollowing {
 		public float update(Vehicle vehicle) {
 			float brake = 0f;
 			
-			//Near the end of the path, so go to next path.
-			if ((state.distanceOnPath + targetOffset * 1.5f) > path.getLength()) goToNextLink(vehicle);
+			approachingLinkEnd = ((state.distanceOnPath) > path.getLength() - 20) ? true : false;
+			atLinkEnd = ((state.distanceOnPath + targetOffset * 0.5f) > path.getLength()) ? true : false;
+			
+			//At the end of the path, so go to next path.			
+			if (atLinkEnd) goToNextLink(vehicle);
 
 			return brake;
 		}

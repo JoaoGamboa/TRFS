@@ -11,6 +11,7 @@ import com.TRFS.scenarios.map.Path;
 import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * The behaviour class aggregates all behavior models and decisions to be made
@@ -27,7 +28,8 @@ public class Behavior {
 	public PathFollowing pathFollowing;
 
 	private Vehicle vehicle;
-	public Vehicle leader;
+	public Vehicle leader, frontOnTargetLane, rearOnTargetLane, lastOnPriorityLink, firstOnNextLink;
+	public Array<Vehicle> neighbours;
 
 	private float desiredSpeedFactor;
 	
@@ -58,7 +60,7 @@ public class Behavior {
 	 * @return accelVector, the resulting acceleration vector
 	 */
 	public void update(float dT) {
-		// From -1 to 1, to be passed to the updatePhysics method as a % of the total vehicle capability
+		//From -1 to 1, to be passed to the updatePhysics method as a % of the total vehicle capability
 		float throttle = 0, brake = 0, steerAngle = 0; 
 				
 		//Update CarFollowing (returns an amount of throttle or brake ranging from -1 to 1)

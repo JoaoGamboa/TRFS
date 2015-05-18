@@ -45,7 +45,7 @@ public class LinkAttributes {
 				lanes = 1;
 				break;
 		}
-		
+				
 		if (link.hierarchy == 0 ) link.hierarchy = 4;
 		if (link.nrOfLanes == 0) link.nrOfLanes = lanes;
 		if (link.maxspeed == 0) link.maxspeed = maxSpeed;

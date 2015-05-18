@@ -4,6 +4,7 @@ import com.TRFS.scenarios.editor.LaneGeometryUtils;
 import com.TRFS.scenarios.editor.LinkAttributes;
 import com.TRFS.scenarios.editor.LinkGeometryUtils;
 import com.TRFS.ui.general.parameters.DynamicSimParam;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class Link {
@@ -14,9 +15,12 @@ public class Link {
 	public float cost, laneWidth, flowAtraction;
 	public Node fromNode, toNode;
 	public Array<Lane> lanes;
+	public Vector2 startHeading, finishHeading, tmp;
 
 	public Link() {	
-		
+		this.startHeading = new Vector2();
+		this.finishHeading = new Vector2();
+		this.tmp = new Vector2();
 	}
 	
 	public void finalizeBuild() {
@@ -33,6 +37,14 @@ public class Link {
 			}
 		}
 		
+		// For comparison between links, both the start and ending heading are
+		// calculated pointing outwards from the link they connect to
+		int coordSize = coordinates.size;
+		startHeading.set(coordinates.get(1).x - coordinates.get(0).x,
+				coordinates.get(1).y - coordinates.get(0).y);
+		finishHeading.set(coordinates.get(coordSize - 1).x - coordinates.get(coordSize).x,
+						coordinates.get(coordSize - 1).y - coordinates.get(coordSize).y);
+
 		LaneGeometryUtils.makeLaneGeometry(this);
 	}
 	
@@ -51,13 +63,24 @@ public class Link {
 		this.coordinates = coordinates;
 	}
 	
-	/**Checks if this Link has priority over the provided Link according to the priority-to-the-right rule.
+	/**Checks if this Link has priority over the provided Link according to the priority-to-the-right rule and l.
 	 * TODO Once traffic signs are implemented, check for those to decide the priority.
 	 * @param link
 	 * @return
 	 */
 	public boolean hasPriorityOver(Link link) {
-		
+		if (this.hierarchy > link.hierarchy) {
+			return true;
+		} else if (this.hierarchy < link.hierarchy) {
+			return false;
+		} else {
+			return toTheRightOf(link);
+		}
+	}
+	
+	public boolean toTheRightOf(Link link) {
+		tmp.set(link.finishHeading).rotate(90);
+		if (this.finishHeading.dot(tmp) > 0) return true;
 		return false;
 	}
 
