@@ -27,8 +27,8 @@ public class Behavior {
 	public Vehicle vehicle, lastOnPriorityLink, firstOnNextLink;
 
 	public boolean changedLink;
-	public Link currentLink;
-	public Lane currentLane;
+	//public Link currentLink;
+	//public Lane currentLane;
 	
 	private float maxDesiredAcceleration = 5; //TODO should be variable for each driver
 	
@@ -88,8 +88,8 @@ public class Behavior {
 	 * @param startLane
 	 */
 	public void setInitialLocation(Link startLink, Lane startLane) {
-		currentLink = startLink;
-		currentLane = startLane;
+		pathFollowing.state.currentLink = startLink;
+		pathFollowing.state.currentLane = startLane;
 		pathFollowing.setPath(startLane.path);
 		float rotation = (float) (new Vector2().set(startLane.path.getSecondPoint()).sub(startLane.path.getStartPoint()).angleRad()-(Math.PI/2f));
 		vehicle.physics.setLocation(startLane.path.getStartPoint(), rotation);

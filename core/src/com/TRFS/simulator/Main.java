@@ -3,7 +3,6 @@ package com.TRFS.simulator;
 import com.TRFS.simulator.screens.Settings;
 import com.TRFS.simulator.screens.SplashScreen;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * @author jgamboa

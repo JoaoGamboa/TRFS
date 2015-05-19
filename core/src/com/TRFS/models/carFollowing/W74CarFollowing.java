@@ -58,8 +58,8 @@ public class W74CarFollowing extends CarFollowingModel {
 		float Vn = vehicle.physics.speed;
 		float Vn1 = leader.physics.speed;
 		float an1 = leader.physics.acceleration;
-		float maxSpeed = vehicle.behavior.currentLink.maxspeed;
-		float desiredSpeed = vehicle.behavior.currentLink.maxspeed * desiredSpeedFactor;
+		float maxSpeed = vehicle.behavior.pathFollowing.state.currentLink.maxspeed;
+		float desiredSpeed = vehicle.behavior.pathFollowing.state.currentLink.maxspeed * desiredSpeedFactor;
 		
 		AX = length1 + AXadd.getCurrentVal() + RND1 * AXmult.getCurrentVal();
 		BX = (float) ((BXadd.getCurrentVal() + BXmult.getCurrentVal() * RND1) * Math

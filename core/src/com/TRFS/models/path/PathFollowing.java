@@ -1,5 +1,6 @@
 package com.TRFS.models.path;
 
+import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Path;
 import com.TRFS.vehicles.Vehicle;
@@ -11,11 +12,11 @@ import com.badlogic.gdx.utils.Array;
  *
  */
 public class PathFollowing {
-
+	
 	public Path path;
 	public PathFollowingState state;
 	public Array<Link> linkSequence;
-	private int currentLinkIndex = -1;
+	private int currentLinkIndex = 0;
 	
 	private Vector2 targetPosition;
 	private float targetOffset=5f;
@@ -26,7 +27,6 @@ public class PathFollowing {
 		this.linkSequence = new Array<Link>();
 	}
 	
-	//linearAcceleration is here if needed to update in the future, but not yet used
 	public float update(Vehicle vehicle) {
 		
 		path.updateTargetPosition(vehicle.physics.position, targetPosition, state, targetOffset);		
@@ -40,14 +40,20 @@ public class PathFollowing {
 
 	public void setPath(Path path) {
 		this.path = path;
-		this.currentLinkIndex++;
 		this.state.updated = false;
+	}
+	
+	public void changeLane(int laneIndex) {
+		setPath(state.currentLink.lanes.get(laneIndex).path);
 	}
 	
 	public void goToNextLink(Vehicle vehicle) {
 		if (currentLinkIndex < linkSequence.size) {
+			
 			int lane = 0; //TODO decide somehow to which lane of the next link the vehicle should go. perhaps a "toLane" int stored in each lane.
+			
 			setPath(linkSequence.get(currentLinkIndex).lanes.get(lane).path);
+			currentLinkIndex++;
 		} else {
 			state.finished = true;
 		}
@@ -66,6 +72,8 @@ public class PathFollowing {
 	 */
 	public class PathFollowingState {
 
+		public Link currentLink;
+		public Lane currentLane;
 		public int currentSegmentIndex;
 		public float distanceOnPath;
 		public Vector2 nearestPointOnPath;

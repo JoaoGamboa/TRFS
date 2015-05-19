@@ -2,14 +2,13 @@ package com.TRFS.models.laneChanging;
 
 import com.TRFS.vehicles.Vehicle;
 
-
 public class LaneChangingModel {
 	
 	public static final String[] laneChangeModels = new String[]{"TRFS Lane Changing"};
 		
 	public Vehicle vehicle, leader, frontOnTargetLane, rearOnTargetLane;
 	public int currentLaneIndex, targetLaneIndex;
-	public boolean desireToChange;
+	public boolean desireToChange, gapAccepted;
 	
 	public LaneChangingModel (Vehicle vehicle) {
 		this.vehicle = vehicle;

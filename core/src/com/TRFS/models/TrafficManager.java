@@ -64,7 +64,7 @@ public class TrafficManager {
 			if (vB.id == vA.id) continue;
 			
 			//Check if they're at the same link
-			if (vB.behavior.currentLink.quickEquals(vB.behavior.currentLink)) {
+			if (vB.behavior.pathFollowing.state.currentLink.quickEquals(vB.behavior.pathFollowing.state.currentLink)) {
 				if (vB.behavior.pathFollowing.state.distanceOnPath > vA.behavior.pathFollowing.state.distanceOnPath) {
 					if (leader == null) leader = vB;
 					if(vB.behavior.pathFollowing.state.distanceOnPath < leader.behavior.pathFollowing.state.distanceOnPath) leader = vB;
@@ -73,7 +73,7 @@ public class TrafficManager {
 				//Find neighbors
 				if (vA.behavior.laneChangingBehaviour.desireToChange) {
 					int targetLane = vA.behavior.laneChangingBehaviour.targetLaneIndex;
-					if (vB.behavior.currentLane.index == targetLane) {
+					if (vB.behavior.pathFollowing.state.currentLane.index == targetLane) {
 						if (frontOnTargetLane == null) leader = vB;	if (rearOnTargetLane == null) leader = vB;
 						if (vB.behavior.pathFollowing.state.distanceOnPath < frontOnTargetLane.behavior.pathFollowing.state.distanceOnPath
 								&& vB.behavior.pathFollowing.state.distanceOnPath > vA.behavior.pathFollowing.state.distanceOnPath)
@@ -85,19 +85,19 @@ public class TrafficManager {
 				}
 				
 			//If approaching the end of the link, check if they're headed to the same intersection
-			} else if (vA.behavior.currentLink.toNode.toLinks.size > 0) {
+			} else if (vA.behavior.pathFollowing.state.currentLink.toNode.toLinks.size > 0) {
 				if (vA.behavior.pathFollowing.state.approachingLinkEnd) { 
 					//If vB is one the link with priority over us
-					if (vB.behavior.currentLink.toNode.quickEquals(vA.behavior.currentLink.toNode)) {
+					if (vB.behavior.pathFollowing.state.currentLink.toNode.quickEquals(vA.behavior.pathFollowing.state.currentLink.toNode)) {
 						//If he has priority over us, add him to the intersecting array
-						if (vB.behavior.currentLink.hasPriorityOver(vA.behavior.currentLink)) {
+						if (vB.behavior.pathFollowing.state.currentLink.hasPriorityOver(vA.behavior.pathFollowing.state.currentLink)) {
 							if (lastOnPriorityLink == null) lastOnPriorityLink = vB;
 							if (vB.behavior.pathFollowing.state.distanceOnPath > lastOnPriorityLink.behavior.pathFollowing.state.distanceOnPath)
 								lastOnPriorityLink = vB;
 						}
 					}
 					//If VB is on our target link
-					if (vB.behavior.currentLink.quickEquals(vA.behavior.pathFollowing.nextLink())) {
+					if (vB.behavior.pathFollowing.state.currentLink.quickEquals(vA.behavior.pathFollowing.nextLink())) {
 						if (firstOnNextLink == null) firstOnNextLink = vB;
 						if (vB.behavior.pathFollowing.state.distanceOnPath < firstOnNextLink.behavior.pathFollowing.state.distanceOnPath)
 							firstOnNextLink = vB;

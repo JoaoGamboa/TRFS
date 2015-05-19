@@ -96,8 +96,8 @@ public class InFlowsManager {
 	
 	public boolean checkLaneForSpace (Link link, int lane) {
 		for (Vehicle vehicle : scenario.trafficManager.vehicles) {
-			if (vehicle.behavior.currentLink.quickEquals(link)) {
-				if (vehicle.behavior.currentLane.index == lane) {
+			if (vehicle.behavior.pathFollowing.state.currentLink.quickEquals(link)) {
+				if (vehicle.behavior.pathFollowing.state.currentLane.index == lane) {
 					if (vehicle.behavior.pathFollowing.state.distanceOnPath < minimumAvailableSpace) {
 						return false;
 					}}}}
