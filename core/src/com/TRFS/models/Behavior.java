@@ -7,7 +7,6 @@ import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Path;
 import com.TRFS.vehicles.Vehicle;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -19,19 +18,12 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Behavior {
 
-	//public static DynamicSimParam[] calibrationParameters;
 	public CarFollowingModel carFollowingBehaviour;
 	public LaneChangingModel laneChangingBehaviour;
 	public PathFollowing pathFollowing;
 
 	public Vehicle vehicle, lastOnPriorityLink, firstOnNextLink;
-
-	public boolean changedLink;
-	//public Link currentLink;
-	//public Lane currentLane;
-	
-	private float maxDesiredAcceleration = 5; //TODO should be variable for each driver
-	
+		
 	/**The {@link Behavior} of a vehicle aggregates all behaviour models affecting the {@link Vehicle}.
 	 * @param vehicle This vehicle.
 	 * @param carFollowingBehaviour Car-following behavior for this vehicle.
@@ -56,32 +48,24 @@ public class Behavior {
 		float throttle = 0, brake = 0, steerAngle = 0; 
 				
 		//Update CarFollowing (returns an amount of throttle or brake ranging from -1 to 1)
-		float carFollowingThrottle = updateCarFollowing();
+		float carFollowingThrottle = carFollowingBehaviour.update(); //updateCarFollowing();
 		
-		//TODO other constraints that might affect the throttle magnitude.
-		throttle = carFollowingThrottle;
-		
+		laneChangingBehaviour.update();
+				
 		//Updates the target and returns the angle between the target and the vehicle's CG
-		float targetHeading = pathFollowing.update(vehicle);
-		steerAngle = targetHeading - vehicle.physics.heading;
-		if (steerAngle > MathUtils.PI) steerAngle -= MathUtils.PI2;
-		
+		float pathRelatedSteering = pathFollowing.update(vehicle);
+				
 		//This method updates all path related states and returns a brake value
-		brake += pathFollowing.state.update(vehicle);
+		float pathRelatedBrake = pathFollowing.state.update(vehicle);
 		
-		//Update Vehicle
+		
+		throttle = carFollowingThrottle;
+		brake = pathRelatedBrake;
+		steerAngle = pathRelatedSteering;
+		
 		vehicle.physics.updateAI(dT, throttle, brake, steerAngle);
 	}
-	
-	/**Updates the {@link Vehicle}'s {@link CarFollowingModel} regarding it's leader.
-	 * @param leader
-	 * @return Updated acceleration float.
-	 */
-	private float updateCarFollowing() {
-		if (this.carFollowingBehaviour.leader != null) return carFollowingBehaviour.update();
-		return maxDesiredAcceleration;
-	}
-		
+			
 	/** Sets the initial location ({@link Link} and {@link Lane}) of the vehicle.
 	 * Updates the vehicle {@link PathFollowing}'s {@link Path} and sets the {@link Vehicle}'s position.
 	 * @param startLink

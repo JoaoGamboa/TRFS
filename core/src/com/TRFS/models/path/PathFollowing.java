@@ -4,6 +4,7 @@ import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Path;
 import com.TRFS.vehicles.Vehicle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -34,8 +35,11 @@ public class PathFollowing {
 		
 		//Set aim to the target
 		float targetHeading = (float) Math.atan2(targetPosition.x - vehicle.physics.position.x, targetPosition.y - vehicle.physics.position.y);
-
-		return -targetHeading;
+		
+		float steerAngle = -targetHeading - vehicle.physics.heading;
+		if (steerAngle > MathUtils.PI) steerAngle -= MathUtils.PI2;
+		
+		return steerAngle;
 	}
 
 	public void setPath(Path path) {

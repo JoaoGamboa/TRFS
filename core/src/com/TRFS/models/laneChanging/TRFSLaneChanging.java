@@ -39,10 +39,7 @@ public class TRFSLaneChanging extends LaneChangingModel{
 			//Check GapAccepance
 		}
 		
-		
-		
 		if (desireToChange && gapAccepted) pF.changeLane(targetLaneIndex);
-				
 	}
 
 }

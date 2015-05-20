@@ -104,7 +104,7 @@ public class InFlowsManager {
 		return true;
 	}
 	
-	/**Adds a new vehicle to the network, located at the beggining of the provided {@link Lane}.
+	/**Adds a new vehicle to the network, located at the beginning of the provided {@link Lane}.
 	 * Decides what kind of vehicle to be added based on the truck percentage defined by the user.
 	 * @param link
 	 * @param lane

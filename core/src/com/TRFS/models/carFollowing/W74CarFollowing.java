@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.TRFS.ui.general.parameters.DynamicSimParam;
 import com.TRFS.vehicles.Vehicle;
+import com.TRFS.vehicles.Vehicle.VehicleConfig;
 
 /**
  * @author jgamboa
@@ -34,7 +35,7 @@ public class W74CarFollowing extends CarFollowingModel {
 	// Wiedemann '74 Variables
 	// Variable Parameters
 	public float AX, BX, CX, EX, ABX, SDV, SDX, OPDV, FaktorV;
-	private float NRND, RND1, RND2, RND3, desiredSpeedFactor;
+	private float NRND, RND1, RND2, RND3, desiredSpeedFactor, engineForceRatio;
 
 	private int state; // 1-Braking; 2-Approaching; 3-Following; 4-Free Flow
 	
@@ -47,65 +48,74 @@ public class W74CarFollowing extends CarFollowingModel {
 		this.RND3 = (float) (new Random().nextGaussian() * 0.15f + 0.5f);
 		
 		this.desiredSpeedFactor = (new Random().nextInt((150 - 70) + 1) + 70)/100f;
+		this.engineForceRatio = vehicle.config.mass/VehicleConfig.engineForce;
 	}
 
 	@Override
 	public float update() {
-	
-		float dX = leader.physics.position.dst(vehicle.physics.position);
-		float dV = leader.physics.speed - vehicle.physics.speed;
-		float length1 = leader.config.length;
+		float w74Acceleration = 0;
+		
 		float Vn = vehicle.physics.speed;
-		float Vn1 = leader.physics.speed;
-		float an1 = leader.physics.acceleration;
 		float maxSpeed = vehicle.behavior.pathFollowing.state.currentLink.maxspeed;
 		float desiredSpeed = vehicle.behavior.pathFollowing.state.currentLink.maxspeed * desiredSpeedFactor;
 		
-		AX = length1 + AXadd.getCurrentVal() + RND1 * AXmult.getCurrentVal();
-		BX = (float) ((BXadd.getCurrentVal() + BXmult.getCurrentVal() * RND1) * Math
-				.sqrt(dV > 0 ? Vn : Vn1));
-		ABX = AX + BX;
-
-		if (dX <= ABX) {
-			state = 1;
-		} else {
-			EX = EXadd.getCurrentVal() + EXmult.getCurrentVal() * (NRND - RND2);
-			SDX = AX + EX * BX;
-
-			CX = CXconst.getCurrentVal() * (CXadd.getCurrentVal() + CXmult.getCurrentVal() + (RND1 + RND2));
-			SDV = (float) Math.pow(((dX - length1 - AX) / CX), 2);
-
-			if (dX < SDX) {
-				OPDV = SDV * (-OPDVadd.getCurrentVal() - OPDVmult.getCurrentVal() * NRND);
-
-				if (dV > SDV) {
+		if (leader != null) {
+			float dX = leader.physics.position.dst(vehicle.physics.position);
+			float dV = leader.physics.speed - vehicle.physics.speed;
+			float length1 = leader.config.length;
+			float Vn1 = leader.physics.speed;
+			float an1 = leader.physics.acceleration;
+			
+			AX = length1 + AXadd.getCurrentVal() + RND1 * AXmult.getCurrentVal();
+			BX = (float) ((BXadd.getCurrentVal() + BXmult.getCurrentVal() * RND1) * Math
+					.sqrt(dV > 0 ? Vn : Vn1));
+			ABX = AX + BX;
+	
+			if (dX <= ABX) {
+				state = 1;
+			} else {
+				EX = EXadd.getCurrentVal() + EXmult.getCurrentVal() * (NRND - RND2);
+				SDX = AX + EX * BX;
+	
+				CX = CXconst.getCurrentVal() * (CXadd.getCurrentVal() + CXmult.getCurrentVal() + (RND1 + RND2));
+				SDV = (float) Math.pow(((dX - length1 - AX) / CX), 2);
+	
+				if (dX < SDX) {
+					OPDV = SDV * (-OPDVadd.getCurrentVal() - OPDVmult.getCurrentVal() * NRND);
+	
+					if (dV > SDV) {
+						state = 2;
+					} else if (dV > OPDV) {
+						state = 3;
+					} else {
+						state = 4;
+					}
+				} else if (dX < SDV && dX < 50 * Math.sqrt(dV)) {
 					state = 2;
-				} else if (dV > OPDV) {
-					state = 3;
 				} else {
 					state = 4;
 				}
-			} else if (dX < SDV && dX < 50 * Math.sqrt(dV)) {
-				state = 2;
-			} else {
-				state = 4;
 			}
-		}
-
-		switch (state) {
-		case 1:
-			return (float) ((0.5 * (Math.pow(dV, 2) / (ABX - dX - length1)))
-					+ an1 + (-20 + 1.5 * Vn / 60) * ((ABX - dX - length1) / BX));
-		case 2:
-			return (float) Math.min(0.5	* (Math.pow(dV, 2) / (ABX - dX - length1)) + an1, (-20 + 1.5 * Vn / 60));
-		case 3:
-			return dV > OPDV ? 1 : -1 * BNULLmult.getCurrentVal() * (RND3 + NRND);
-		case 4:
+						
+			switch (state) {
+			case 1:
+				w74Acceleration = (float) ((0.5 * (Math.pow(dV, 2) / (ABX - dX - length1)))
+						+ an1 + (-20 + 1.5 * Vn / 60) * ((ABX - dX - length1) / BX));
+			case 2:
+				w74Acceleration = (float) Math.min(0.5	* (Math.pow(dV, 2) / (ABX - dX - length1)) + an1, (-20 + 1.5 * Vn / 60));
+			case 3:
+				w74Acceleration = dV > OPDV ? 1 : -1 * BNULLmult.getCurrentVal() * (RND3 + NRND);
+			case 4:
+				FaktorV = maxSpeed / ((desiredSpeed) + FAKTORVmult.getCurrentVal() * (maxSpeed - desiredSpeed));
+				w74Acceleration = BMAXmult.getCurrentVal() * (maxSpeed - Vn * FaktorV);
+			}
+		} else {			
 			FaktorV = maxSpeed / ((desiredSpeed) + FAKTORVmult.getCurrentVal() * (maxSpeed - desiredSpeed));
-			return BMAXmult.getCurrentVal() * (maxSpeed - Vn * FaktorV);
+			w74Acceleration = BMAXmult.getCurrentVal() * (maxSpeed - Vn * FaktorV);
 		}
-
-		return 0;
+		
+		//W74 returns an acceleration value but our Vehicle's take a throttle percentage as input, so a conversion must be made. (F ratio = mass * acceleration / maxF)		
+		return w74Acceleration * engineForceRatio;
 	}
 
 }
