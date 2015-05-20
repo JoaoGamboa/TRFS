@@ -32,12 +32,11 @@ public class TrafficManager {
 	public void update(float delta, float simulationTime) {
 		int vehicleIndex = 0;
 		
-		for (Vehicle vehicle : vehicles) {
+		for (int i = 0; i < vehicles.size; i++) {
+			evaluateEnvironment(vehicles.get(i));
 			
-			evaluateEnvironment(vehicle);
-			
-			vehicle.update(delta);
-			if (vehicle.behavior.pathFollowing.state.finished) vehicles.removeIndex(vehicleIndex);
+			vehicles.get(i).update(delta);
+			if (vehicles.get(i).behavior.pathFollowing.state.finished) vehicles.removeIndex(vehicleIndex);
 			vehicleIndex++;
 		}
 		
@@ -64,17 +63,20 @@ public class TrafficManager {
 			if (vB.id == vA.id) continue;
 			
 			//Check if they're at the same link
-			if (vB.behavior.pathFollowing.state.currentLink.quickEquals(vB.behavior.pathFollowing.state.currentLink)) {
-				if (vB.behavior.pathFollowing.state.distanceOnPath > vA.behavior.pathFollowing.state.distanceOnPath) {
-					if (leader == null) leader = vB;
-					if(vB.behavior.pathFollowing.state.distanceOnPath < leader.behavior.pathFollowing.state.distanceOnPath) leader = vB;
-				}
+			if (vB.behavior.pathFollowing.state.currentLink.quickEquals(vA.behavior.pathFollowing.state.currentLink)) {
+				
+				//Check if they're at the same lane
+				if (vB.behavior.pathFollowing.state.currentLane.equals(vA.behavior.pathFollowing.state.currentLane))
+					if (vB.behavior.pathFollowing.state.distanceOnPath > vA.behavior.pathFollowing.state.distanceOnPath) {
+						if (leader == null) leader = vB;
+						if(vB.behavior.pathFollowing.state.distanceOnPath < leader.behavior.pathFollowing.state.distanceOnPath) leader = vB;
+					}
 				
 				//Find neighbors
 				if (vA.behavior.laneChangingBehaviour.desireToChange) {
 					int targetLane = vA.behavior.laneChangingBehaviour.targetLaneIndex;
 					if (vB.behavior.pathFollowing.state.currentLane.index == targetLane) {
-						if (frontOnTargetLane == null) leader = vB;	if (rearOnTargetLane == null) leader = vB;
+						if (frontOnTargetLane == null) frontOnTargetLane = vB;	if (rearOnTargetLane == null) rearOnTargetLane = vB;
 						if (vB.behavior.pathFollowing.state.distanceOnPath < frontOnTargetLane.behavior.pathFollowing.state.distanceOnPath
 								&& vB.behavior.pathFollowing.state.distanceOnPath > vA.behavior.pathFollowing.state.distanceOnPath)
 							frontOnTargetLane = vB;

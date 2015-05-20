@@ -13,6 +13,9 @@ public class CarFollowingModel {
 	
 	public Vehicle vehicle, leader;
 	
+	//Global variables because they're common to every car-following model and can be used by other methods.
+	public float dX, dV; 
+	
 	public CarFollowingModel(Vehicle vehicle) {
 		this.vehicle = vehicle;
 	}
@@ -26,6 +29,11 @@ public class CarFollowingModel {
 	 * @param an1
 	 */
 	public float update() {
+		return 0;
+	}
+	
+	public float avoidColision() {
+		if (leader != null && vehicle.behavior.carFollowingBehaviour.dX < 20) return 1;
 		return 0;
 	}
 

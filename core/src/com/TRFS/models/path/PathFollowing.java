@@ -64,8 +64,8 @@ public class PathFollowing {
 	}
 	
 	public Link nextLink() {
-		if (currentLinkIndex < linkSequence.size) return linkSequence.get(currentLinkIndex + 1);
-		return linkSequence.get(currentLinkIndex);
+		if (currentLinkIndex + 1 < linkSequence.size) return linkSequence.get(currentLinkIndex + 1);
+		return linkSequence.get(linkSequence.size - 1);
 	}
 
 	/**Contains parameters regarding the current position of the agent on the

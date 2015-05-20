@@ -35,7 +35,7 @@ public class W74CarFollowing extends CarFollowingModel {
 	// Wiedemann '74 Variables
 	// Variable Parameters
 	public float AX, BX, CX, EX, ABX, SDV, SDX, OPDV, FaktorV;
-	private float NRND, RND1, RND2, RND3, desiredSpeedFactor, engineForceRatio;
+	private float NRND, RND1, RND2, RND3, desiredSpeedFactor, engineForceRatio, brakeForceRatio;
 
 	private int state; // 1-Braking; 2-Approaching; 3-Following; 4-Free Flow
 	
@@ -49,6 +49,7 @@ public class W74CarFollowing extends CarFollowingModel {
 		
 		this.desiredSpeedFactor = (new Random().nextInt((150 - 70) + 1) + 70)/100f;
 		this.engineForceRatio = vehicle.config.mass/VehicleConfig.engineForce;
+		this.brakeForceRatio = vehicle.config.mass/VehicleConfig.brakeForce;
 	}
 
 	@Override
@@ -60,8 +61,8 @@ public class W74CarFollowing extends CarFollowingModel {
 		float desiredSpeed = vehicle.behavior.pathFollowing.state.currentLink.maxspeed * desiredSpeedFactor;
 		
 		if (leader != null) {
-			float dX = leader.physics.position.dst(vehicle.physics.position);
-			float dV = leader.physics.speed - vehicle.physics.speed;
+			dX = leader.physics.position.dst(vehicle.physics.position);
+			dV = leader.physics.speed - vehicle.physics.speed;
 			float length1 = leader.config.length;
 			float Vn1 = leader.physics.speed;
 			float an1 = leader.physics.acceleration;
@@ -112,10 +113,11 @@ public class W74CarFollowing extends CarFollowingModel {
 		} else {			
 			FaktorV = maxSpeed / ((desiredSpeed) + FAKTORVmult.getCurrentVal() * (maxSpeed - desiredSpeed));
 			w74Acceleration = BMAXmult.getCurrentVal() * (maxSpeed - Vn * FaktorV);
+			dX = dV = 0;
 		}
 		
 		//W74 returns an acceleration value but our Vehicle's take a throttle percentage as input, so a conversion must be made. (F ratio = mass * acceleration / maxF)		
-		return w74Acceleration * engineForceRatio;
+		return w74Acceleration > 0 ? w74Acceleration*engineForceRatio : w74Acceleration * brakeForceRatio;
 	}
 
 }

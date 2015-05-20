@@ -42,8 +42,8 @@ public class Link {
 		int coordSize = coordinates.size;
 		startHeading.set(coordinates.get(1).x - coordinates.get(0).x,
 				coordinates.get(1).y - coordinates.get(0).y);
-		finishHeading.set(coordinates.get(coordSize - 1).x - coordinates.get(coordSize).x,
-						coordinates.get(coordSize - 1).y - coordinates.get(coordSize).y);
+		finishHeading.set(coordinates.get(coordSize - 2).x - coordinates.get(coordSize-1).x,
+						coordinates.get(coordSize - 2).y - coordinates.get(coordSize-1).y);
 
 		LaneGeometryUtils.makeLaneGeometry(this);
 	}
