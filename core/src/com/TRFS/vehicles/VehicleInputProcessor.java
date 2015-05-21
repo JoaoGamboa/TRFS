@@ -3,6 +3,7 @@ package com.TRFS.vehicles;
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.scenarios.map.Coordinate;
 import com.TRFS.simulator.MiscUtils;
+import com.TRFS.ui.windows.stats.SimulationStatsWindow;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -39,6 +40,7 @@ public class VehicleInputProcessor {
 			sVehicle.behavior.rellocateAfterUserControlled();
 			sVehicle.config.userControlled = false;
 			sVehicle.config.selected = false;
+			tVehicle = null;
 			sVehicle = null;
 		}
 	}
@@ -60,8 +62,8 @@ public class VehicleInputProcessor {
 		if (tVehicle != null) {
 			if (isTouched(tVehicle, worldX, worldY)) {
 				setVehicle(tVehicle);
+				SimulationStatsWindow.taggedVehicle = tVehicle;
 			}
-			tVehicle = null;
 		}
 	}
 	

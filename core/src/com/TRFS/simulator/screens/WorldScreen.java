@@ -143,7 +143,10 @@ public class WorldScreen implements Screen {
 		simParamWindow = new SlidingWindow("SIMULATION PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true);
 		SimulationParamWindow.create(simParamWindow);
 		
+		
+		String [] simStatsButtons = {"Simulation", "Tagged Vehicle"};
 		statsWindow = new SlidingWindow("SIMULATION STATS", 320, stage.getHeight()-TopBarTable.height, stage, true, true);
+		statsWindow = new TabbedWindow("SIMULATION STATS", 320, stage.getHeight()-TopBarTable.height, stage, true, true, simStatsButtons, SimulationStatsWindow.create(scenario));
 		SimulationStatsWindow.create(statsWindow, scenario);
 		
 		slidingWindowManager = new SlidingWindowManager();
