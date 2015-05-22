@@ -16,6 +16,7 @@ public class Link {
 	public Node fromNode, toNode;
 	public Array<Lane> lanes;
 	public Vector2 startHeading, finishHeading, tmp;
+	public float startHeadingRad, finishHeadingRad;
 
 	public Link() {	
 		this.startHeading = new Vector2();
@@ -44,6 +45,9 @@ public class Link {
 				coordinates.get(1).y - coordinates.get(0).y);
 		finishHeading.set(coordinates.get(coordSize - 2).x - coordinates.get(coordSize-1).x,
 						coordinates.get(coordSize - 2).y - coordinates.get(coordSize-1).y);
+		
+		startHeadingRad = (float) Math.atan2(startHeading.x, startHeading.y);
+		finishHeadingRad = (float) Math.atan2(finishHeading.x, finishHeading.y);
 
 		LaneGeometryUtils.makeLaneGeometry(this);
 	}

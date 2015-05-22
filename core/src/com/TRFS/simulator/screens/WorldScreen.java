@@ -137,14 +137,16 @@ public class WorldScreen implements Screen {
 		
 		// TODO Make windows instanceable instead of static
 		String [] modelParamButtons = {"Car-Foll", "Lane Chang."};
-		ModelParamWindow.create(modelParametersWindow);
-		modelParametersWindow = new TabbedWindow("MODEL PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true, modelParamButtons, ModelParamWindow.getTables());
+		modelParametersWindow = new TabbedWindow("MODEL PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true, modelParamButtons, ModelParamWindow.create());
 		
 		simParamWindow = new SlidingWindow("SIMULATION PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true);
 		SimulationParamWindow.create(simParamWindow);
 		
+		
+		String [] simStatsButtons = {"Simulation", "Tagged Vehicle"};
 		statsWindow = new SlidingWindow("SIMULATION STATS", 320, stage.getHeight()-TopBarTable.height, stage, true, true);
-		SimulationStatsWindow.create(statsWindow, scenario);
+		statsWindow = new TabbedWindow("SIMULATION STATS", 320, stage.getHeight()-TopBarTable.height, stage, true, true, simStatsButtons, SimulationStatsWindow.create(scenario));
+		//SimulationStatsWindow.create(statsWindow, scenario);
 		
 		slidingWindowManager = new SlidingWindowManager();
 		

@@ -3,7 +3,6 @@ package com.TRFS.ui.windows.models;
 import java.util.ArrayList;
 
 import com.TRFS.simulator.AssetsMan;
-import com.TRFS.ui.general.windows.TabbedWindow;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
@@ -17,7 +16,7 @@ public class ModelParamWindow {
 	private static ArrayList<Table> tables;
 		
 
-	public static void create(final TabbedWindow window) {
+	public static ArrayList<Table> create() {
 		
 		tables = new ArrayList<Table>();
 		
@@ -32,10 +31,7 @@ public class ModelParamWindow {
 		dummyTable.setVisible(false);
 		tables.add(dummyTable);
 			
-	}
-	
-	public static ArrayList<Table> getTables() {
 		return tables;
 	}
-	
+		
 }

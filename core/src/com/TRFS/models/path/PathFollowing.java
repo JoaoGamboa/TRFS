@@ -90,11 +90,20 @@ public class PathFollowing {
 		public float update(Vehicle vehicle) {
 			float brake = 0f;
 			
-			approachingLinkEnd = ((state.distanceOnPath) > path.getLength() - 20) ? true : false;
-			atLinkEnd = ((state.distanceOnPath + targetOffset * 0.5f) > path.getLength()) ? true : false;
+			approachingLinkEnd = ((state.distanceOnPath) > path.length - 20) ? true : false;
+			atLinkEnd = ((state.distanceOnPath + targetOffset * 0.5f) > path.length) ? true : false;
 			
 			//At the end of the path, so go to next path.			
 			if (atLinkEnd) goToNextLink(vehicle);
+			
+			if(approachingLinkEnd) {
+				float turnAngle = Math.abs(currentLink.finishHeadingRad - nextLink().startHeadingRad);
+				float percentageOnPath = distanceOnPath/path.length;
+	
+				if (turnAngle > 45 * MathUtils.degreesToRadians) {
+					brake = (float) MathUtils.clamp(percentageOnPath, 0, 0.6);
+				}
+			}
 
 			return brake;
 		}

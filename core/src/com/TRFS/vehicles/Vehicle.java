@@ -78,14 +78,19 @@ public class Vehicle {
 	}
 	
 	public void drawVehicleDebug(ShapeRenderer renderer) {
+		if (behavior.carFollowingBehaviour.leader != null) {
+			renderer.begin(ShapeType.Line);
+			renderer.setColor(Color.RED);
+			Vehicle lead = behavior.carFollowingBehaviour.leader;
+			renderer.line(physics.position.x,  physics.position.y, lead.physics.position.x,  lead.physics.position.y);
+			renderer.end();
+		}
 		
-		/*renderer.begin(ShapeType.Line);
-		renderer.setColor(config.color);
-		for (int i = 0; i < config.vertices.size - 1; i++) {
+		/*for (int i = 0; i < config.vertices.size - 1; i++) {
 			renderer.line(config.vertices.get(i), config.vertices.get(i+1));
 		}
 		renderer.line(config.vertices.peek(), config.vertices.first());	
-		renderer.end();*/
+		*/
 		
 		renderer.begin(ShapeType.Filled);		
 		/*renderer.setColor(Color.BLUE);

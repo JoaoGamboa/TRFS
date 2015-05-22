@@ -16,5 +16,4 @@ public class Lane {
 		this.centerLine = centerLine;
 		this.path = PathBuilder.buildPath(centerLine);
 	}
-
 }
