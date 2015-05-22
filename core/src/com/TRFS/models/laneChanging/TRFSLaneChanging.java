@@ -37,6 +37,19 @@ public class TRFSLaneChanging extends LaneChangingModel{
 		
 		if (desireToChange) {
 			//Check GapAccepance
+			float rearGap = 2, frontGap = 1;
+			boolean rearPass = false, frontPass = false;
+			
+			if (rearOnTargetLane != null) {
+				if ((rearOnTargetLane.behavior.pathFollowing.state.distanceOnPath + rearOnTargetLane.config.length/2) < pF.state.distanceOnPath - vehicle.config.length/2 - rearGap) rearPass = true;
+			} else rearPass = true;
+			if(frontOnTargetLane != null) {
+				if ((frontOnTargetLane.behavior.pathFollowing.state.distanceOnPath - rearOnTargetLane.config.length/2) > pF.state.distanceOnPath - vehicle.config.length/2 + frontGap ) frontPass = true;
+			} else frontPass = true;
+			
+			if (rearPass == frontPass == true) gapAccepted = true;
+			//if (rearOnTargetLane.physics.position.dst2(frontOnTargetLane.physics.position) > vehicle.config.length + gap) gapAccepted = true;
+			
 		}
 		
 		if (desireToChange && gapAccepted) pF.changeLane(targetLaneIndex);

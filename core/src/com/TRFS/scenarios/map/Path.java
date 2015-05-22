@@ -15,8 +15,8 @@ import com.badlogic.gdx.utils.Array;
  */
 
 public class Path {
-	private Array<PathSegment> segments;
-	private float length;
+	public Array<PathSegment> segments;
+	public float length;
 	// Temporary vectors
 	private Vector2 temp1, temp2, temp3, temp4;
 
@@ -185,10 +185,6 @@ public class Path {
 			}
 		}
 		return null;
-	}
-
-	public float getLength() {
-		return length;
 	}
 
 	public Vector2 getStartPoint() {

@@ -51,6 +51,7 @@ public class Behavior {
 		float carFollowingResult = carFollowingBehaviour.update();
 	
 		float carFollowingThrottle = carFollowingResult > 0 ? carFollowingResult : 0;
+		
 		float carFollowingBrake = carFollowingResult < 0 ? carFollowingResult : 0 + carFollowingBehaviour.avoidColision();
 		
 		laneChangingBehaviour.update();

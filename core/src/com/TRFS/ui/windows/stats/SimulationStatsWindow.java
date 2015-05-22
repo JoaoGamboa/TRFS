@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.simulator.AssetsMan;
-import com.TRFS.ui.general.windows.SlidingWindow;
 import com.TRFS.vehicles.Vehicle;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -21,16 +21,16 @@ public class SimulationStatsWindow {
 	private static Label simulationTimeLabel, elapsedTimeLabel, vehicleCountLabel;
 	private static Label speedLabel, idLabel, throttleLabel, brakeLabel;
 	private static Scenario scenario;
+	private static Stage stage;
 	
 	private static ArrayList<Table> tables = new ArrayList<Table>();
 	
 	public static Vehicle taggedVehicle;
 	
-	public static ArrayList<Table> create (SlidingWindow window, Scenario currentScenario) {
+	public static ArrayList<Table> create (Stage cStage, Scenario currentScenario) {
 		scenario = currentScenario;
-		
-		//TODO graphs;
-		
+		stage = cStage;
+				
 		//General
 		Table tableGeneral = new Table(skin);
 		
