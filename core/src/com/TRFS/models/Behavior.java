@@ -51,7 +51,7 @@ public class Behavior {
 		float carFollowingResult = carFollowingBehaviour.update();
 	
 		float carFollowingThrottle = carFollowingResult > 0 ? carFollowingResult : 0;
-		float carFollowingBrake = carFollowingResult < 0 ? carFollowingResult : 0 + carFollowingBehaviour.avoidColision();
+		//float carFollowingBrake = carFollowingResult < 0 ? carFollowingResult : 0 + carFollowingBehaviour.avoidColision();
 		
 		laneChangingBehaviour.update();
 				
@@ -63,7 +63,7 @@ public class Behavior {
 		
 		
 		throttle = carFollowingThrottle;
-		brake = pathRelatedBrake + carFollowingBrake;
+		brake = pathRelatedBrake /*+ carFollowingBrake*/;
 		steerAngle = pathRelatedSteering;
 		
 		vehicle.physics.updateAI(dT, throttle, brake, steerAngle);
