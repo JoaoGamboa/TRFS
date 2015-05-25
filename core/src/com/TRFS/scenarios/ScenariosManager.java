@@ -17,9 +17,11 @@ public class ScenariosManager {
 		if(Gdx.files.internal("./bin/scenarios/").list().length > 0) {
 			files = Gdx.files.internal("./bin/scenarios/").list();
 		} else {
+			files = new FileHandle[2];
 			FileHandle handle = Gdx.files.internal("scenarios/Cloverleaf Interchange.geojson");
-			files = new FileHandle[1];
 			files[0] = handle;
+			FileHandle handle2 = Gdx.files.internal("scenarios/Neighbourhood.geojson");
+			files[1] = handle2;
 		}
 			
 								

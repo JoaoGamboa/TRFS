@@ -14,6 +14,7 @@ public class TRFSLaneChanging extends LaneChangingModel{
 	public void update() {
 		
 		PathFollowing pF = vehicle.behavior.pathFollowing;
+		desireToChange = false;
 		
 		if (leader != null) {
 			if (leader.physics.speed < vehicle.physics.speed) {
@@ -33,13 +34,13 @@ public class TRFSLaneChanging extends LaneChangingModel{
 				desireToChange = true;
 				targetLaneIndex = pF.state.currentLane.index + 1;
 			}
-		}
+		} 
 		
 		if (desireToChange) {
 			//Check GapAccepance
 			float rearGap = 2, frontGap = 1;
 			boolean rearPass = false, frontPass = false;
-			
+			gapAccepted = false;
 			if (rearOnTargetLane != null) {
 				if ((rearOnTargetLane.behavior.pathFollowing.state.distanceOnPath + rearOnTargetLane.config.length/2) < pF.state.distanceOnPath - vehicle.config.length/2 - rearGap) rearPass = true;
 			} else rearPass = true;
@@ -48,11 +49,11 @@ public class TRFSLaneChanging extends LaneChangingModel{
 			} else frontPass = true;
 			
 			if (rearPass == frontPass == true) gapAccepted = true;
-			//if (rearOnTargetLane.physics.position.dst2(frontOnTargetLane.physics.position) > vehicle.config.length + gap) gapAccepted = true;
-			
 		}
 		
-		if (desireToChange && gapAccepted) pF.changeLane(targetLaneIndex);
+		if (desireToChange && gapAccepted) {
+			if (targetLaneIndex > 0 && targetLaneIndex < pF.state.currentLink.lanes.size) pF.changeLane(targetLaneIndex);
+		}
 	}
 
 }

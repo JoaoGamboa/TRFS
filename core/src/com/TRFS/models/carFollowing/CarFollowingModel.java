@@ -9,7 +9,7 @@ import com.TRFS.vehicles.Vehicle;
  */
 public class CarFollowingModel {
 	
-	public static final String[] carFolModels = new String[] { "Wiedemann '74", "Fritzsche" };
+	public static final String[] carFolModels = new String[] { "Wiedemann '74"};
 	
 	public Vehicle vehicle, leader;
 	

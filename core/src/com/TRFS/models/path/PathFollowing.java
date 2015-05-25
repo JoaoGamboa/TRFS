@@ -44,19 +44,32 @@ public class PathFollowing {
 
 	public void setPath(Path path) {
 		this.path = path;
+		this.state.distanceOnPath = 0;
 		this.state.updated = false;
 	}
 	
 	public void changeLane(int laneIndex) {
-		setPath(state.currentLink.lanes.get(laneIndex).path);
+		Lane lane = state.currentLink.lanes.get(laneIndex);
+		setPath(lane.path);
+		state.currentLane = lane;
 	}
 	
 	public void goToNextLink(Vehicle vehicle) {
-		if (currentLinkIndex < linkSequence.size) {
+		if (currentLinkIndex + 1 < linkSequence.size) {
 			
-			int lane = 0; //TODO decide somehow to which lane of the next link the vehicle should go. perhaps a "toLane" int stored in each lane.
+			Link nextLink = linkSequence.get(currentLinkIndex + 1);
 			
-			setPath(linkSequence.get(currentLinkIndex).lanes.get(lane).path);
+			int lane = 0; 
+			if (state.currentLane.index > (nextLink.lanes.size -1)) {
+				lane = state.currentLane.index - (state.currentLane.index - (nextLink.lanes.size -1));
+			} else lane = state.currentLane.index;
+			System.out.println("veh " + vehicle.id + ": " + nextLink.lanes.size + ", " + lane + "  from link " 
+			+ linkSequence.get(currentLinkIndex).id + " to link " + linkSequence.get(currentLinkIndex + 1).id);
+			
+			Lane nextLane = nextLink.lanes.get(lane);
+			setPath(nextLane.path);
+			state.currentLane = nextLane;
+			state.currentLink = nextLink;
 			currentLinkIndex++;
 		} else {
 			state.finished = true;
@@ -94,16 +107,19 @@ public class PathFollowing {
 			atLinkEnd = ((state.distanceOnPath + targetOffset * 0.5f) > path.length) ? true : false;
 			
 			//At the end of the path, so go to next path.			
-			if (atLinkEnd) goToNextLink(vehicle);
-			
 			if(approachingLinkEnd) {
 				float turnAngle = Math.abs(currentLink.finishHeadingRad - nextLink().startHeadingRad);
 				float percentageOnPath = distanceOnPath/path.length;
-	
+				
 				if (turnAngle > 45 * MathUtils.degreesToRadians) {
 					brake = (float) MathUtils.clamp(percentageOnPath, 0, 0.6);
 				}
 			}
+			
+			if (atLinkEnd) {
+				goToNextLink(vehicle);
+			}
+			
 
 			return brake;
 		}
