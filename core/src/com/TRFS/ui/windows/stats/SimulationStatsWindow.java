@@ -34,7 +34,7 @@ public class SimulationStatsWindow {
 		//General
 		Table tableGeneral = new Table(skin);
 		
-		tableGeneral.add(new Label("SIMULATION", skin, "smallLabel")).colspan(2).row();
+		//tableGeneral.add(new Label("SIMULATION", skin, "smallLabel")).colspan(2).row();
 		
 		tableGeneral.add(new Label("Elapsed time:", skin, "smallLabel"));
 		elapsedTimeLabel = new Label("", skin, "smallLabel");
@@ -56,8 +56,8 @@ public class SimulationStatsWindow {
 		//Vehicle
 		Table outerTagged = new Table(skin);
 		
-		outerTagged.add(new Label("TAGGED VEHICLE", skin, "smallLabel")).pad(5,0,5,0).row();
-		outerTagged.add(new Image(skin, "horBezel")).height(4).fill().row();
+		//outerTagged.add(new Label("TAGGED VEHICLE", skin, "smallLabel")).pad(5,0,5,0).row();
+		//outerTagged.add(new Image(skin, "horBezel")).height(4).fill().row();
 		
 		Table tableTagged = new Table(skin);
 		

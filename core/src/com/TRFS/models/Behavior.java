@@ -33,13 +33,13 @@ public class Behavior {
 	public Behavior(Vehicle vehicle, String carFollowingBehavior, String laneChangingBehavior) {
 		this.vehicle = vehicle;
 		this.pathFollowing = new PathFollowing();
-		
+
 		this.carFollowingBehaviour = CarFollowingModel.set(carFollowingBehavior, vehicle);
 		this.laneChangingBehaviour = LaneChangingModel.set(laneChangingBehavior, vehicle);
 		
 	}
 
-	/**Updates the behaviour of this HVE.
+	/**Updates the behavior of this HVE.
 	 * @param dT delta time
 	 * @return accelVector, the resulting acceleration vector
 	 */
@@ -52,7 +52,7 @@ public class Behavior {
 	
 		float carFollowingThrottle = carFollowingResult > 0 ? carFollowingResult : 0;
 		
-		//float carFollowingBrake = carFollowingResult < 0 ? carFollowingResult : 0 + carFollowingBehaviour.avoidColision();
+		float carFollowingBrake = carFollowingResult < 0 ? carFollowingResult : 0 + carFollowingBehaviour.avoidColision();
 		
 		laneChangingBehaviour.update();
 				
@@ -64,7 +64,7 @@ public class Behavior {
 		
 		
 		throttle = carFollowingThrottle;
-		//brake = pathRelatedBrake/* + carFollowingBrake*/;
+		brake = pathRelatedBrake + carFollowingBrake;
 		steerAngle = pathRelatedSteering;
 		
 		if (vehicle.id == 147) System.out.println(brake);

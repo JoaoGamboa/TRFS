@@ -180,11 +180,17 @@ public class Vehicle {
 					VehicleConfig.maxSteeringAngle) /* (1 - Math.abs(speed)/280)*/;
 			if (Math.abs(steerAngle) < 0.1) this.steerAngle = steerAngle;
 			
-			this.throttle = (float) (MathUtils.clamp(throttleMultiplier * throttle
-					* delta + this.throttle, -1, 1) * (1 - Math.abs(steerAngle)*0.2));
 			
-			this.brake = MathUtils.clamp(brakeMultiplier * brake * delta
-					+ this.brake, -1, 1);
+			if (throttle > 0) {
+				this.throttle = (float) (MathUtils.clamp(throttleMultiplier * throttle
+						* delta + this.throttle, -1, 1) * (1 - Math.abs(steerAngle)*0.2));
+			} else MathUtils.lerp(this.throttle, 0, 0.2f);
+			
+			if (brake > 0) {	
+				this.brake = MathUtils.clamp(brakeMultiplier * brake * delta
+						+ this.brake, -1, 1);
+			} else this.brake = 0;
+			
 			
 			updatePhysics(delta);
 		}
