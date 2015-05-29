@@ -14,8 +14,8 @@ public class DesktopLauncher {
 		//config.useGL30 = true;
 		config.width = 1280;
 		config.height = 720;
-		config.addIcon("img/logo128.png", Files.FileType.Internal);
-		config.addIcon("img/logo32.png", Files.FileType.Internal);
+		config.addIcon("img/TRFSLogo128.png", Files.FileType.Internal);
+		config.addIcon("img/TRFSLogo32.png", Files.FileType.Internal);
 		new LwjglApplication(new Main(), config);
 	}
 }

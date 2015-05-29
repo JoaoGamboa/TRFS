@@ -434,34 +434,3 @@ selectTextBox
   orig: 64, 32
   offset: 0, 0
   index: -1
-oneLetterLogo
-  rotate: false
-  xy: 573, 131
-  size: 53, 56
-  split: 0, 0, 0, 0
-  orig: 53, 56
-  offset: 0, 0
-  index: -1  
-smallLogo
-  rotate: false
-  xy: 1, 129
-  size: 189, 57
-  split: 0, 0, 0, 0
-  orig: 189, 57
-  offset: 0, 0
-  index: -1
-mediumLogo
-  rotate: false
-  xy: 199, 129
-  size: 372, 107
-  split: 0, 0, 0, 0
-  orig: 372, 107
-  offset: 0, 0
-  index: -1
-testcar
-  rotate: false
-  xy: 5, 638
-  size: 203, 342
-  orig: 203, 342
-  offset: 0, 0
-  index: -1

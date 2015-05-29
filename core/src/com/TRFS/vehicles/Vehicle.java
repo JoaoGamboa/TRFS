@@ -5,6 +5,7 @@ import com.TRFS.models.general.InFlowsManager;
 import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.SimulationParameters;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -48,7 +49,7 @@ public class Vehicle {
 		this.config = new VehicleConfig(this, width, length, mass, color);
 		this.physics = new VehiclePhysics(this);
 		
-		this.region = new TextureRegion(AssetsMan.uiSkin.getRegion(textureName));//TODO make draw method
+		this.region = new TextureRegion(AssetsMan.manager.get(textureName, Texture.class));
 		this.id = InFlowsManager.nextVehicleID++;				
 		this.behavior = new Behavior(this,
 				SimulationParameters.currentCarFolModel,
@@ -261,7 +262,7 @@ public class Vehicle {
 		public float width, length, mass, wheelBase;
 		public Array<Vector2> vertices;
 		
-		public static final float engineForce = 10000, brakeForce = 20000, airDragConst = 8f, rollDragConst = 12.8f;//(N)
+		public static final float engineForce = 10000, brakeForce = 40000, airDragConst = 8f, rollDragConst = 12.8f;//(N)
 		public static final float maxLinearSpeed = 40, maxLinearAcceleration = 8, /*(m/s)*/ maxSteeringAngle = 45 * MathUtils.degRad; /*Rad*/
 							
 		public VehicleConfig(Vehicle vehicle, float width, float length, float mass, Color color) {

@@ -50,6 +50,6 @@
 	},
 	"com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle": {
 	    "default": { "titleFont": smallFont, "background": selectbox_drop, "titleFontColor": white },
-	    "dialog": { "titleFont": smallFont, "background": selectbox_drop, "titleFontColor": white, "stageBackground": mediumLogo},
+	    "dialog": { "titleFont": smallFont, "background": selectbox_drop, "titleFontColor": white},
 	},
 }

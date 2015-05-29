@@ -4,6 +4,7 @@ import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.PreferencesManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -72,7 +73,8 @@ public class TopBarTable extends Table {
 
 		this.setPosition(0, stage.getHeight() - 60 - bezel);
 
-		Image logo = new Image(skin, "oneLetterLogo");
+		//Image logo = new Image(skin, "oneLetterLogo");
+		Image logo = new Image(AssetsMan.manager.get(AssetsMan.TRFSLogoTopBar,Texture.class));
 
 		this.add(logo).pad(3, 2, 3, 4);
 		this.add(new Image(skin, "verBezel")).width(4).fill();

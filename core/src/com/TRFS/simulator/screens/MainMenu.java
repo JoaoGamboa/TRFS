@@ -5,9 +5,9 @@ import com.TRFS.simulator.MiscUtils;
 import com.TRFS.ui.general.UIButton;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -17,9 +17,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  */
 public class MainMenu implements Screen {
 	
-	private Skin menuSkin = AssetsMan.uiSkin;
 	private Stage stage = new Stage(new ScreenViewport());
-	private Image logo = new Image(menuSkin, "mediumLogo");
+	private Image logo = new Image(AssetsMan.manager.get(AssetsMan.TRFSLogo, Texture.class));
 	private Table table;
 	private UIButton 	buttonStart = new UIButton("START", "StartMenu", true, stage), 
 						buttonSettings = new UIButton("SETTINGS", "Settings", true, stage), 
