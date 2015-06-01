@@ -118,6 +118,7 @@ public class InFlowsManager {
 		
 		vehicle.behavior.setInitialLocation(link, link.lanes.get(lane));
 		vehicle.behavior.pathFollowing.linkSequence = scenario.trafficManager.pathFinder.getRandomPathFromNode(link.fromNode);
+		vehicle.physics.speed = link.maxspeed / 3.6f;
 		scenario.trafficManager.vehicles.add(vehicle);
 						
 	}	

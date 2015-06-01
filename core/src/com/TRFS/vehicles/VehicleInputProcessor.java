@@ -6,6 +6,7 @@ import com.TRFS.simulator.MiscUtils;
 import com.TRFS.ui.windows.stats.SimulationStatsWindow;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 
 public class VehicleInputProcessor {
@@ -61,7 +62,8 @@ public class VehicleInputProcessor {
 		//Is the mouse pointer is still inside the vehicle, confirm the selection
 		if (tVehicle != null) {
 			if (isTouched(tVehicle, worldX, worldY)) {
-				setVehicle(tVehicle);
+				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) setVehicle(tVehicle);
+				tVehicle.config.selected = true;
 				SimulationStatsWindow.taggedVehicle = tVehicle;
 			}
 		}

@@ -2,10 +2,8 @@ package com.TRFS.vehicles;
 
 import com.TRFS.models.Behavior;
 import com.TRFS.models.general.InFlowsManager;
-import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.SimulationParameters;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -30,26 +28,21 @@ public class Vehicle {
 	public Behavior behavior;
 	
 	public int id;
-	
-	// Shape & Aspect
-	protected TextureRegion region;
-	
+		
 	//Debug
 	public Vector2 targetPos = new Vector2();
 	
-	/**
-	 * Creates a new vehicle.
+	/**Creates a new vehicle.
 	 * @param width The width of the vehicle
 	 * @param length The length of the vehicle
 	 * @param color The color of the vehicle
 	 * @param textureName The name of the texture to use
 	 */
-	public Vehicle(float width, float length, float mass, Color color, String textureName) {
+	public Vehicle(float width, float length, float mass, Color defaultColor) {
 		
-		this.config = new VehicleConfig(this, width, length, mass, color);
+		this.config = new VehicleConfig(this, width, length, mass, defaultColor);
 		this.physics = new VehiclePhysics(this);
 		
-		this.region = new TextureRegion(AssetsMan.manager.get(textureName, Texture.class));
 		this.id = InFlowsManager.nextVehicleID++;				
 		this.behavior = new Behavior(this,
 				SimulationParameters.currentCarFolModel,
@@ -71,11 +64,31 @@ public class Vehicle {
 	}
 
 	public void draw(Batch batch) {
+	};
+	
+	protected void draw(Batch batch, TextureRegion vehicle, TextureRegion leftBlinker,
+			TextureRegion rightBlinker, TextureRegion redGlow, TextureRegion whiteGlow) {
+		
+		float x = config.vertices.get(0).x;
+		float y = config.vertices.get(0).y;
+		float rotation = physics.heading * MathUtils.radDeg;
+		
+		if (config.selected) batch.draw(whiteGlow, x, y,  0, 0, config.width, config.length, 1, 1, rotation);
+		if (config.userControlled) batch.draw(redGlow, x, y,  0, 0, config.width, config.length, 1, 1, rotation);
+		
 		batch.setColor(config.color);
-				
-		batch.draw(region, config.vertices.get(0).x,
-				config.vertices.get(0).y, 0, 0, config.width,
-				config.length, 1, 1, physics.heading * MathUtils.radDeg);
+		batch.draw(vehicle, x, y, 0, 0, config.width, config.length, 1, 1, rotation);
+		
+		batch.setColor(Color.WHITE);
+		
+		if (!config.userControlled) {
+			if (behavior.laneChangingBehaviour.desireToChange) {
+				if (behavior.laneChangingBehaviour.targetLaneIndex > behavior.laneChangingBehaviour.currentLaneIndex)
+					batch.draw(leftBlinker, x, y, 0, 0, config.width, config.length, 1, 1, rotation);
+				else 
+					batch.draw(leftBlinker, x, y, 0, 0, config.width, config.length, 1, 1, rotation);
+			}
+		}
 	}
 	
 	public void drawVehicleDebug(ShapeRenderer renderer) {
@@ -270,7 +283,7 @@ public class Vehicle {
 			this.width = width;	this.length = length; this.mass = mass;
 			this.defaultColor = color; this.color = color;
 			this.wheelBase = 0.6f * length;
-			
+						
 			this.vertices = new Array<Vector2>();
 			for (int i = 0; i < 4; i++) {
 				this.vertices.add(new Vector2());

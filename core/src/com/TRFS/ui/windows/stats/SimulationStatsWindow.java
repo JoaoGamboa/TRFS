@@ -21,7 +21,6 @@ public class SimulationStatsWindow {
 	private static Label simulationTimeLabel, elapsedTimeLabel, vehicleCountLabel;
 	private static Label speedLabel, idLabel, throttleLabel, brakeLabel;
 	private static Scenario scenario;
-	private static Stage stage;
 	
 	private static ArrayList<Table> tables = new ArrayList<Table>();
 	
@@ -29,7 +28,6 @@ public class SimulationStatsWindow {
 	
 	public static ArrayList<Table> create (Stage cStage, Scenario currentScenario) {
 		scenario = currentScenario;
-		stage = cStage;
 				
 		//General
 		Table tableGeneral = new Table(skin);

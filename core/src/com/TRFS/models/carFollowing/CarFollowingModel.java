@@ -33,7 +33,7 @@ public class CarFollowingModel {
 	}
 	
 	public float avoidColision() {
-		if (leader != null && vehicle.behavior.carFollowingBehaviour.dX < 5) return 1f;
+		if (leader != null && vehicle.behavior.carFollowingBehaviour.dX < 10) return 1f;
 		return 0;
 	}
 
