@@ -29,12 +29,10 @@ public class SplashScreen implements Screen {
 		MiscUtils.clearScreen();
 		stage.act(delta);
 		stage.draw();// Draw stage
-		if (AssetsMan.update()) { // If all files are loaded
-			if (animationComplete) { // When the splash finishes
-				AssetsMan.setup();
-				((Game) Gdx.app.getApplicationListener())
-						.setScreen(new MainMenu());
-			}
+		
+		if (AssetsMan.update() && animationComplete) {
+				AssetsMan.finalizeLoad();
+				((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
 		}
 	}
 

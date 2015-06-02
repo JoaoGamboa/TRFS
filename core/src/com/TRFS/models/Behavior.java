@@ -62,7 +62,6 @@ public class Behavior {
 		//This method updates all path related states and returns a brake value
 		float pathRelatedBrake = pathFollowing.state.update(vehicle);
 		
-		
 		throttle = carFollowingThrottle;
 		brake = pathRelatedBrake + carFollowingBrake;
 		steerAngle = pathRelatedSteering;
