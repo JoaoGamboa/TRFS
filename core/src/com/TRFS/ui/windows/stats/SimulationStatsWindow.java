@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.simulator.AssetsMan;
+import com.TRFS.ui.general.windows.TabbedWindow;
 import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -15,21 +16,32 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 /**Wraps the code to deploy on the creation of the Simulation Statistics window.
  * @author jgamboa
  */
-public class SimulationStatsWindow {
+public class SimulationStatsWindow extends TabbedWindow{
 
-	private static Skin skin = AssetsMan.uiSkin;
-	private static Label simulationTimeLabel, elapsedTimeLabel, vehicleCountLabel;
-	private static Label speedLabel, idLabel, throttleLabel, brakeLabel;
-	private static Scenario scenario;
-	private static Stage stage;
+	private Skin skin = AssetsMan.uiSkin;
+	private Label simulationTimeLabel, elapsedTimeLabel, vehicleCountLabel;
+	private Label speedLabel, idLabel, throttleLabel, brakeLabel;
+	private Scenario scenario;
 	
-	private static ArrayList<Table> tables = new ArrayList<Table>();
+	private CarFollowingGraphPlot cfGP;
 	
-	public static Vehicle taggedVehicle;
+	private ArrayList<Table> tables = new ArrayList<Table>();
 	
-	public static ArrayList<Table> create (Stage cStage, Scenario currentScenario) {
-		scenario = currentScenario;
-		stage = cStage;
+	public Vehicle taggedVehicle;
+	
+	public SimulationStatsWindow(String title, float targetWidth, float targetHeight, Stage stage, boolean dockLeft, boolean dockDown, 
+									String[] buttons, Scenario scenario) {
+		super(title, targetWidth, targetHeight, stage, dockLeft, dockDown, buttons);
+		this.scenario = scenario;
+		this.tables = new ArrayList<Table>();
+		
+		create();
+		
+		
+		super.build(tables);
+	}
+	
+	private ArrayList<Table> create () {
 				
 		//General
 		Table tableGeneral = new Table(skin);
@@ -55,10 +67,7 @@ public class SimulationStatsWindow {
 		
 		//Vehicle
 		Table outerTagged = new Table(skin);
-		
-		//outerTagged.add(new Label("TAGGED VEHICLE", skin, "smallLabel")).pad(5,0,5,0).row();
-		//outerTagged.add(new Image(skin, "horBezel")).height(4).fill().row();
-		
+				
 		Table tableTagged = new Table(skin);
 		
 		tableTagged.add(new Image(skin, "horBezel")).fill().height(4).colspan(2).row();
@@ -80,20 +89,23 @@ public class SimulationStatsWindow {
 		brakeLabel = new Label("", skin, "smallLabel");
 		tableTagged.add(brakeLabel).row();
 		
+		cfGP = new CarFollowingGraphPlot(super.getStage(), scenario);
+		
+		tableTagged.add(cfGP).row();
+		
 		ScrollPane spTagged = new ScrollPane(tableTagged, skin);
 		
 		outerTagged.add(spTagged).pad(2,0,2,0).fill().width(320).row();
-		outerTagged.add(new Image(skin, "horBezel")).height(4).fill().row();
+		outerTagged.add(new Image(skin, "horBezel")).height(4).fill().expandX().row();
 			
 		//--Vehicle
-				
 		tables.add(tableGeneral);
 		tables.add(outerTagged);
 		
 		return tables;
 	}
 	
-	public static void render() {
+	public void render() {
 		elapsedTimeLabel.setText(String.format("%.1f", (float) scenario.elapsedTime/1000));
 		simulationTimeLabel.setText(String.format("%.1f", scenario.simulationTime));
 		vehicleCountLabel.setText("" + scenario.trafficManager.inFlowsManager.vehicleCount);
@@ -102,8 +114,13 @@ public class SimulationStatsWindow {
 			idLabel.setText("" + taggedVehicle.id);
 			speedLabel.setText("" + taggedVehicle.physics.speed);
 			throttleLabel.setText("" + taggedVehicle.physics.throttle);
-			brakeLabel.setText("" + taggedVehicle.physics.brake);			
+			brakeLabel.setText("" + taggedVehicle.physics.brake);		
 		}
+	}
+	
+	public void setTaggedVehicle(Vehicle vehicle) {
+		taggedVehicle = vehicle;
+		cfGP.setVehicle(vehicle);
 	}
 	
 }

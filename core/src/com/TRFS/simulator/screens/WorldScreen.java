@@ -36,7 +36,8 @@ public class WorldScreen implements Screen {
 	//UI
 	private Stage stage;
 	private TabbedWindow modelParametersWindow; 
-	private SlidingWindow simParamWindow, statsWindow;
+	private SlidingWindow simParamWindow;
+	private SimulationStatsWindow statsWindow;
 	private SlidingWindowManager slidingWindowManager;
 	private Label mouseCoordinatesLabel;
 	private Vector3 tmp = new Vector3(), tmp2 = new Vector3();
@@ -73,8 +74,6 @@ public class WorldScreen implements Screen {
 	@Override
 	public void show() {
 		implementScenario();
-		implementCameraAndGraphics();
-		
 		implementUI();
 		implementInput();
 	}
@@ -98,9 +97,6 @@ public class WorldScreen implements Screen {
 	
 	public void implementScenario() {
 		scenario = new Scenario(SimulationParameters.currentMap);
-	}
-	public void implementCameraAndGraphics() {
-		
 	}
 	
 	public void implementInput() {
@@ -142,12 +138,11 @@ public class WorldScreen implements Screen {
 		simParamWindow = new SlidingWindow("SIMULATION PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true);
 		SimulationParamWindow.create(simParamWindow);
 		
-		
 		String [] simStatsButtons = {"Simulation", "Tagged Vehicle"};
 		//statsWindow = new SlidingWindow("SIMULATION STATS", 320, stage.getHeight()-TopBarTable.height, stage, true, true);
-		statsWindow = new TabbedWindow("SIMULATION STATS", 320, stage.getHeight()-TopBarTable.height, stage, true, true, simStatsButtons, SimulationStatsWindow.create(stage, scenario));
-		//SimulationStatsWindow.create(statsWindow, scenario);
 		
+		statsWindow = new SimulationStatsWindow("SIMULATION STATS", 320, stage.getHeight()-TopBarTable.height, stage, true, true, simStatsButtons, scenario);
+				
 		slidingWindowManager = new SlidingWindowManager();
 		
 		buttonBack = new UIButton("BACK", "StartMenu", true, stage);
@@ -167,7 +162,7 @@ public class WorldScreen implements Screen {
 		tmp.set(Gdx.input.getX(), Gdx.input.getY(),1);
 		tmp2.set(scenario.camera.unproject(tmp));
 		mouseCoordinatesLabel.setText(String.format("%.1f, %.1f",tmp2.x, tmp2.y));
-		SimulationStatsWindow.render();
+		statsWindow.render();
 	}
 
 	private void saveChanges() {

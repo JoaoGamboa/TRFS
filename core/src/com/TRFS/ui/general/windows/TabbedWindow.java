@@ -38,8 +38,7 @@ public class TabbedWindow extends SlidingWindow {
 	 * @param tables
 	 */
 	public TabbedWindow(String title, float targetWidth, float targetHeight,
-			Stage stage, boolean dockLeft, boolean dockDown, String[] buttons,
-			ArrayList<Table> tables) {
+			Stage stage, boolean dockLeft, boolean dockDown, String[] buttons) {
 		super(title, targetWidth, targetHeight, stage, dockLeft, dockDown);
 
 		super.setTitle(title);
@@ -82,8 +81,10 @@ public class TabbedWindow extends SlidingWindow {
 
 		super.add(new Image(skin, "horBezel")).fill().height(4)
 				.colspan(buttons.length).row();
-
-		super.add(tables.get(0)).colspan(buttons.length).expand();
+	}
+	
+	public void build(ArrayList<Table> tables) {
+		super.add(tables.get(0)).colspan(buttonList.size()).expand();
 
 		theCell = super.getCell(tables.get(0));
 
