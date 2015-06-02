@@ -3,6 +3,7 @@ package com.TRFS.vehicles;
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.scenarios.map.Coordinate;
 import com.TRFS.simulator.MiscUtils;
+import com.TRFS.ui.windows.stats.CarFollowingGraphPlot;
 import com.TRFS.ui.windows.stats.SimulationStatsWindow;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -13,8 +14,10 @@ public class VehicleInputProcessor {
 	
 	private Vehicle tVehicle, sVehicle;
 	private Coordinate localMouseClick;
-		
-	public VehicleInputProcessor() {
+	private Scenario scenario;
+	
+	public VehicleInputProcessor(Scenario scenario) {
+		this.scenario = scenario;
 		localMouseClick = new Coordinate();
 	}
 	
@@ -62,9 +65,12 @@ public class VehicleInputProcessor {
 		//Is the mouse pointer is still inside the vehicle, confirm the selection
 		if (tVehicle != null) {
 			if (isTouched(tVehicle, worldX, worldY)) {
+
+				setVehicle(tVehicle);
+
 				if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) setVehicle(tVehicle);
 				tVehicle.config.selected = true;
-				SimulationStatsWindow.taggedVehicle = tVehicle;
+
 			}
 		}
 	}

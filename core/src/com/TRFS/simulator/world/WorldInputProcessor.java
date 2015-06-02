@@ -21,7 +21,7 @@ public class WorldInputProcessor implements InputProcessor {
 	public WorldInputProcessor(Scenario scenario) {
 		this.scenario = scenario;
 		this.camera = scenario.camera;
-		this.vehicleInputProcessor = new VehicleInputProcessor();
+		this.vehicleInputProcessor = new VehicleInputProcessor(scenario);
 	}
 	
 	public void listen() {
