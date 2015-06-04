@@ -28,7 +28,6 @@ public class CarFollowingGraphPlot extends Widget{
 		this.stage = stage;
 		this.scenario = scenario;
 		this.renderer = new ShapeRenderer();
-		
 		this.points = new Array<Coordinate>(nPoints);
 	}
 	
@@ -53,6 +52,19 @@ public class CarFollowingGraphPlot extends Widget{
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
+		
+		float maxDX = 50, maxDV = 50;
+		float screenMaxDX, screenMaxDY;
+		
+		a = this.localToStageCoordinates(localCoords)
+				
+		
+				
+		for (Coordinate point : points) {
+			
+		}
+				
+		
 		renderer.setProjectionMatrix(stage.getCamera().combined);
 		
 		renderer.begin(ShapeType.Line);
