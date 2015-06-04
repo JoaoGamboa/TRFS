@@ -1,17 +1,18 @@
-package com.TRFS.ui.windows.simulation;
+package com.TRFS.ui.windows;
 
 import java.util.ArrayList;
 
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.scenarios.map.Link;
+import com.TRFS.screens.ScreensManager;
+import com.TRFS.screens.WorldScreen;
 import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.SimulationParameters;
-import com.TRFS.simulator.screens.ScreensManager;
-import com.TRFS.simulator.screens.WorldScreen;
 import com.TRFS.ui.general.parameters.DynamicParamSlider;
 import com.TRFS.ui.general.parameters.DynamicSimParam;
 import com.TRFS.ui.general.windows.SlidingWindow;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -24,20 +25,23 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * 
  * @author jgamboa
  */
-public class SimulationParamWindow {
+public class SimulationParamWindow extends SlidingWindow{
 
-	private static Table table, outterTable;
-	private static ScrollPane sp;
+	private Table table, outterTable;
+	private ScrollPane sp;
+	private Skin skin = AssetsMan.uiSkin;
+	private ArrayList<DynamicParamSlider> sliderListBase, sliderListFlows;
+	private TextButton resetButton;
+	
+	public SimulationParamWindow(String title, float targetWidth,
+			float targetHeight, Stage stage, boolean dockLeft, boolean dockDown) {
+		super(title, targetWidth, targetHeight, stage, dockLeft, dockDown);
 
-	private static Skin skin = AssetsMan.uiSkin;
+		create();
+		
+	}
 
-	private static ArrayList<DynamicParamSlider> sliderListBase;
-
-	private static ArrayList<DynamicParamSlider> sliderListFlows;
-
-	private static TextButton resetButton;
-
-	public static void create(SlidingWindow window) {
+	public void create() {
 
 		table = new Table(skin);
 		sp = new ScrollPane(table, skin);
@@ -92,11 +96,11 @@ public class SimulationParamWindow {
 			}
 		});
 
-		window.add(outterTable).fill();
+		super.add(outterTable).fill();
 
 	}
 
-	public static void resetParameters() {
+	public void resetParameters() {
 		for (int i = 0; i < SimulationParameters.simParamsListBase.length; i++) {
 			DynamicSimParam param = SimulationParameters.simParamsListBase[i];
 			param.setCurrentVal(param.getDefaultVal());
@@ -110,7 +114,5 @@ public class SimulationParamWindow {
 			param.setCurrentVal(param.getDefaultVal());
 			sliderListFlows.get(i).setValue(param.getDefaultVal());
 		}
-
 	}
-
 }

@@ -1,7 +1,7 @@
 package com.TRFS.scenarios.map;
 
-import com.TRFS.models.path.PathFollowing;
-import com.TRFS.models.path.PathFollowing.PathFollowingState;
+import com.TRFS.models.pathing.PathFollowing;
+import com.TRFS.models.pathing.PathFollowing.PathFollowingState;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;

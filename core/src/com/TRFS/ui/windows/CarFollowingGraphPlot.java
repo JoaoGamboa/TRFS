@@ -1,4 +1,4 @@
-package com.TRFS.ui.windows.stats;
+package com.TRFS.ui.windows;
 
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.scenarios.map.Coordinate;
@@ -18,7 +18,6 @@ public class CarFollowingGraphPlot extends Widget{
 	private ShapeRenderer renderer;
 	
 	private float minX, maxX, minY, maxY;
-	private float width, height;
 	
 	private final int nPoints = 20;
 	private Array<Coordinate> points;

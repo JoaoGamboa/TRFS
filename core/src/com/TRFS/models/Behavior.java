@@ -2,7 +2,7 @@ package com.TRFS.models;
 
 import com.TRFS.models.carFollowing.CarFollowingModel;
 import com.TRFS.models.laneChanging.LaneChangingModel;
-import com.TRFS.models.path.PathFollowing;
+import com.TRFS.models.pathing.PathFollowing;
 import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Path;
@@ -68,6 +68,8 @@ public class Behavior {
 		
 		if (vehicle.id == 147) System.out.println(brake);
 		
+		if (brake != 0) throttle = 0;
+		
 		vehicle.physics.updateAI(dT, throttle, brake, steerAngle);
 	}
 			
@@ -88,6 +90,4 @@ public class Behavior {
 		//TODO find nearest link/lane, set it as path
 	}
 	
-	
-		
 }

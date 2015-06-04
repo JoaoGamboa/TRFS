@@ -1,7 +1,7 @@
 package com.TRFS.ui.general;
 
+import com.TRFS.screens.ScreensManager;
 import com.TRFS.simulator.AssetsMan;
-import com.TRFS.simulator.screens.ScreensManager;
 import com.TRFS.ui.general.windows.SlidingWindow;
 import com.TRFS.ui.general.windows.SlidingWindowManager;
 import com.badlogic.gdx.Application;

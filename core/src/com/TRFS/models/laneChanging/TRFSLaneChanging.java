@@ -1,6 +1,6 @@
 package com.TRFS.models.laneChanging;
 
-import com.TRFS.models.path.PathFollowing;
+import com.TRFS.models.pathing.PathFollowing;
 import com.TRFS.vehicles.Vehicle;
 
 public class TRFSLaneChanging extends LaneChangingModel{

@@ -1,18 +1,17 @@
-package com.TRFS.simulator.screens;
+package com.TRFS.screens;
 
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.MiscUtils;
 import com.TRFS.simulator.SimulationParameters;
-import com.TRFS.simulator.world.WorldInputProcessor;
 import com.TRFS.ui.general.TopBarTable;
 import com.TRFS.ui.general.UIButton;
 import com.TRFS.ui.general.windows.SlidingWindow;
 import com.TRFS.ui.general.windows.SlidingWindowManager;
 import com.TRFS.ui.general.windows.TabbedWindow;
-import com.TRFS.ui.windows.models.ModelParamWindow;
-import com.TRFS.ui.windows.simulation.SimulationParamWindow;
-import com.TRFS.ui.windows.stats.SimulationStatsWindow;
+import com.TRFS.ui.windows.ModelParamWindow;
+import com.TRFS.ui.windows.SimulationStatsWindow;
+import com.TRFS.world.WorldInputProcessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -131,15 +130,12 @@ public class WorldScreen implements Screen {
 				
 		MiscUtils.fadeIn(stage);
 		
-		// TODO Make windows instanceable instead of static
 		String [] modelParamButtons = {"Car-Foll", "Lane Chang."};
-		modelParametersWindow = new TabbedWindow("MODEL PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true, modelParamButtons, ModelParamWindow.create());
+		modelParametersWindow = new ModelParamWindow("MODEL PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true, modelParamButtons, scenario);
 		
 		simParamWindow = new SlidingWindow("SIMULATION PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true);
-		SimulationParamWindow.create(simParamWindow);
 		
 		String [] simStatsButtons = {"Simulation", "Tagged Vehicle"};
-		//statsWindow = new SlidingWindow("SIMULATION STATS", 320, stage.getHeight()-TopBarTable.height, stage, true, true);
 		
 		statsWindow = new SimulationStatsWindow("SIMULATION STATS", 320, stage.getHeight()-TopBarTable.height, stage, true, true, simStatsButtons, scenario);
 				

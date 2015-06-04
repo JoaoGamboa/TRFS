@@ -1,4 +1,4 @@
-package com.TRFS.simulator.world;
+package com.TRFS.world;
 
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.vehicles.VehicleInputProcessor;

@@ -1,7 +1,7 @@
 package com.TRFS.simulator;
 
-import com.TRFS.simulator.screens.Settings;
-import com.TRFS.simulator.screens.SplashScreen;
+import com.TRFS.screens.Settings;
+import com.TRFS.screens.SplashScreen;
 import com.badlogic.gdx.Game;
 
 /**

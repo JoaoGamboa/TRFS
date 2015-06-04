@@ -1,7 +1,7 @@
 package com.TRFS.models;
 
-import com.TRFS.models.general.InFlowsManager;
-import com.TRFS.models.path.PathFinder;
+import com.TRFS.models.InFlowsManager;
+import com.TRFS.models.pathing.PathFinder;
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.utils.Array;

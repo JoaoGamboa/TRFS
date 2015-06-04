@@ -1,4 +1,4 @@
-package com.TRFS.ui.windows.stats;
+package com.TRFS.ui.windows;
 
 import java.util.ArrayList;
 
@@ -37,13 +37,11 @@ public class SimulationStatsWindow extends TabbedWindow{
 		
 		create();
 		
-		
 		super.build(tables);
 	}
 	
-	private ArrayList<Table> create () {
+	private void create () {
 				
-		//General
 		Table tableGeneral = new Table(skin);
 		
 		//tableGeneral.add(new Label("SIMULATION", skin, "smallLabel")).colspan(2).row();
@@ -61,10 +59,7 @@ public class SimulationStatsWindow extends TabbedWindow{
 		vehicleCountLabel = new Label("", skin, "smallLabel");
 		vehicleCountLabel.setPosition(480, 20);
 		tableGeneral.add(vehicleCountLabel).row();
-		
-
-		//--General
-		
+			
 		//Vehicle
 		Table outerTagged = new Table(skin);
 				
@@ -102,7 +97,6 @@ public class SimulationStatsWindow extends TabbedWindow{
 		tables.add(tableGeneral);
 		tables.add(outerTagged);
 		
-		return tables;
 	}
 	
 	public void render() {

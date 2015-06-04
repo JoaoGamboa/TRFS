@@ -4,8 +4,8 @@ import com.TRFS.models.TrafficManager;
 import com.TRFS.scenarios.map.Map;
 import com.TRFS.scenarios.map.MapPreview;
 import com.TRFS.simulator.SimulationParameters;
-import com.TRFS.simulator.world.GraphicsManager;
-import com.TRFS.simulator.world.WorldCamera;
+import com.TRFS.world.GraphicsManager;
+import com.TRFS.world.WorldCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.TimeUtils;
 

@@ -1,15 +1,18 @@
-package com.TRFS.ui.windows.models;
+package com.TRFS.ui.windows;
 
 import java.util.ArrayList;
 
 import com.TRFS.models.carFollowing.CarFollowingModel;
 import com.TRFS.models.carFollowing.FritzscheCarFollowing;
 import com.TRFS.models.carFollowing.W74CarFollowing;
+import com.TRFS.scenarios.Scenario;
 import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.SimulationParameters;
 import com.TRFS.ui.general.parameters.DynamicParamSlider;
 import com.TRFS.ui.general.parameters.DynamicSimParam;
+import com.TRFS.ui.general.windows.TabbedWindow;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -18,23 +21,41 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
-/**Wraps the procedure for creating the Model Parameters sliders.
+/**Wraps the code to deploy on the creation of the Model Parameters window.
  * @author jgamboa
- *
  */
-public class ModelParameterSliders {
-
-	private static Skin skin = AssetsMan.uiSkin;
-	private static TextButton resetButton;
-	private static ArrayList<DynamicParamSlider> sliderList;
-	private static Table outterTable;
-	private static Array<DynamicSimParam[]> calParams;
+public class ModelParamWindow extends TabbedWindow{
 	
-	/**Creates the table inside of which the sliders live.
-	 * @return
-	 */
-	public static Table create() {
-
+	private Skin skin = AssetsMan.uiSkin;
+				
+	private TextButton resetButton;
+	private Table outterTable;
+	private ArrayList<Table> tables;
+	private ArrayList<DynamicParamSlider> sliderList;
+	private Array<DynamicSimParam[]> calParams;
+		
+	public ModelParamWindow(String title, float targetWidth, float targetHeight,
+			Stage stage, boolean dockLeft, boolean dockDown, String[] buttons, Scenario scenario) {
+		super(title, targetWidth, targetHeight,	stage, dockLeft, dockDown, buttons);
+		
+		tables = new ArrayList<Table>();
+		
+//----------------------------------------	
+		//CAR FOLLOWING	
+		tables.add(buildModelParamSliders());
+//----------------------------------------	
+		//LANE-CHANGING
+		
+		Table dummyTable = new Table(skin);
+		dummyTable.add("PLACEHOLDER FOR LANE CHANGE","smallLabel").expand();
+		dummyTable.setVisible(false);
+		tables.add(dummyTable);
+		
+		super.build(tables);
+		
+	}
+	
+	private Table buildModelParamSliders() {
 		sliderList= new ArrayList<DynamicParamSlider>();
 		resetButton = new TextButton("RESET TO DEFAULTS", skin, "mainButton");
 		outterTable = new Table(skin);
@@ -55,7 +76,6 @@ public class ModelParameterSliders {
 		case 1:
 			calParams.add(FritzscheCarFollowing.calibrationParameters);
 		}
-		
 		
 		Table innerTable = new Table(skin);
 		ScrollPane sp = new ScrollPane(innerTable, skin);
@@ -83,7 +103,7 @@ public class ModelParameterSliders {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
-				resetParameters();
+				resetModelParamSliders();
 				resetButton.setChecked(false);
 			}
 		});
@@ -91,14 +111,14 @@ public class ModelParameterSliders {
 		return outterTable;
 	}
 	
+	
 	/** Resets the sliders to the default value.	
 	 */
-	public static void resetParameters() {
+	private void resetModelParamSliders() {
 		for (int i = 0; i < calParams.get(0).length; i++) {
 			calParams.get(0)[i].setCurrentVal(calParams.get(0)[i].getDefaultVal());
 			sliderList.get(i).setValue(calParams.get(0)[i].getDefaultVal());
-			
 		}
 	}
-	
+		
 }

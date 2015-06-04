@@ -1,4 +1,4 @@
-package com.TRFS.models.general;
+package com.TRFS.models;
 
 import java.util.Random;
 

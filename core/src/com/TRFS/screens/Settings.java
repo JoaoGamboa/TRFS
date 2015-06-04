@@ -1,4 +1,4 @@
-package com.TRFS.simulator.screens;
+package com.TRFS.screens;
 
 import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.Main;

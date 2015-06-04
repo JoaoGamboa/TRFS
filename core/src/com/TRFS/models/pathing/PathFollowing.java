@@ -1,4 +1,4 @@
-package com.TRFS.models.path;
+package com.TRFS.models.pathing;
 
 import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
