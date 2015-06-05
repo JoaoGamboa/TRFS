@@ -56,9 +56,8 @@ public class CarFollowingGraphPlot extends Widget{
 		float maxDX = 50, maxDV = 50;
 		float screenMaxDX, screenMaxDY;
 		
-		a = this.localToStageCoordinates(localCoords)
-				
-		
+		a = localToStageCoordinates(localCoords)
+						
 				
 		for (Coordinate point : points) {
 			
