@@ -10,6 +10,7 @@ import com.TRFS.ui.general.windows.SlidingWindow;
 import com.TRFS.ui.general.windows.SlidingWindowManager;
 import com.TRFS.ui.general.windows.TabbedWindow;
 import com.TRFS.ui.windows.ModelParamWindow;
+import com.TRFS.ui.windows.SimulationParamWindow;
 import com.TRFS.ui.windows.SimulationStatsWindow;
 import com.TRFS.world.WorldInputProcessor;
 import com.badlogic.gdx.Gdx;
@@ -133,7 +134,7 @@ public class WorldScreen implements Screen {
 		String [] modelParamButtons = {"Car-Foll", "Lane Chang."};
 		modelParametersWindow = new ModelParamWindow("MODEL PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true, modelParamButtons, scenario);
 		
-		simParamWindow = new SlidingWindow("SIMULATION PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true);
+		simParamWindow = new SimulationParamWindow("SIMULATION PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true);
 		
 		String [] simStatsButtons = {"Simulation", "Tagged Vehicle"};
 		

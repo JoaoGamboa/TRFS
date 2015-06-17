@@ -16,18 +16,18 @@ public class SimulationParameters {
 	
 //--GENERAL --------------------------------	
 	
-	//Static
 	public static MapPreview currentMap;
 	public static String currentCarFolModel;
 	public static String currentLaneChangeModel;
+
 	
 	public static boolean allowHOV;
 	public static boolean simplifyGeometry;
 	public static boolean smoothGeometry;
 	public static boolean drawDebug;
 	public static boolean paused;
-		
-	//Dynamic															NAME				MIN			MAX		DEFAULT	INCREMENT	DecimalFormat
+	
+	//																	NAME				MIN			MAX		DEFAULT	INCREMENT	DecimalFormat
 	public static DynamicSimParam simSpeed 		= new DynamicSimParam("Simulation Speed"	, 0, 		2, 		1, 		0.1f,	 	"0.0", "Times");
 	public static DynamicSimParam desVelocity 	= new DynamicSimParam("Desired Velocity"	, 0, 		200, 	90, 	1,  		"###", "Km/h"		);
 	public static DynamicSimParam maxVelocity 	= new DynamicSimParam("Max. Velocity"		, 0, 		200, 	120, 	1, 			"###", "Km/h"		);
