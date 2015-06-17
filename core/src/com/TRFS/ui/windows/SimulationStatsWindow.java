@@ -27,7 +27,7 @@ public class SimulationStatsWindow extends TabbedWindow{
 	
 	private ArrayList<Table> tables = new ArrayList<Table>();
 	
-	public Vehicle taggedVehicle;
+	public static Vehicle taggedVehicle;
 	
 	public SimulationStatsWindow(String title, float targetWidth, float targetHeight, Stage stage, boolean dockLeft, boolean dockDown, 
 									String[] buttons, Scenario scenario) {
@@ -65,7 +65,7 @@ public class SimulationStatsWindow extends TabbedWindow{
 				
 		Table tableTagged = new Table(skin);
 		
-		tableTagged.add(new Image(skin, "horBezel")).fill().height(4).colspan(2).row();
+		tableTagged.add(new Image(skin, "horBezel")).fill().height(4).colspan(2).expandX().row();
 		tableTagged.add(new Label("TAGGED VEHICLE", skin, "smallLabel")).colspan(2).row();
 		
 		tableTagged.add(new Label("ID:", skin, "smallLabel"));
@@ -84,9 +84,9 @@ public class SimulationStatsWindow extends TabbedWindow{
 		brakeLabel = new Label("", skin, "smallLabel");
 		tableTagged.add(brakeLabel).row();
 		
-		cfGP = new CarFollowingGraphPlot(super.getStage(), scenario);
+		/*cfGP = new CarFollowingGraphPlot(super.getStage(), scenario);
 		
-		tableTagged.add(cfGP).row();
+		tableTagged.add(cfGP).row();*///TODO
 		
 		ScrollPane spTagged = new ScrollPane(tableTagged, skin);
 		
@@ -106,15 +106,14 @@ public class SimulationStatsWindow extends TabbedWindow{
 		
 		if (taggedVehicle != null) {
 			idLabel.setText("" + taggedVehicle.id);
-			speedLabel.setText("" + taggedVehicle.physics.speed);
-			throttleLabel.setText("" + taggedVehicle.physics.throttle);
-			brakeLabel.setText("" + taggedVehicle.physics.brake);		
+			speedLabel.setText(String.format("%.2f", taggedVehicle.physics.speed*3.6f));
+			throttleLabel.setText(String.format("%.1f", taggedVehicle.physics.throttle));
+			brakeLabel.setText(String.format("%.1f", taggedVehicle.physics.brake));		
 		}
 	}
 	
-	public void setTaggedVehicle(Vehicle vehicle) {
+	/*public void setTaggedVehicle(Vehicle vehicle) {
 		taggedVehicle = vehicle;
 		cfGP.setVehicle(vehicle);
-	}
-	
+	}*/
 }

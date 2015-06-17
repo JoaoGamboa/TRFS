@@ -94,7 +94,7 @@ public class Vehicle {
 	public void drawVehicleDebug(ShapeRenderer renderer) {
 		renderer.begin(ShapeType.Line);
 		
-		Vehicle lead = behavior.carFollowingBehaviour.leader;
+		/*Vehicle lead = behavior.carFollowingBehaviour.leader;
 		if (lead != null) {
 			renderer.setColor(Color.RED);
 			renderer.line(physics.position.x,  physics.position.y, lead.physics.position.x,  lead.physics.position.y);
@@ -110,7 +110,7 @@ public class Vehicle {
 		if(next != null) {
 			renderer.setColor(Color.ORANGE);
 			renderer.line(physics.position.x,  physics.position.y, next.physics.position.x,  next.physics.position.y);
-		}
+		}*/
 		
 		renderer.end();
 		/*for (int i = 0; i < config.vertices.size - 1; i++) {
