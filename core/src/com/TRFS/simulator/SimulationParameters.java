@@ -35,8 +35,10 @@ public class SimulationParameters {
 	public static DynamicSimParam truckPercent 	= new DynamicSimParam("Truck Percentage"	, 0, 		100, 	10, 	1, 			"0.0", "Percent");
 	public static DynamicSimParam desFlow 		= new DynamicSimParam("Desired Flow"		, 0, 		4000, 	2000, 	1, 			"####", "Veic/h");
 	
+	public static DynamicSimParam lineThickness = new DynamicSimParam("Debug line width"	, 0.1f, 	2, 		0.6f, 	0.1f, 		"0.0", "");
+	
 	//Array for window
-	public static DynamicSimParam[] simParamsListBase = {simSpeed, desVelocity, maxVelocity, truckPercent};
+	public static DynamicSimParam[] simParamsListBase = {simSpeed, desVelocity, maxVelocity, truckPercent, lineThickness};
 	public static ArrayList<DynamicSimParam> simParamsListFlows = new ArrayList<DynamicSimParam>();
 	
 	

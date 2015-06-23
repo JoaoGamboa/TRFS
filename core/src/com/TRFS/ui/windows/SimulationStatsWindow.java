@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.TRFS.scenarios.Scenario;
 import com.TRFS.simulator.AssetsMan;
+import com.TRFS.simulator.SimulationParameters;
 import com.TRFS.ui.general.windows.TabbedWindow;
 import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 public class SimulationStatsWindow extends TabbedWindow{
 
 	private Skin skin = AssetsMan.uiSkin;
-	private Label simulationTimeLabel, elapsedTimeLabel, vehicleCountLabel;
+	private Label simulationTimeLabel, elapsedTimeLabel, vehicleCountLabel, totalVehiclesLabel, simulationSpeedLabel;
 	private Label speedLabel, idLabel, throttleLabel, brakeLabel;
 	private Scenario scenario;
 	
@@ -50,15 +51,21 @@ public class SimulationStatsWindow extends TabbedWindow{
 		elapsedTimeLabel = new Label("", skin, "smallLabel");
 		tableGeneral.add(elapsedTimeLabel).row();
 		
-		tableGeneral.add(new Label("Elapsed time:", skin, "smallLabel"));
+		tableGeneral.add(new Label("Simulated time:", skin, "smallLabel"));
 		simulationTimeLabel = new Label("", skin, "smallLabel");
-		simulationTimeLabel.setPosition(360, 20);
 		tableGeneral.add(simulationTimeLabel).row();
 		
-		tableGeneral.add(new Label("Vehicles on NetwoRk:", skin, "smallLabel"));
+		tableGeneral.add(new Label("Simulation speed:", skin, "smallLabel"));
+		simulationSpeedLabel = new Label("",  skin, "smallLabel");
+		tableGeneral.add(simulationSpeedLabel).row();
+		
+		tableGeneral.add(new Label("Vehicles on network:", skin, "smallLabel"));
 		vehicleCountLabel = new Label("", skin, "smallLabel");
-		vehicleCountLabel.setPosition(480, 20);
 		tableGeneral.add(vehicleCountLabel).row();
+		
+		tableGeneral.add(new Label("Total vehicles:", skin, "smallLabel"));
+		totalVehiclesLabel = new Label("", skin, "smallLabel");
+		tableGeneral.add(totalVehiclesLabel).row();
 			
 		//Vehicle
 		Table outerTagged = new Table(skin);
@@ -102,7 +109,9 @@ public class SimulationStatsWindow extends TabbedWindow{
 	public void render() {
 		elapsedTimeLabel.setText(String.format("%.1f", (float) scenario.elapsedTime/1000));
 		simulationTimeLabel.setText(String.format("%.1f", scenario.simulationTime));
+		simulationSpeedLabel.setText(String.format("%.1f times", SimulationParameters.simSpeed.getCurrentVal()));
 		vehicleCountLabel.setText("" + scenario.trafficManager.inFlowsManager.vehicleCount);
+		totalVehiclesLabel.setText("" + scenario.trafficManager.inFlowsManager.totalVehicleCount);
 		
 		if (taggedVehicle != null) {
 			idLabel.setText("" + taggedVehicle.id);
@@ -111,9 +120,4 @@ public class SimulationStatsWindow extends TabbedWindow{
 			brakeLabel.setText(String.format("%.1f", taggedVehicle.physics.brake));		
 		}
 	}
-	
-	/*public void setTaggedVehicle(Vehicle vehicle) {
-		taggedVehicle = vehicle;
-		cfGP.setVehicle(vehicle);
-	}*/
 }
