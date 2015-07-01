@@ -63,8 +63,8 @@ public class PathFollowing {
 			if (state.currentLane.index > (nextLink.lanes.size -1)) {
 				lane = state.currentLane.index - (state.currentLane.index - (nextLink.lanes.size -1));
 			} else lane = state.currentLane.index;
-			System.out.println("veh " + vehicle.id + ": " + nextLink.lanes.size + ", " + lane + "  from link " 
-			+ linkSequence.get(currentLinkIndex).id + " to link " + linkSequence.get(currentLinkIndex + 1).id);
+			/*System.out.println("veh " + vehicle.id + ": " + nextLink.lanes.size + ", " + lane + "  from link " 
+			+ linkSequence.get(currentLinkIndex).id + " to link " + linkSequence.get(currentLinkIndex + 1).id);*/
 			
 			Lane nextLane = nextLink.lanes.get(lane);
 			setPath(nextLane.path);
@@ -112,7 +112,7 @@ public class PathFollowing {
 				float percentageOnPath = distanceOnPath/path.length;
 				
 				if (turnAngle > 45 * MathUtils.degreesToRadians) {
-					brake = (float) MathUtils.clamp(percentageOnPath, 0, 0.6);
+					//brake = 0.5f;
 				}
 			}
 			
