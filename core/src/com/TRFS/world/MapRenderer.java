@@ -5,6 +5,7 @@ import com.TRFS.scenarios.map.Lane;
 import com.TRFS.scenarios.map.Link;
 import com.TRFS.scenarios.map.Map;
 import com.TRFS.scenarios.map.Node;
+import com.TRFS.simulator.SimulationParameters;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -34,7 +35,7 @@ public class MapRenderer {
 	public static void renderDebug(Map map, ShapeRenderer shapeRenderer) {
 
 		// Render Lines
-		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.begin(ShapeType.Filled);
 		shapeRenderer.setColor(Color.BLACK);
 		for (Link link : map.links) {
 			for (Lane lane : link.lanes) {
@@ -68,9 +69,9 @@ public class MapRenderer {
 		for (int i = 0; i < coordinates.size; i++) {
 			int next = (i + 1) % coordinates.size;
 			if (next != 0)
-				shapeRenderer.line(coordinates.get(i).x, coordinates
+				shapeRenderer.rectLine(coordinates.get(i).x, coordinates
 						.get(i).y, coordinates.get(next).x,
-						coordinates.get(next).y);
+						coordinates.get(next).y, SimulationParameters.lineThickness.getCurrentVal());
 		}
 	}
 
@@ -78,7 +79,7 @@ public class MapRenderer {
 			ShapeRenderer shapeRenderer) {
 		for (int i = 0; i < coordinates.size; i++)
 			shapeRenderer.circle(coordinates.get(i).x, coordinates.get(i)
-					.y, 0.5f);
+					.y, 0.6f);
 	}
 
 	public static void renderDebugVectorPoints(Array<Vector2> vectors,

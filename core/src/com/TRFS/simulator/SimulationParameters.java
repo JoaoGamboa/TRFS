@@ -16,18 +16,18 @@ public class SimulationParameters {
 	
 //--GENERAL --------------------------------	
 	
-	//Static
 	public static MapPreview currentMap;
 	public static String currentCarFolModel;
 	public static String currentLaneChangeModel;
+
 	
 	public static boolean allowHOV;
 	public static boolean simplifyGeometry;
 	public static boolean smoothGeometry;
 	public static boolean drawDebug;
 	public static boolean paused;
-		
-	//Dynamic															NAME				MIN			MAX		DEFAULT	INCREMENT	DecimalFormat
+	
+	//																	NAME				MIN			MAX		DEFAULT	INCREMENT	DecimalFormat
 	public static DynamicSimParam simSpeed 		= new DynamicSimParam("Simulation Speed"	, 0, 		2, 		1, 		0.1f,	 	"0.0", "Times");
 	public static DynamicSimParam desVelocity 	= new DynamicSimParam("Desired Velocity"	, 0, 		200, 	90, 	1,  		"###", "Km/h"		);
 	public static DynamicSimParam maxVelocity 	= new DynamicSimParam("Max. Velocity"		, 0, 		200, 	120, 	1, 			"###", "Km/h"		);
@@ -35,8 +35,10 @@ public class SimulationParameters {
 	public static DynamicSimParam truckPercent 	= new DynamicSimParam("Truck Percentage"	, 0, 		100, 	10, 	1, 			"0.0", "Percent");
 	public static DynamicSimParam desFlow 		= new DynamicSimParam("Desired Flow"		, 0, 		4000, 	2000, 	1, 			"####", "Veic/h");
 	
+	public static DynamicSimParam lineThickness = new DynamicSimParam("Debug line width"	, 0.1f, 	2, 		0.6f, 	0.1f, 		"0.0", "");
+	
 	//Array for window
-	public static DynamicSimParam[] simParamsListBase = {simSpeed, desVelocity, maxVelocity, truckPercent};
+	public static DynamicSimParam[] simParamsListBase = {simSpeed, desVelocity, maxVelocity, truckPercent, lineThickness};
 	public static ArrayList<DynamicSimParam> simParamsListFlows = new ArrayList<DynamicSimParam>();
 	
 	

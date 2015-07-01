@@ -10,11 +10,13 @@ import com.TRFS.ui.general.windows.SlidingWindow;
 import com.TRFS.ui.general.windows.SlidingWindowManager;
 import com.TRFS.ui.general.windows.TabbedWindow;
 import com.TRFS.ui.windows.ModelParamWindow;
+import com.TRFS.ui.windows.SimulationParamWindow;
 import com.TRFS.ui.windows.SimulationStatsWindow;
 import com.TRFS.world.WorldInputProcessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -50,7 +52,10 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		MiscUtils.clearScreen();
+		//MiscUtils.clearScreen();
+		Gdx.gl.glClearColor(200/255f, 200/255f, 200/255f, 1);//Clear screen with gray color
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);//Clear Screen
+		
 		
 		//Update and render Scenario
 		scenario.render(delta);
@@ -133,7 +138,7 @@ public class WorldScreen implements Screen {
 		String [] modelParamButtons = {"Car-Foll", "Lane Chang."};
 		modelParametersWindow = new ModelParamWindow("MODEL PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true, modelParamButtons, scenario);
 		
-		simParamWindow = new SlidingWindow("SIMULATION PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true);
+		simParamWindow = new SimulationParamWindow("SIMULATION PARAMETERS", 320, stage.getHeight()-TopBarTable.height, stage, false, true);
 		
 		String [] simStatsButtons = {"Simulation", "Tagged Vehicle"};
 		
