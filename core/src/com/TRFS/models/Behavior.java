@@ -65,9 +65,7 @@ public class Behavior {
 		throttle = carFollowingThrottle;
 		brake = pathRelatedBrake + carFollowingBrake;
 		steerAngle = pathRelatedSteering;
-		
-		if (vehicle.id == 147) System.out.println(brake);
-		
+				
 		if (brake != 0) throttle = 0;
 		
 		vehicle.physics.updateAI(dT, throttle, brake, steerAngle);
