@@ -76,7 +76,7 @@ public class Vehicle {
 		if (config.selected) batch.draw(whiteGlow, x, y,  0, 0, config.width, config.length, 1, 1, rotation);
 		if (config.userControlled) batch.draw(redGlow, x, y,  0, 0, config.width, config.length, 1, 1, rotation);
 		
-		batch.setColor(config.color);
+		batch.setColor(Color.BLUE);
 		batch.draw(vehicle, x, y, 0, 0, config.width, config.length, 1, 1, rotation);
 		
 		batch.setColor(Color.WHITE);

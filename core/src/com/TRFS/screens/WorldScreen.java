@@ -16,6 +16,7 @@ import com.TRFS.world.WorldInputProcessor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -51,7 +52,10 @@ public class WorldScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
-		MiscUtils.clearScreen();
+		//MiscUtils.clearScreen();
+		Gdx.gl.glClearColor(200/255f, 200/255f, 200/255f, 1);//Clear screen with gray color
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);//Clear Screen
+		
 		
 		//Update and render Scenario
 		scenario.render(delta);

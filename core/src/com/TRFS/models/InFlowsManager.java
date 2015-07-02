@@ -24,6 +24,7 @@ public class InFlowsManager {
 	
 	private float[] timeCounters;
 	public int vehicleCount;
+	public long totalVehicleCount;
 	private int[] queueOutsideNetwork;
 	private boolean debugOneVeh = false;
 	
@@ -120,6 +121,6 @@ public class InFlowsManager {
 		vehicle.behavior.pathFollowing.linkSequence = scenario.trafficManager.pathFinder.getRandomPathFromNode(link.fromNode);
 		vehicle.physics.speed = link.maxspeed / 3.6f;
 		scenario.trafficManager.vehicles.add(vehicle);
-						
+		totalVehicleCount++;				
 	}	
 }
