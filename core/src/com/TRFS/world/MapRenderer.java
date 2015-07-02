@@ -29,7 +29,6 @@ public class MapRenderer {
 				/* node.render(); */
 			}
 		}
-
 	}
 
 	public static void renderDebug(Map map, ShapeRenderer shapeRenderer) {
@@ -69,8 +68,7 @@ public class MapRenderer {
 		for (int i = 0; i < coordinates.size; i++) {
 			int next = (i + 1) % coordinates.size;
 			if (next != 0)
-				shapeRenderer.rectLine(coordinates.get(i).x, coordinates
-						.get(i).y, coordinates.get(next).x,
+				shapeRenderer.rectLine(coordinates.get(i).x, coordinates.get(i).y, coordinates.get(next).x,
 						coordinates.get(next).y, SimulationParameters.lineThickness.getCurrentVal());
 		}
 	}
@@ -78,8 +76,7 @@ public class MapRenderer {
 	public static void renderDebugPoints(Array<Coordinate> coordinates,
 			ShapeRenderer shapeRenderer) {
 		for (int i = 0; i < coordinates.size; i++)
-			shapeRenderer.circle(coordinates.get(i).x, coordinates.get(i)
-					.y, 0.6f);
+			shapeRenderer.circle(coordinates.get(i).x, coordinates.get(i).y, 0.6f);
 	}
 
 	public static void renderDebugVectorPoints(Array<Vector2> vectors,
