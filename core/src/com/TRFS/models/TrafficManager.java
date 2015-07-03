@@ -16,6 +16,7 @@ public class TrafficManager {
 	public InFlowsManager inFlowsManager;
 	public Array<Vehicle> vehicles, tmpNeighbours, tmpIntercecters;
 	public PathFinder pathFinder;
+	public TrafficCounters trfCounters;
 
 	public TrafficManager(Scenario scenario) {
 		//this.scenario = scenario;
@@ -25,6 +26,8 @@ public class TrafficManager {
 		this.vehicles = new Array<Vehicle>();	
 		tmpNeighbours = new Array<Vehicle>();	
 		tmpIntercecters = new Array<Vehicle>();	
+		
+		this.trfCounters = new TrafficCounters(); 
 		
 		this.vehicles.ensureCapacity(300);
 	}
