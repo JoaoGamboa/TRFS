@@ -26,6 +26,7 @@ public class Vehicle {
 	public VehiclePhysics physics;
 	public VehicleConfig config;
 	public Behavior behavior;
+	public VehicleStats stats;
 	
 	public int id;
 		
@@ -47,6 +48,8 @@ public class Vehicle {
 		this.behavior = new Behavior(this,
 				SimulationParameters.currentCarFolModel,
 				SimulationParameters.currentLaneChangeModel);
+		
+		this.stats = new VehicleStats(this);
 	}
 
 	/**
@@ -158,8 +161,10 @@ public class Vehicle {
 		public Vector2 position, frontWPos, rearWPos, deltaPosition, frontAxisPostion;
 
 		public VehicleConfig config;
+		public Vehicle vehicle;
 		
 		public VehiclePhysics(Vehicle vehicle) {
+			this.vehicle = vehicle;
 			this.config = vehicle.config;
 			this.frontWPos = new Vector2();
 			this.rearWPos = new Vector2();
@@ -206,7 +211,6 @@ public class Vehicle {
 					+ this.steerAngle, -VehicleConfig.maxSteeringAngle,
 					VehicleConfig.maxSteeringAngle) /* (1 - Math.abs(speed)/280)*/;
 			if (Math.abs(steerAngle) < 0.1) this.steerAngle = steerAngle;
-			
 			
 			if (throttle > 0) {
 				this.throttle = (float) (MathUtils.clamp(throttleMultiplier * throttle
@@ -297,4 +301,42 @@ public class Vehicle {
 			vertices.get(3).set(-width/2,length/2).rotateRad(rotation).add(origin);			
 		}	
 	}
+	
+	public class VehicleStats {
+		
+		public float distanceTravelled, travelTime, brakingTime, accelerationTime, stoppedTime, desireToChangeLaneTime, speed, acceleration;
+		public int vehicleID, originLinkID, destinationLinkID, currentLinkID;
+		public String type;
+		
+		public Vehicle vehicle;
+		
+		public VehicleStats(Vehicle vehicle) {
+			this.vehicle = vehicle;
+			this.vehicleID = id;
+			this.originLinkID = vehicle.behavior.pathFollowing.linkSequence.first().id;
+			this.destinationLinkID = vehicle.behavior.pathFollowing.linkSequence.peek().id;
+			
+			if (vehicle instanceof Car) this.type = "Car";
+			if (vehicle instanceof Truck) this.type = "Truck";
+			
+		}
+		
+		public void update(float delta) {
+			distanceTravelled += vehicle.physics.deltaPosition.len();
+			travelTime += delta;
+			
+			if (vehicle.physics.brake > 0) brakingTime += delta;
+			if (vehicle.physics.acceleration > 0) accelerationTime += delta;
+			if (vehicle.physics.speed < 0.1) stoppedTime += delta;
+			if (vehicle.behavior.laneChangingBehaviour.desireToChange) desireToChangeLaneTime += delta;
+		}
+		
+		public void snapShot() {
+			speed = vehicle.physics.speed;
+			acceleration = vehicle.physics.acceleration;
+			currentLinkID = vehicle.behavior.pathFollowing.currentLink().id;
+		}	
+	}
 }
+
+

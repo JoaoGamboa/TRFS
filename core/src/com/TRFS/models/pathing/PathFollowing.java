@@ -80,6 +80,10 @@ public class PathFollowing {
 		if (currentLinkIndex + 1 < linkSequence.size) return linkSequence.get(currentLinkIndex + 1);
 		return linkSequence.get(linkSequence.size - 1);
 	}
+	
+	public Link currentLink() {
+		return linkSequence.get(currentLinkIndex);
+	}
 
 	/**Contains parameters regarding the current position of the agent on the
 	 * path used to reduce the scope of the lookup when finding the current

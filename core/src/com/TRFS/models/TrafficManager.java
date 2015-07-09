@@ -40,6 +40,7 @@ public class TrafficManager {
 			
 			vehicles.get(i).update(delta);
 			if (vehicles.get(i).behavior.pathFollowing.state.finished) vehicles.removeIndex(vehicleIndex);
+			trfCounters.update(delta, vehicles.get(i));
 			vehicleIndex++;
 		}
 		
