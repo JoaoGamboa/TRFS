@@ -308,13 +308,15 @@ public class Vehicle {
 		public int vehicleID, originLinkID, destinationLinkID, currentLinkID;
 		public String type;
 		
+		public Array<Integer> counterRecord;
+		
 		public Vehicle vehicle;
 		
 		public VehicleStats(Vehicle vehicle) {
 			this.vehicle = vehicle;
 			this.vehicleID = id;
-			this.originLinkID = vehicle.behavior.pathFollowing.linkSequence.first().id;
-			this.destinationLinkID = vehicle.behavior.pathFollowing.linkSequence.peek().id;
+
+			this.counterRecord = new Array<Integer>();
 			
 			if (vehicle instanceof Car) this.type = "Car";
 			if (vehicle instanceof Truck) this.type = "Truck";
@@ -335,6 +337,8 @@ public class Vehicle {
 			speed = vehicle.physics.speed;
 			acceleration = vehicle.physics.acceleration;
 			currentLinkID = vehicle.behavior.pathFollowing.currentLink().id;
+			originLinkID = vehicle.behavior.pathFollowing.linkSequence.first().id;
+			destinationLinkID = vehicle.behavior.pathFollowing.linkSequence.peek().id;
 		}	
 	}
 }

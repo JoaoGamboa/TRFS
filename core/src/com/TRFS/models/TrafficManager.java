@@ -1,8 +1,8 @@
 package com.TRFS.models;
 
-import com.TRFS.models.InFlowsManager;
 import com.TRFS.models.pathing.PathFinder;
 import com.TRFS.scenarios.Scenario;
+import com.TRFS.simulator.SimulationParameters;
 import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.utils.Array;
 
@@ -40,12 +40,17 @@ public class TrafficManager {
 			
 			vehicles.get(i).update(delta);
 			if (vehicles.get(i).behavior.pathFollowing.state.finished) vehicles.removeIndex(vehicleIndex);
+			
 			trfCounters.update(delta, vehicles.get(i));
+			
 			vehicleIndex++;
 		}
 		
 		inFlowsManager.vehicleCount = vehicleIndex;
 		inFlowsManager.update(delta, simulationTime);
+		
+		if (simulationTime > SimulationParameters.simulationSecondsToCountTraffic)
+			if (!trfCounters.ended)	trfCounters.end();
 	}
 	
 	/**Detects this vehicle's neighbors and passes them to the behavior class.

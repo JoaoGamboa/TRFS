@@ -95,6 +95,7 @@ public class WorldScreen implements Screen {
 	public void dispose() {
 		saveChanges();
 		stage.dispose();
+		scenario.trafficManager.trfCounters.end();
 		scenario.dispose();
 	}
 	

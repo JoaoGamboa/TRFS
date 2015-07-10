@@ -19,7 +19,8 @@ public class SimulationParameters {
 	public static MapPreview currentMap;
 	public static String currentCarFolModel;
 	public static String currentLaneChangeModel;
-
+	
+	public static int simulationSecondsToCountTraffic = 3600;
 	
 	public static boolean allowHOV;
 	public static boolean simplifyGeometry;
