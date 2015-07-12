@@ -64,6 +64,7 @@ public class Vehicle {
 		} else {
 			behavior.update(delta);
 		}
+		stats.update(delta);
 	}
 
 	public void draw(Batch batch) {

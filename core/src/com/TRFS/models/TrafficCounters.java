@@ -10,7 +10,7 @@ import com.TRFS.vehicles.Vehicle;
 
 public class TrafficCounters {
 	
-	public static int[] counterLinkIDs = new int[] {1,2,4,5}; //IDs of the links in which to place the counters. This should integrated in the JSON reader in the future. To allow the user to choose where to count.
+	public static int[] counterLinkIDs = new int[] {11,23,16,19,13,14,12,28,15,27,2,3,4,5}; //IDs of the links in which to place the counters. This should integrated in the JSON reader in the future. To allow the user to choose where to count.
 		
 	private FileWriter fileWriter;
 	
@@ -31,14 +31,16 @@ public class TrafficCounters {
 		}
 	}
 	
-	public void update(float delta, Vehicle vehicle) {
+	public void update(float delta, Vehicle vehicle, float simulationTime) {
+		
 		int linkID = atLinkWithCounter(vehicle);
 		if (linkID == 0) return;
 		
 		if (alreadyCountedAtThisLink(vehicle, linkID)) return;
 		
 		entryCounter++;
-		addRecord(vehicle);
+		vehicle.stats.snapShot();
+		addRecord(vehicle, simulationTime);
 		
 		setCounted(vehicle, linkID);
 	}
@@ -54,10 +56,10 @@ public class TrafficCounters {
 	}
 	
 	private String makeFields() {
-		return "id,VehicleID,VehicleType,CurrentLinkID,OriginLinkID,DestinationLinkID,Speed,Acceleration,TimeTravelled,DistanceTravelled,BrakingTime,AccelerationTime,StoppedTime,DesiringToChangeLaneTime";
+		return "id,VehicleID,VehicleType,CurrentLinkID,OriginLinkID,DestinationLinkID,Speed,Acceleration,TimeTravelled,DistanceTravelled,BrakingTime,AccelerationTime,StoppedTime,DesiringToChangeLaneTime,Time";
 	}
 	
-	private void addRecord(Vehicle vehicle){
+	private void addRecord(Vehicle vehicle, float simulationTime){
 		try {
 			fileWriter.append("\n " + entryCounter + "," + vehicle.id + ","
 					+ vehicle.stats.type + "," + vehicle.stats.currentLinkID
@@ -69,7 +71,8 @@ public class TrafficCounters {
 					+ vehicle.stats.brakingTime + ","
 					+ vehicle.stats.accelerationTime + ","
 					+ vehicle.stats.stoppedTime + ","
-					+ vehicle.stats.desireToChangeLaneTime);
+					+ vehicle.stats.desireToChangeLaneTime + ","
+					+ simulationTime);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -78,7 +81,7 @@ public class TrafficCounters {
 	
 	private int atLinkWithCounter(Vehicle vehicle) {
 		for (int i = 0; i < counterLinkIDs.length; i++) {
-			if (vehicle.stats.currentLinkID == counterLinkIDs[i]) return i;
+			if (vehicle.behavior.pathFollowing.currentLink().id == counterLinkIDs[i]) return i;
 		}
 		return 0;
 	}

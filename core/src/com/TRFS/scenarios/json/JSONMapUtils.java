@@ -33,7 +33,7 @@ public class JSONMapUtils {
 			// Create Link with extracted data. Coordinates and attributes are added later.
 			Link link = new Link();
 
-			link.setAttributes(j, properties.getHierarchy(),
+			link.setAttributes(j+1, properties.getHierarchy(),
 					properties.getInFlow(), properties.getLanes(),
 					properties.getMaxspeed(), properties.getOneway(),
 					properties.getZ());
