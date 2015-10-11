@@ -10,8 +10,8 @@ import com.TRFS.vehicles.Vehicle;
 
 public class TrafficCounters {
 	
-	public static int[] counterLinkIDs = new int[] {11,23,16,19,13,14,12,28,15,27,2,3,4,5}; //IDs of the links in which to place the counters. This should integrated in the JSON reader in the future. To allow the user to choose where to count.
-		
+	//public static int[] counterLinkIDs = new int[] {11,23,16,19,13,14,12,28,15,27,2,3,4,5,6,30,22,24,10,17,8,9,1,7,21,26}; //IDs of the links in which to place the counters. This should integrated in the JSON reader in the future. To allow the user to choose where to count.
+	public static int[] counterLinkIDs = new int[] {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29}; 	
 	private FileWriter fileWriter;
 	
 	private int entryCounter;

@@ -6,6 +6,7 @@ import com.TRFS.simulator.AssetsMan;
 import com.TRFS.simulator.SimulationParameters;
 import com.TRFS.vehicles.Vehicle;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
@@ -25,6 +26,7 @@ public class GraphicsManager {
 		this.scenario = scenario;
 		this.shapeRenderer = new ShapeRenderer();
 		this.font = new BitmapFont(Gdx.files.internal(AssetsMan.mediumFont));
+		this.font.setColor(Color.NAVY);
 		//GraphicsManager.staticRendering = new StaticDebugRendering(shapeRenderer);
 	}
 
